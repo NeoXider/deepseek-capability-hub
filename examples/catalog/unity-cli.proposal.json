@@ -1,0 +1,18 @@
+{
+  "action": "propose",
+  "entry": {
+    "kind": "mcp",
+    "name": "unity-cli",
+    "description": "Official Unity CLI MCP for project discovery, Editor installation, builds, tests, and Unity workflows.",
+    "tags": ["unity", "game-development", "build", "test", "editor"],
+    "trusted": false,
+    "source": "https://docs.unity.com/en-us/unity-cli/unity-cli-reference",
+    "permissions": ["Starts the official Unity CLI", "May read and modify Unity projects", "May install Editors or run builds when a called tool requests it"],
+    "transport": {
+      "type": "stdio",
+      "command": "unity",
+      "args": ["mcp"]
+    },
+    "configurable": []
+  }
+}

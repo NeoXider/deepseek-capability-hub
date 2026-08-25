@@ -1,0 +1,17 @@
+# Add this row to the top-level array in ~/.dsh/profiles/web/cordis.patch.yml.
+# DeepSeek Harness sees one stable MCP tool: mcp__capability_hub__capability_hub.
+- insert:
+    - id: mcp-capability-hub
+      name: '@deepseek-ai/dsh-mcp-client'
+      config:
+        serverName: capability_hub
+        transport: stdio
+        command: node
+        args:
+          - C:/path/to/deepseek-capability-hub/dist/src/server.js
+          - --catalog
+          - C:/path/to/deepseek-capability-hub/data/catalog.json
+          - --state
+          - C:/path/to/deepseek-capability-hub/data/state
+        failOnStartupError: true
+        toolCallTimeoutMs: 120000

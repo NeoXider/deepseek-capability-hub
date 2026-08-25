@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "entries": [
+    {
+      "kind": "mcp",
+      "name": "demo-echo",
+      "description": "Bundled local MCP used to verify dynamic discovery, enable, tool listing, calls, and disable.",
+      "tags": ["demo", "test", "local"],
+      "trusted": true,
+      "source": "bundled test fixture",
+      "permissions": ["Starts one local Node.js child process"],
+      "transport": {
+        "type": "stdio",
+        "command": "node",
+        "args": ["${packageDir}/dist/src/fixture-echo.js"]
+      },
+      "configurable": []
+    },
+    {
+      "kind": "skill",
+      "name": "ml-experiment-review",
+      "description": "Review an ML experiment as a falsifiable, reproducible evidence package.",
+      "tags": ["ml", "experiment", "reproducibility", "review"],
+      "trusted": true,
+      "source": "bundled example skill",
+      "permissions": ["Read one local Markdown file"],
+      "skill": {
+        "type": "file",
+        "path": "${packageDir}/data/skills/ml-experiment-review/SKILL.md"
+      }
+    }
+  ]
+}

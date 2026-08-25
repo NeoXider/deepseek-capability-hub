@@ -1,0 +1,23 @@
+{
+  "action": "propose",
+  "entry": {
+    "kind": "mcp",
+    "name": "web-search-neo",
+    "description": "Web Search Neo browser and web research MCP. Review its local checkout and permissions before approval.",
+    "tags": ["web", "search", "browser", "research"],
+    "trusted": false,
+    "source": "https://github.com/NeoXider/PythonUrlFeatch",
+    "permissions": ["Network access", "Starts a local Python process", "May control its configured browser companion"],
+    "transport": {
+      "type": "stdio",
+      "command": "python",
+      "args": ["main.py"],
+      "cwd": "C:/path/to/PythonUrlFeatch",
+      "env": {
+        "PYTHONUTF8": "1",
+        "WEB_SEARCH_NEO_LEGACY_TOOLS": "0"
+      }
+    },
+    "configurable": []
+  }
+}
