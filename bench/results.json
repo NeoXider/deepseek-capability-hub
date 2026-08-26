@@ -240,16 +240,17 @@
     "staticTokens": 350,
     "discovery": {
       "search": 72,
-      "inspect": 120,
+      "inspect": 121,
+      "enable": 22,
       "tools": 558,
-      "total": 750
+      "total": 773
     },
-    "perTaskTokens": 1100
+    "perTaskTokens": 1123
   },
   "savings": {
     "staticRatio": 17.7,
     "staticPercent": 94.4,
-    "perTaskPercent": 82.3,
-    "breakEvenTasks": 8.3
+    "perTaskPercent": 81.9,
+    "breakEvenTasks": 8
   }
 }

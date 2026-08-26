@@ -21,8 +21,9 @@
     "capability-hub-harness-smoke": "dist/src/harness-smoke.js"
   },
   "files": [
-    "dist",
-    "data",
+    "dist/src",
+    "data/catalog.json",
+    "data/skills",
     "examples",
     "README.md",
     "LICENSE"
@@ -34,6 +35,7 @@
     "start": "node dist/src/server.js --catalog data/catalog.json --state data/state",
     "client": "node dist/src/client.js --catalog data/catalog.json --state data/state",
     "smoke:harness": "pnpm run build && node dist/src/harness-smoke.js",
+    "smoke:harness:external": "pnpm run build && node dist/src/harness-smoke.js --external-playwright",
     "bench": "pnpm run build && node bench/measure.mjs",
     "proof": "pnpm run build && node bench/dynamic-proof.mjs"
   },
@@ -42,6 +44,7 @@
     "zod": "4.1.12"
   },
   "devDependencies": {
+    "@playwright/mcp": "0.0.79",
     "@types/node": "24.10.1",
     "gpt-tokenizer": "^4.0.0",
     "typescript": "5.9.3"

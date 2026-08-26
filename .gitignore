@@ -10,6 +10,7 @@ Thumbs.db
 
 # Benchmark runtime state (snapshots and results are committed on purpose)
 bench/state/
+.playwright-mcp/
 
 # Throwaway experiment scripts (superseded by bench/measure.mjs)
 *-tmp.mjs

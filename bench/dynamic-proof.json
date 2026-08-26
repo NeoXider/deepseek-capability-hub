@@ -4,7 +4,7 @@
   ],
   "childToolCount": 24,
   "calledTool": "browser_navigate",
-  "discoveryTokens": 772,
+  "discoveryTokens": 773,
   "steps": [
     {
       "step": "search (by intent)",
@@ -21,7 +21,7 @@
         "action": "inspect",
         "name": "playwright"
       },
-      "tokens": 120,
+      "tokens": 121,
       "preview": "{\"kind\":\"mcp\",\"name\":\"playwright\",\"description\":\"Drive a real browser: navigate, click, type, read the accessibility tree, take screenshots and inspect network "
     },
     {

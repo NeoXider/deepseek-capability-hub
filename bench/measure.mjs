@@ -98,8 +98,9 @@ async function measureHub() {
       discovery: {
         search: tokens(search),
         inspect: tokens(inspect),
+        enable: tokens(enabled),
         tools: tokens(toolList),
-        total: tokens(search) + tokens(inspect) + tokens(toolList),
+        total: tokens(search) + tokens(inspect) + tokens(enabled) + tokens(toolList),
       },
     };
   });
@@ -151,7 +152,7 @@ async function main() {
   console.log(`| **Capability Hub** | one broker tool | **${hub.toolCount}** | **${hub.staticTokens.toLocaleString("en-US")}** |`);
   console.log("");
   console.log(`Static reduction: ${report.savings.staticPercent}% (${report.savings.staticRatio}x smaller)`);
-  console.log(`Discovery cost per task: ${hub.discovery.total} tokens (search ${hub.discovery.search} + inspect ${hub.discovery.inspect} + tools ${hub.discovery.tools})`);
+  console.log(`Discovery cost per task: ${hub.discovery.total} tokens (search ${hub.discovery.search} + inspect ${hub.discovery.inspect} + enable ${hub.discovery.enable} + tools ${hub.discovery.tools})`);
   console.log(`Hub total for a one-capability task: ${hubPerTask} tokens -> ${report.savings.perTaskPercent}% below classic`);
   console.log(`Break-even: the hub stays ahead until about ${report.savings.breakEvenTasks} discovery round trips in one session`);
 }

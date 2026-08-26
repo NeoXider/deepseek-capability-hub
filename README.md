@@ -101,7 +101,7 @@ pnpm proof
 host-visible tools          capability_hub
 
 search (by intent)              72 tokens   playwright found, enabled=false
-inspect (permissions)          120 tokens   permissions listed, still stopped
+inspect (permissions)          121 tokens   permissions listed, still stopped
 enable (starts process)         22 tokens   real child process, 24 tools live
 tools (schemas withheld)       558 tokens   names + descriptions, schemasIncluded=false
 tools (narrowed by query)       60 tokens   matched 1 of 24
@@ -241,6 +241,22 @@ The compact JSON receipt under `data/state/smoke-receipts` records the final ass
 ```powershell
 pnpm smoke:harness
 ```
+
+For a stricter source-checkout-only proof, the optional external smoke uses the pinned
+local `@playwright/mcp@0.0.79` dev dependency. Qwen must discover it, inspect it,
+explicitly enable it, list the narrowed navigation tools, call `browser_navigate` on an
+inert `data:` page, load the bundled skill, observe the child running, disable it, and
+finally observe an empty enabled list. The receipt rejects retries, any second outer
+tool, tool errors, a different model, an unverified page title, or a child that remains
+enabled. The browser is headless and isolated, writes only below the temporary smoke
+home, and the command never downloads a package:
+
+```powershell
+pnpm smoke:harness:external
+```
+
+The ordinary `pnpm smoke:harness` remains the fast bundled/offline-contract smoke and
+does not require Playwright.
 
 With no model overrides, the default `lmstudio` smoke reads `lms ls --json` and deterministically selects the smallest already-installed `trainedForToolUse` LLM (size first, then `modelKey`). Its `modelKey` is also used as the Harness API model identifier. The smoke never downloads a model. Context is 32K and the idle TTL fallback is one hour. Explicit overrides keep the requested model and disable auto-selection:
 

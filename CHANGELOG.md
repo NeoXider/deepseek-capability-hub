@@ -21,6 +21,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   leaks into the default listing, if `includeSchema` is ignored, if the query does not
   narrow the list, or if the capability is still marked running after `disable`. The
   receipt is committed as `bench/dynamic-proof.json`.
+- An optional strict Harness smoke (`pnpm smoke:harness:external`) makes the selected
+  LM Studio model drive the pinned local Playwright MCP through the single hub tool,
+  then proves the child is absent after disable. The standard bundled smoke is unchanged.
+
+### Fixed
+
+- The published package now excludes runtime approvals, pending proposals, smoke
+  receipts, compiled tests, and Playwright's generated page snapshots.
+- The context benchmark now counts the `enable` response in the discovery total.
 
 ## [0.2.3] - 2026-08-26
 

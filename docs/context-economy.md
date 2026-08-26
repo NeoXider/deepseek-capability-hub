@@ -71,14 +71,14 @@ Measured against the heaviest server in the catalog, Playwright with its 24 tool
 | Step | Tokens |
 |---|---:|
 | `search` — find candidates by intent | 72 |
-| `inspect` — permissions, transport, config status | 120 |
+| `inspect` — permissions, transport, config status | 121 |
 | `enable` — start the process, report tool count | 22 |
 | `tools` — names and descriptions, schemas withheld | 558 |
-| **One discovery round trip** | **772** |
+| **One discovery round trip** | **773** |
 | Broker schema, always resident | 350 |
-| **Total for a task that opens one capability** | **1,122** |
+| **Total for a task that opens one capability** | **1,123** |
 
-So a realistic single-capability task costs **1,122 tokens against 6,200 — 82% less.**
+So a realistic single-capability task costs **1,123 tokens against 6,200 — 82% less.**
 
 ### Where it stops winning
 
@@ -104,7 +104,7 @@ thing still works. So the repository also asserts the full runtime path, against
 host-visible tools          capability_hub
 
 search (by intent)              72 tokens   playwright found, enabled=false
-inspect (permissions)          120 tokens   permissions listed, still stopped
+inspect (permissions)          121 tokens   permissions listed, still stopped
 enable (starts process)         22 tokens   real child process, 24 tools live
 tools (schemas withheld)       558 tokens   names + descriptions, schemasIncluded=false
 tools (narrowed by query)       60 tokens   matched 1 of 24

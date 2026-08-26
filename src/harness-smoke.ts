@@ -2,6 +2,7 @@
 import { spawn } from "node:child_process";
 import { randomUUID } from "node:crypto";
 import {
+  access,
   mkdir,
   mkdtemp,
   readFile,
@@ -26,6 +27,20 @@ const EXPECTED_ACTIONS = [
   "disable",
 ] as const;
 const EXPECTED_FINAL_ASSISTANT_TEXT = "CAPABILITY_HUB_SMOKE_OK";
+const EXTERNAL_EXPECTED_ACTIONS = [
+  "search",
+  "inspect",
+  "enable",
+  "tools",
+  "call",
+  "skill.load",
+  "status",
+  "disable",
+  "status",
+] as const;
+const EXTERNAL_EXPECTED_FINAL_ASSISTANT_TEXT = "CAPABILITY_HUB_EXTERNAL_SMOKE_OK";
+const EXTERNAL_PLAYWRIGHT_URL =
+  "data:text/html,%3Ctitle%3Ecapability-hub-external-smoke-EXTERNAL_PLAYWRIGHT_OK%3C/title%3E%3Ch1%3EEXTERNAL_PLAYWRIGHT_OK%3C/h1%3E";
 const VISIBLE_APPROVED_CAPABILITIES = ["web-search-neo", "unity-cli"] as const;
 const ZSTD_MAGIC = Buffer.from([0x28, 0xb5, 0x2f, 0xfd]);
 const MAX_DIAGNOSTIC_CHARS = 2_000;
@@ -74,6 +89,50 @@ export interface HarnessValidation {
   failures: string[];
 }
 
+export interface ExternalHarnessValidation {
+  passed: boolean;
+  sessionId?: string;
+  permissionPreset?: string;
+  modelSelection?: { provider?: string; model?: string };
+  toolNames: string[];
+  actions: string[];
+  toolErrorCount: number;
+  finalAssistantText: string;
+  evidence: {
+    sessionRecorded: boolean;
+    searchFoundPlaywrightStopped: boolean;
+    inspectedPinnedPlaywright: boolean;
+    explicitlyEnabled: boolean;
+    toolsListedNavigate: boolean;
+    navigatedExternalPage: boolean;
+    skillLoaded: boolean;
+    statusEnabled: boolean;
+    disabled: boolean;
+    statusStopped: boolean;
+    childStopped: boolean;
+    readOnly: boolean;
+    exactFinalAssistantToken: boolean;
+  };
+  catalogVisibility: {
+    playwright: boolean;
+    mode: "isolated-external-local";
+  };
+  failures: string[];
+}
+
+interface HarnessTrace {
+  session: UnknownRecord | undefined;
+  calls: Array<{ callId?: string; name: string; args: UnknownRecord | undefined }>;
+  results: Map<string, { callId?: string; isError: boolean; text: string }>;
+  permissionPreset: string | undefined;
+  modelSelection: { provider?: string; model?: string };
+  finalAssistantText: string;
+  actions: string[];
+  toolNames: string[];
+  resultAt: (index: number) => { callId?: string; isError: boolean; text: string } | undefined;
+  toolErrorCount: number;
+}
+
 function asRecord(value: unknown): UnknownRecord | undefined {
   return value !== null && typeof value === "object" && !Array.isArray(value)
     ? (value as UnknownRecord)
@@ -89,6 +148,13 @@ function parseObject(value: unknown): UnknownRecord | undefined {
     }
   }
   return asRecord(value);
+}
+
+function parseResultObject(value: string | undefined): UnknownRecord | undefined {
+  if (!value) return undefined;
+  const start = value.indexOf("{");
+  const end = value.lastIndexOf("}");
+  return start >= 0 && end >= start ? parseObject(value.slice(start, end + 1)) : undefined;
 }
 
 function nestedText(value: unknown): string {
@@ -125,10 +191,7 @@ function assistantText(record: UnknownRecord): string | undefined {
   return text || undefined;
 }
 
-export function validateHarnessRecords(
-  records: readonly unknown[],
-  expectedSelection?: { provider: string; model: string },
-): HarnessValidation {
+function parseHarnessTrace(records: readonly unknown[]): HarnessTrace {
   const normalized = records.map(asRecord).filter((record): record is UnknownRecord => record !== undefined);
   const session = normalized.find((record) => record.type === "session");
   const calls = normalized
@@ -136,7 +199,7 @@ export function validateHarnessRecords(
     .map((record) => {
       const data = asRecord(record.data) ?? {};
       return {
-        callId: typeof data.callId === "string" ? data.callId : undefined,
+        ...(typeof data.callId === "string" ? { callId: data.callId } : {}),
         name: typeof data.name === "string" ? data.name : "",
         args: parseObject(data.arguments),
       };
@@ -148,14 +211,13 @@ export function validateHarnessRecords(
       .filter((result) => result.callId !== undefined)
       .map((result) => [result.callId as string, result]),
   );
-  const permissionRecords = normalized
+  const permissionPreset = normalized
     .filter((record) => record.type === "permission/preset")
     .map((record) => asRecord(record.data)?.preset)
-    .filter((preset): preset is string => typeof preset === "string");
-  const permissionPreset = permissionRecords.at(-1);
+    .filter((preset): preset is string => typeof preset === "string")
+    .at(-1);
   const requestHeader = normalized.find((record) => record.type === "request/header");
-  const header = asRecord(asRecord(requestHeader?.data)?.header);
-  const requestConfig = asRecord(header?.config);
+  const requestConfig = asRecord(asRecord(asRecord(requestHeader?.data)?.header)?.config);
   const modelSelection = {
     ...(typeof requestConfig?.provider === "string" ? { provider: requestConfig.provider } : {}),
     ...(typeof requestConfig?.model === "string" ? { model: requestConfig.model } : {}),
@@ -170,6 +232,39 @@ export function validateHarnessRecords(
     const callId = calls[index]?.callId;
     return callId ? results.get(callId) : undefined;
   };
+  const toolErrorCount = calls.filter((call) => {
+    const result = call.callId ? results.get(call.callId) : undefined;
+    return result === undefined || result.isError;
+  }).length;
+  return {
+    session,
+    calls,
+    results,
+    permissionPreset,
+    modelSelection,
+    finalAssistantText,
+    actions,
+    toolNames,
+    resultAt,
+    toolErrorCount,
+  };
+}
+
+export function validateHarnessRecords(
+  records: readonly unknown[],
+  expectedSelection?: { provider: string; model: string },
+): HarnessValidation {
+  const {
+    session,
+    calls,
+    permissionPreset,
+    modelSelection,
+    finalAssistantText,
+    actions,
+    toolNames,
+    resultAt,
+    toolErrorCount,
+  } = parseHarnessTrace(records);
   const callArgs = calls[3]?.args;
   const childArguments = parseObject(callArgs?.argumentsJson);
   const searchText = resultAt(0)?.text ?? "";
@@ -192,10 +287,6 @@ export function validateHarnessRecords(
     unityCli: /unity-cli/.test(searchText),
     mode: "isolated-approved-metadata-only" as const,
   };
-  const toolErrorCount = calls.filter((call) => {
-    const result = call.callId ? results.get(call.callId) : undefined;
-    return result === undefined || result.isError;
-  }).length;
   const failures: string[] = [];
   if (calls.length !== EXPECTED_ACTIONS.length) {
     failures.push(`expected ${EXPECTED_ACTIONS.length} tool calls, observed ${calls.length}`);
@@ -235,6 +326,119 @@ export function validateHarnessRecords(
   }
   for (const [key, present] of Object.entries(catalogVisibility)) {
     if (key !== "mode" && !present) failures.push(`missing catalog visibility: ${key}`);
+  }
+  return {
+    passed: failures.length === 0,
+    ...(typeof session?.id === "string" ? { sessionId: session.id } : {}),
+    ...(permissionPreset === undefined ? {} : { permissionPreset }),
+    ...(Object.keys(modelSelection).length === 0 ? {} : { modelSelection }),
+    toolNames,
+    actions,
+    toolErrorCount,
+    finalAssistantText,
+    evidence,
+    catalogVisibility,
+    failures,
+  };
+}
+
+export function validateExternalHarnessRecords(
+  records: readonly unknown[],
+  expectedSelection?: { provider: string; model: string },
+): ExternalHarnessValidation {
+  const {
+    session,
+    calls,
+    permissionPreset,
+    modelSelection,
+    finalAssistantText,
+    actions,
+    toolNames,
+    resultAt,
+    toolErrorCount,
+  } = parseHarnessTrace(records);
+  const search = parseResultObject(resultAt(0)?.text);
+  const searchEntries = Array.isArray(search?.capabilities) ? search.capabilities.map(asRecord) : [];
+  const searchedPlaywright = searchEntries.find((entry) => entry?.name === "playwright");
+  const inspected = parseResultObject(resultAt(1)?.text);
+  const enabled = parseResultObject(resultAt(2)?.text);
+  const tools = parseResultObject(resultAt(3)?.text);
+  const listedTools = Array.isArray(tools?.tools) ? tools.tools.map(asRecord) : [];
+  const callArgs = calls[4]?.args;
+  const childArguments = parseObject(callArgs?.argumentsJson);
+  const statusBefore = parseResultObject(resultAt(6)?.text);
+  const enabledBefore = Array.isArray(statusBefore?.enabled) ? statusBefore.enabled.map(asRecord) : [];
+  const disabled = parseResultObject(resultAt(7)?.text);
+  const statusAfter = parseResultObject(resultAt(8)?.text);
+  const enabledAfter = Array.isArray(statusAfter?.enabled) ? statusAfter.enabled : undefined;
+  const navigationText = resultAt(4)?.text ?? "";
+  const evidence = {
+    sessionRecorded: typeof session?.id === "string" && /^session-/.test(session.id),
+    searchFoundPlaywrightStopped: searchedPlaywright?.enabled === false,
+    inspectedPinnedPlaywright:
+      inspected?.name === "playwright" &&
+      inspected.trusted === true &&
+      inspected.source === "devDependency:@playwright/mcp@0.0.79",
+    explicitlyEnabled:
+      enabled?.enabled === "playwright" && typeof enabled.tools === "number" && enabled.tools > 0,
+    toolsListedNavigate: listedTools.some((tool) => tool?.name === "browser_navigate"),
+    navigatedExternalPage:
+      /capability-hub-external-smoke/.test(navigationText) && /EXTERNAL_PLAYWRIGHT_OK/.test(navigationText),
+    skillLoaded: /skill_content|falsifiable|reproducible|ml experiment review/i.test(
+      resultAt(5)?.text ?? "",
+    ),
+    statusEnabled: enabledBefore.some((entry) => entry?.name === "playwright"),
+    disabled: disabled?.disabled === "playwright" && disabled.wasEnabled === true,
+    statusStopped: enabledAfter?.length === 0,
+    childStopped:
+      disabled?.disabled === "playwright" && disabled.wasEnabled === true && enabledAfter?.length === 0,
+    readOnly: permissionPreset === "read-only",
+    exactFinalAssistantToken: finalAssistantText === EXTERNAL_EXPECTED_FINAL_ASSISTANT_TEXT,
+  };
+  const catalogVisibility = {
+    playwright: searchedPlaywright !== undefined,
+    mode: "isolated-external-local" as const,
+  };
+  const failures: string[] = [];
+  if (calls.length !== EXTERNAL_EXPECTED_ACTIONS.length) {
+    failures.push(`expected ${EXTERNAL_EXPECTED_ACTIONS.length} tool calls, observed ${calls.length}`);
+  }
+  if (toolNames.length !== 1 || toolNames[0] !== HUB_TOOL) {
+    failures.push(`only ${HUB_TOOL} may be used`);
+  }
+  if (JSON.stringify(actions) !== JSON.stringify(EXTERNAL_EXPECTED_ACTIONS)) {
+    failures.push(`unexpected action sequence: ${actions.join(" -> ")}`);
+  }
+  if (calls[0]?.args?.query !== "browser automation") {
+    failures.push('search must use query "browser automation"');
+  }
+  if (calls[1]?.args?.name !== "playwright") failures.push("inspect must target playwright");
+  if (calls[2]?.args?.name !== "playwright") failures.push("enable must target playwright");
+  if (calls[3]?.args?.name !== "playwright" || calls[3]?.args?.query !== "navigate") {
+    failures.push('tools must target playwright with query "navigate"');
+  }
+  if (
+    callArgs?.name !== "playwright" ||
+    callArgs.tool !== "browser_navigate" ||
+    childArguments?.url !== EXTERNAL_PLAYWRIGHT_URL
+  ) {
+    failures.push("call must invoke playwright/browser_navigate with the isolated data URL");
+  }
+  if (calls[5]?.args?.name !== "ml-experiment-review") {
+    failures.push("skill.load must target ml-experiment-review");
+  }
+  if (calls[7]?.args?.name !== "playwright") failures.push("disable must target playwright");
+  if (toolErrorCount !== 0) failures.push(`${toolErrorCount} tool call(s) failed or have no result`);
+  if (
+    expectedSelection &&
+    (modelSelection.provider !== expectedSelection.provider || modelSelection.model !== expectedSelection.model)
+  ) {
+    failures.push(
+      `Harness selected ${modelSelection.provider ?? "unknown"}/${modelSelection.model ?? "unknown"}, expected ${expectedSelection.provider}/${expectedSelection.model}`,
+    );
+  }
+  for (const [key, present] of Object.entries(evidence)) {
+    if (!present) failures.push(`missing evidence: ${key}`);
   }
   return {
     passed: failures.length === 0,
@@ -359,6 +563,23 @@ function smokePrompt(): string {
   ].join("\n");
 }
 
+function externalSmokePrompt(): string {
+  return [
+    `Use exactly one tool named ${HUB_TOOL}.`,
+    "Call it exactly nine times, in this order, with exactly these JSON arguments. Do not retry and do not use any other tool:",
+    '1. {"action":"search","query":"browser automation"}',
+    '2. {"action":"inspect","name":"playwright"}',
+    '3. {"action":"enable","name":"playwright"}',
+    '4. {"action":"tools","name":"playwright","query":"navigate"}',
+    `5. {"action":"call","name":"playwright","tool":"browser_navigate","argumentsJson":"{\\"url\\":\\"${EXTERNAL_PLAYWRIGHT_URL}\\"}"}`,
+    '6. {"action":"skill.load","name":"ml-experiment-review"}',
+    '7. {"action":"status"}',
+    '8. {"action":"disable","name":"playwright"}',
+    '9. {"action":"status"}',
+    `After all nine successful results, answer exactly ${EXTERNAL_EXPECTED_FINAL_ASSISTANT_TEXT} and nothing else.`,
+  ].join("\n");
+}
+
 async function writeJsonAtomic(filePath: string, value: unknown): Promise<void> {
   await mkdir(path.dirname(filePath), { recursive: true });
   const temporary = `${filePath}.${process.pid}.${randomUUID()}.tmp`;
@@ -378,6 +599,54 @@ async function writeIsolatedApprovedMetadata(root: string, stateDir: string): Pr
     }),
   );
   await writeJsonAtomic(path.join(stateDir, "approved.json"), { version: 1, entries });
+}
+
+async function writeExternalSmokeCatalog(root: string, tempHome: string): Promise<string> {
+  const playwrightCli = path.join(root, "node_modules", "@playwright", "mcp", "cli.js");
+  try {
+    await access(playwrightCli);
+  } catch {
+    throw new Error(
+      "The optional external smoke requires pinned @playwright/mcp@0.0.79 in this source checkout; run pnpm install. It never downloads the MCP at runtime",
+    );
+  }
+  const outputDir = path.join(tempHome, "playwright-output");
+  await mkdir(outputDir, { recursive: true });
+  const catalogPath = path.join(tempHome, "external-catalog.json");
+  await writeJsonAtomic(catalogPath, {
+    version: 1,
+    entries: [
+      {
+        kind: "mcp",
+        name: "playwright",
+        description: "Pinned local Playwright MCP used only by the optional external Harness smoke.",
+        tags: ["browser", "automation", "external", "test"],
+        trusted: true,
+        source: "devDependency:@playwright/mcp@0.0.79",
+        permissions: ["Starts an isolated headless browser and opens one inert data URL"],
+        transport: {
+          type: "stdio",
+          command: process.execPath,
+          args: [playwrightCli, "--headless", "--isolated", "--output-dir", outputDir],
+        },
+      },
+      {
+        kind: "skill",
+        name: "ml-experiment-review",
+        description: "Bundled skill used to verify lazy skill loading in the external smoke.",
+        tags: ["ml", "experiment", "review"],
+        trusted: true,
+        source: "bundled example skill",
+        permissions: ["Reads one local Markdown file"],
+        skill: {
+          type: "file",
+          path: path.join(root, "data", "skills", "ml-experiment-review", "SKILL.md"),
+          allowedRoots: [path.join(root, "data", "skills")],
+        },
+      },
+    ],
+  });
+  return catalogPath;
 }
 
 function lmsCommand(): string {
@@ -449,6 +718,9 @@ function parseModelProcesses(result: ProcessResult): unknown {
 async function main(): Promise<void> {
   const root = packageRoot();
   const startedAt = new Date();
+  const externalPlaywright =
+    process.argv.includes("--external-playwright") || process.env.CAPABILITY_HUB_SMOKE_EXTERNAL === "1";
+  const smokeMode = externalPlaywright ? "external-playwright" : "bundled";
   const provider = process.env.CAPABILITY_HUB_SMOKE_PROVIDER ?? "lmstudio";
   const explicitModel = process.env.CAPABILITY_HUB_SMOKE_MODEL;
   const explicitModelKey = process.env.CAPABILITY_HUB_SMOKE_MODEL_KEY;
@@ -464,6 +736,7 @@ async function main(): Promise<void> {
   );
   const tempHome = await mkdtemp(path.join(os.tmpdir(), "capability-hub-dsh-smoke-"));
   const capabilityState = path.join(tempHome, "capability-hub-state");
+  let smokeCatalogPath = path.join(root, "data", "catalog.json");
   const managesLmStudioModel = provider === "lmstudio" || process.env.CAPABILITY_HUB_SMOKE_LOAD_MODEL === "1";
   let smokeEnvironment: NodeJS.ProcessEnv = { ...process.env };
   let installedModelListResult: ProcessResult | undefined;
@@ -476,7 +749,7 @@ async function main(): Promise<void> {
   let modelWasAlreadyLoaded = false;
   let modelLoadedBySmoke = false;
   let modelUnloaded = false;
-  let validation: HarnessValidation | undefined;
+  let validation: HarnessValidation | ExternalHarnessValidation | undefined;
   const failures: string[] = [];
   try {
     const profileDir = path.join(tempHome, "profiles", "headless");
@@ -492,7 +765,11 @@ async function main(): Promise<void> {
       "utf8",
     );
     await writeFile(path.join(profileDir, "cordis.patch.yml"), "[]\n", "utf8");
-    await writeIsolatedApprovedMetadata(root, capabilityState);
+    if (externalPlaywright) {
+      smokeCatalogPath = await writeExternalSmokeCatalog(root, tempHome);
+    } else {
+      await writeIsolatedApprovedMetadata(root, capabilityState);
+    }
 
     if (shouldAutoSelectModel) {
       installedModelListResult = await runProcess(lmsCommand(), ["ls", "--json"], {
@@ -559,7 +836,7 @@ async function main(): Promise<void> {
       CAPABILITY_HUB_SMOKE_PROVIDER: provider,
       CAPABILITY_HUB_SMOKE_MODEL: model,
       CAPABILITY_HUB_SMOKE_SERVER: path.join(root, "dist", "src", "server.js"),
-      CAPABILITY_HUB_SMOKE_CATALOG: path.join(root, "data", "catalog.json"),
+      CAPABILITY_HUB_SMOKE_CATALOG: smokeCatalogPath,
       CAPABILITY_HUB_SMOKE_STATE: capabilityState,
     };
 
@@ -627,7 +904,7 @@ async function main(): Promise<void> {
           "headless",
           "--patch",
           path.join(root, "examples", "dsh", "harness-smoke.patch.yml"),
-          smokePrompt(),
+          externalPlaywright ? externalSmokePrompt() : smokePrompt(),
         ],
         { cwd: root, env: smokeEnvironment, timeoutMs },
       );
@@ -635,7 +912,10 @@ async function main(): Promise<void> {
         failures.push(`Harness smoke failed (exit ${String(harnessResult.exitCode)})`);
       }
       try {
-        validation = validateHarnessRecords(await readHarnessRecords(tempHome), { provider, model });
+        const records = await readHarnessRecords(tempHome);
+        validation = externalPlaywright
+          ? validateExternalHarnessRecords(records, { provider, model })
+          : validateHarnessRecords(records, { provider, model });
         failures.push(...validation.failures);
       } catch (error) {
         failures.push(error instanceof Error ? error.message : String(error));
@@ -648,6 +928,7 @@ async function main(): Promise<void> {
       const uniqueFailures = [...new Set(failures)];
       return {
         schemaVersion: 1,
+        mode: smokeMode,
         passed: uniqueFailures.length === 0,
         startedAt: startedAt.toISOString(),
         durationMs: Date.now() - startedAt.getTime(),

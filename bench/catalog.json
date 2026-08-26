@@ -7,12 +7,12 @@
       "description": "Drive a real browser: navigate, click, type, read the accessibility tree, take screenshots and inspect network traffic.",
       "tags": ["browser", "automation", "web", "testing", "screenshot"],
       "trusted": true,
-      "source": "npm:@playwright/mcp@0.0.79",
+      "source": "devDependency:@playwright/mcp@0.0.79",
       "permissions": ["Starts a browser process", "Reads and interacts with any page you navigate to"],
       "transport": {
         "type": "stdio",
-        "command": "npx",
-        "args": ["-y", "@playwright/mcp@0.0.79"]
+        "command": "node",
+        "args": ["${catalogDir}/../node_modules/@playwright/mcp/cli.js"]
       }
     },
     {
