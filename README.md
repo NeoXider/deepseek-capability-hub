@@ -79,6 +79,9 @@ Two design decisions came directly out of these measurements:
 - Model-facing JSON is serialized compactly. Indentation is not information, and
   pretty-printing measured 31% more tokens on the same payload.
 
+The full write-up, including where a broker stops being the right trade, is in
+[docs/context-economy.md](docs/context-economy.md).
+
 Raw per-tool measurements are committed under [`bench/snapshots/`](bench/snapshots)
 and the full report in [`bench/results.json`](bench/results.json), so the table can be
 re-derived without network access.
