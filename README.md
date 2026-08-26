@@ -11,7 +11,7 @@
   <img alt="Node.js 22+" src="https://img.shields.io/badge/Node.js-22%2B-49e7c6" />
   <img alt="MCP" src="https://img.shields.io/badge/MCP-1.30-8b79ff" />
   <img alt="Context saved" src="https://img.shields.io/badge/context-94.4%25%20smaller-49e7c6" />
-  <a href="CHANGELOG.md"><img alt="Changelog" src="https://img.shields.io/badge/changelog-0.2.0-8b79ff" /></a>
+  <a href="CHANGELOG.md"><img alt="Changelog" src="https://img.shields.io/badge/changelog-0.2.1-8b79ff" /></a>
   <a href="LICENSE"><img alt="MIT License" src="https://img.shields.io/badge/license-MIT-blue.svg" /></a>
 </p>
 
@@ -195,13 +195,15 @@ Then call `catalog.reload` and `enable`. Prefer pinned package versions or immut
 
 ## Strict Harness model smoke
 
-The reusable smoke creates an isolated temporary `DSH_HOME`, forces the `read-only` permission preset, starts a new headless session, and validates the exact six-call workflow through the single outer hub tool. It loads the selected local LM Studio model first (no download), records the actual model process and selected Harness provider/model, rejects retries or any tool error, and writes a compact JSON receipt under `data/state/smoke-receipts`.
+The reusable smoke creates an isolated temporary `DSH_HOME`, forces the `read-only` permission preset, and starts a new headless session. Its isolated hub state contains approved **metadata only** for the Web Search Neo and Unity CLI examples; neither capability is started. The smoke validates exactly seven calls through the single outer hub tool — `search`, `inspect`, `tools`, `call` (`add` with `2 + 3`), `skill.load`, `status`, `disable` — followed by the exact assistant token `CAPABILITY_HUB_SMOKE_OK`. Retries, other tools, missing results, tool errors, or extra final text fail validation.
+
+The compact JSON receipt under `data/state/smoke-receipts` records the final assistant text, catalog visibility, selected Harness provider/model, permission preset, action sequence, and model lifecycle. Before loading LM Studio, the smoke checks the process list: an already-loaded matching model is reused and never unloaded by the smoke; a model loaded by the smoke is released after the Harness evidence receipt has been persisted (with TTL as a fallback).
 
 ```powershell
 pnpm smoke:harness
 ```
 
-Defaults are provider/model/model key `lmstudio` / `ling-3.0-tiny` / `ling-3.0-tiny`, with a 32K context and one-hour idle TTL. Useful overrides:
+With no model overrides, the default `lmstudio` smoke reads `lms ls --json` and deterministically selects the smallest already-installed `trainedForToolUse` LLM (size first, then `modelKey`). Its `modelKey` is also used as the Harness API model identifier. The smoke never downloads a model. Context is 32K and the idle TTL fallback is one hour. Explicit overrides keep the requested model and disable auto-selection:
 
 ```powershell
 $env:CAPABILITY_HUB_SMOKE_MODEL = "another-api-identifier"

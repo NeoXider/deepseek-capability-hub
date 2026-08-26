@@ -5,6 +5,21 @@ All notable changes to DeepSeek Capability Hub are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.1] - 2026-08-26
+
+### Added
+
+- A strict seven-action Harness smoke that proves lazy discovery, inspection, tool
+  listing and invocation, skill loading, status, and disable through the one outer hub
+  tool. The receipt also verifies the exact final assistant token and approved metadata
+  visibility for the Web Search Neo and Unity CLI examples.
+
+### Changed
+
+- With no explicit model override, the smoke deterministically selects the smallest
+  installed LM Studio LLM marked for tool use. It never downloads a model and unloads
+  only a model that the smoke loaded itself.
+
 ## [0.2.0] - 2026-08-26
 
 This release measures the project's central claim instead of asserting it, and fixes
@@ -46,4 +61,5 @@ the two places where the implementation was working against its own goal.
   restricted to reviewed roots.
 
 [0.2.0]: https://github.com/NeoXider/deepseek-capability-hub/releases/tag/v0.2.0
+[0.2.1]: https://github.com/NeoXider/deepseek-capability-hub/releases/tag/v0.2.1
 [0.1.0]: https://github.com/NeoXider/deepseek-capability-hub/releases/tag/v0.1.0
