@@ -13,3 +13,6 @@ bench/state/
 
 # Throwaway experiment scripts (superseded by bench/measure.mjs)
 *-tmp.mjs
+
+# Scratch scripts from audit runs
+audit-scratch/
