@@ -47,6 +47,7 @@ export interface SkillCapabilityEntry extends CapabilityBase {
   skill: {
     type: "file";
     path: string;
+    allowedRoots?: string[];
   };
 }
 

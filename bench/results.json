@@ -1,0 +1,255 @@
+{
+  "measuredAt": null,
+  "encoding": "o200k_base",
+  "servers": [
+    {
+      "name": "everything",
+      "package": "@modelcontextprotocol/server-everything@2026.8.18",
+      "note": "MCP reference server",
+      "tools": [
+        {
+          "name": "echo",
+          "cost": 55
+        },
+        {
+          "name": "get-annotated-message",
+          "cost": 103
+        },
+        {
+          "name": "get-env",
+          "cost": 46
+        },
+        {
+          "name": "get-resource-links",
+          "cost": 79
+        },
+        {
+          "name": "get-resource-reference",
+          "cost": 85
+        },
+        {
+          "name": "get-structured-content",
+          "cost": 74
+        },
+        {
+          "name": "get-sum",
+          "cost": 70
+        },
+        {
+          "name": "get-tiny-image",
+          "cost": 43
+        },
+        {
+          "name": "gzip-file-as-resource",
+          "cost": 203
+        },
+        {
+          "name": "toggle-simulated-logging",
+          "cost": 52
+        },
+        {
+          "name": "toggle-subscriber-updates",
+          "cost": 48
+        },
+        {
+          "name": "trigger-long-running-operation",
+          "cost": 85
+        },
+        {
+          "name": "simulate-research-query",
+          "cost": 132
+        }
+      ],
+      "toolCount": 13,
+      "totalTokens": 1075,
+      "source": "snapshot"
+    },
+    {
+      "name": "memory",
+      "package": "@modelcontextprotocol/server-memory@2026.7.4",
+      "note": "Knowledge-graph memory",
+      "tools": [
+        {
+          "name": "create_entities",
+          "cost": 129
+        },
+        {
+          "name": "create_relations",
+          "cost": 134
+        },
+        {
+          "name": "add_observations",
+          "cost": 119
+        },
+        {
+          "name": "delete_entities",
+          "cost": 74
+        },
+        {
+          "name": "delete_observations",
+          "cost": 119
+        },
+        {
+          "name": "delete_relations",
+          "cost": 133
+        },
+        {
+          "name": "read_graph",
+          "cost": 40
+        },
+        {
+          "name": "search_nodes",
+          "cost": 72
+        },
+        {
+          "name": "open_nodes",
+          "cost": 71
+        }
+      ],
+      "toolCount": 9,
+      "totalTokens": 891,
+      "source": "snapshot"
+    },
+    {
+      "name": "sequential-thinking",
+      "package": "@modelcontextprotocol/server-sequential-thinking@2026.7.4",
+      "note": "Structured reasoning",
+      "tools": [
+        {
+          "name": "sequentialthinking",
+          "cost": 851
+        }
+      ],
+      "toolCount": 1,
+      "totalTokens": 851,
+      "source": "snapshot"
+    },
+    {
+      "name": "playwright",
+      "package": "@playwright/mcp@0.0.79",
+      "note": "Browser automation",
+      "tools": [
+        {
+          "name": "browser_close",
+          "cost": 45
+        },
+        {
+          "name": "browser_resize",
+          "cost": 80
+        },
+        {
+          "name": "browser_console_messages",
+          "cost": 154
+        },
+        {
+          "name": "browser_handle_dialog",
+          "cost": 85
+        },
+        {
+          "name": "browser_evaluate",
+          "cost": 157
+        },
+        {
+          "name": "browser_file_upload",
+          "cost": 86
+        },
+        {
+          "name": "browser_drop",
+          "cost": 212
+        },
+        {
+          "name": "browser_find",
+          "cost": 194
+        },
+        {
+          "name": "browser_fill_form",
+          "cost": 229
+        },
+        {
+          "name": "browser_press_key",
+          "cost": 83
+        },
+        {
+          "name": "browser_type",
+          "cost": 172
+        },
+        {
+          "name": "browser_navigate",
+          "cost": 64
+        },
+        {
+          "name": "browser_navigate_back",
+          "cost": 53
+        },
+        {
+          "name": "browser_network_requests",
+          "cost": 157
+        },
+        {
+          "name": "browser_network_request",
+          "cost": 179
+        },
+        {
+          "name": "browser_run_code_unsafe",
+          "cost": 172
+        },
+        {
+          "name": "browser_take_screenshot",
+          "cost": 302
+        },
+        {
+          "name": "browser_snapshot",
+          "cost": 159
+        },
+        {
+          "name": "browser_click",
+          "cost": 180
+        },
+        {
+          "name": "browser_drag",
+          "cost": 157
+        },
+        {
+          "name": "browser_hover",
+          "cost": 96
+        },
+        {
+          "name": "browser_select_option",
+          "cost": 136
+        },
+        {
+          "name": "browser_tabs",
+          "cost": 128
+        },
+        {
+          "name": "browser_wait_for",
+          "cost": 103
+        }
+      ],
+      "toolCount": 24,
+      "totalTokens": 3383,
+      "source": "snapshot"
+    }
+  ],
+  "classic": {
+    "servers": 4,
+    "tools": 47,
+    "staticTokens": 6200
+  },
+  "hub": {
+    "staticTokens": 350,
+    "discovery": {
+      "search": 72,
+      "inspect": 120,
+      "tools": 558,
+      "total": 750
+    },
+    "perTaskTokens": 1100
+  },
+  "savings": {
+    "staticRatio": 17.7,
+    "staticPercent": 94.4,
+    "perTaskPercent": 82.3,
+    "breakEvenTasks": 8.3
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "tools": [
+    {
+      "name": "sequentialthinking",
+      "cost": 851
+    }
+  ],
+  "toolCount": 1,
+  "totalTokens": 851
+}

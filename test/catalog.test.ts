@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { mkdtemp, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
@@ -44,4 +44,57 @@ test("catalog search is compact and tag-aware", async () => {
   await repository.load();
   assert.equal(repository.search("ml evidence")[0]?.name, "experiment-review");
   assert.equal(repository.search("unity").length, 0);
+});
+
+test("proposal approval is hidden from pending results and appears only after reload", async () => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "capability-hub-approval-"));
+  const catalogPath = path.join(root, "catalog.json");
+  const stateDir = path.join(root, "state");
+  await writeFile(catalogPath, JSON.stringify({ version: 1, entries: [] }), "utf8");
+  const repository = new CatalogRepository(catalogPath, stateDir);
+  await repository.load();
+
+  const proposal = await repository.saveProposal({
+    kind: "skill",
+    name: "approved-skill",
+    description: "Approved test skill",
+    trusted: false,
+    skill: { type: "file", path: "${catalogDir}/SKILL.md" },
+  });
+  assert.deepEqual((await repository.proposals()).map((item) => item.id), [proposal.id]);
+
+  const approved = await repository.approve(proposal.id);
+  assert.equal(approved.entry.trusted, true);
+  assert.deepEqual(await repository.proposals(), []);
+  assert.equal(repository.get("approved-skill"), undefined);
+
+  await repository.load();
+  assert.equal(repository.get("approved-skill")?.trusted, true);
+});
+
+test("approval and reload reject names that duplicate the base catalog without changing approved state", async () => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "capability-hub-duplicate-approval-"));
+  const catalogPath = path.join(root, "catalog.json");
+  const stateDir = path.join(root, "state");
+  const baseEntry = {
+    kind: "skill" as const,
+    name: "base-skill",
+    description: "Base skill",
+    trusted: true,
+    skill: { type: "file" as const, path: "unused.md" },
+  };
+  await writeFile(catalogPath, JSON.stringify({ version: 1, entries: [baseEntry] }), "utf8");
+  const repository = new CatalogRepository(catalogPath, stateDir);
+  await repository.load();
+  const proposal = await repository.saveProposal({ ...baseEntry, trusted: false });
+  const approvedPath = path.join(stateDir, "approved.json");
+
+  await assert.rejects(repository.approve(proposal.id), /conflicts with the base or approved catalog/);
+  await assert.rejects(readFile(approvedPath, "utf8"), { code: "ENOENT" });
+  assert.deepEqual((await repository.proposals()).map((item) => item.id), [proposal.id]);
+
+  await mkdir(stateDir, { recursive: true });
+  await writeFile(approvedPath, JSON.stringify({ version: 1, entries: [baseEntry] }), "utf8");
+  await assert.rejects(repository.load(), /Duplicate capability name: base-skill/);
+  assert.deepEqual(repository.all().map((entry) => entry.name), ["base-skill"]);
 });

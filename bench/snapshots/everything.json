@@ -1,0 +1,58 @@
+{
+  "tools": [
+    {
+      "name": "echo",
+      "cost": 55
+    },
+    {
+      "name": "get-annotated-message",
+      "cost": 103
+    },
+    {
+      "name": "get-env",
+      "cost": 46
+    },
+    {
+      "name": "get-resource-links",
+      "cost": 79
+    },
+    {
+      "name": "get-resource-reference",
+      "cost": 85
+    },
+    {
+      "name": "get-structured-content",
+      "cost": 74
+    },
+    {
+      "name": "get-sum",
+      "cost": 70
+    },
+    {
+      "name": "get-tiny-image",
+      "cost": 43
+    },
+    {
+      "name": "gzip-file-as-resource",
+      "cost": 203
+    },
+    {
+      "name": "toggle-simulated-logging",
+      "cost": 52
+    },
+    {
+      "name": "toggle-subscriber-updates",
+      "cost": 48
+    },
+    {
+      "name": "trigger-long-running-operation",
+      "cost": 85
+    },
+    {
+      "name": "simulate-research-query",
+      "cost": 132
+    }
+  ],
+  "toolCount": 13,
+  "totalTokens": 1075
+}

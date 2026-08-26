@@ -7,3 +7,9 @@ data/state/
 !.env.example
 .DS_Store
 Thumbs.db
+
+# Benchmark runtime state (snapshots and results are committed on purpose)
+bench/state/
+
+# Throwaway experiment scripts (superseded by bench/measure.mjs)
+*-tmp.mjs

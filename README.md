@@ -4,18 +4,84 @@
 
 <h1 align="center">DeepSeek Capability Hub</h1>
 
-<p align="center"><strong>One stable MCP tool. Capabilities appear only when the agent needs them.</strong></p>
+<p align="center"><strong>One stable MCP tool instead of every schema you own — measured 94.4% smaller resident context.</strong></p>
 
 <p align="center">
   <a href="https://github.com/NeoXider/deepseek-capability-hub/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/NeoXider/deepseek-capability-hub/actions/workflows/ci.yml/badge.svg" /></a>
   <img alt="Node.js 22+" src="https://img.shields.io/badge/Node.js-22%2B-49e7c6" />
   <img alt="MCP" src="https://img.shields.io/badge/MCP-1.30-8b79ff" />
+  <img alt="Context saved" src="https://img.shields.io/badge/context-94.4%25%20smaller-49e7c6" />
+  <a href="CHANGELOG.md"><img alt="Changelog" src="https://img.shields.io/badge/changelog-0.2.0-8b79ff" /></a>
   <a href="LICENSE"><img alt="MIT License" src="https://img.shields.io/badge/license-MIT-blue.svg" /></a>
 </p>
 
 Capability Hub is a lazy MCP and skill broker for [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) and other MCP clients. The host sees one compact tool, `capability_hub`, instead of paying the context cost of every tool schema from every configured server.
 
 The agent searches a lightweight catalog, inspects permissions, wakes one trusted server, calls it through the hub, and can shut it down again. Skill bodies are loaded only after selection.
+
+## Measured context savings
+
+Numbers below are produced by [`bench/measure.mjs`](bench/measure.mjs), not estimated.
+It starts each **real, published** MCP server over stdio, asks for `tools/list`, and
+counts the tokens (`o200k_base`) of the exact JSON a host injects per tool
+(`name` + `description` + `inputSchema`). The hub is measured the same way, by
+starting it and reading its own `tools/list`.
+
+```powershell
+pnpm bench
+```
+
+| Server | Purpose | Tools | Context tokens |
+|---|---|---:|---:|
+| `@modelcontextprotocol/server-everything` | MCP reference server | 13 | 1,075 |
+| `@modelcontextprotocol/server-memory` | Knowledge-graph memory | 9 | 891 |
+| `@modelcontextprotocol/server-sequential-thinking` | Structured reasoning | 1 | 851 |
+| `@playwright/mcp` | Browser automation | 24 | 3,383 |
+| **Total — classic MCP** | four servers, always resident | **47** | **6,200** |
+| **Total — Capability Hub** | one broker tool | **1** | **350** |
+
+**The permanent cost drops 94.4%, or 17.7x.** That is the part of the prompt you pay
+for on every single turn, whether or not the task touches a tool.
+
+### The honest other half
+
+The hub is not free: what the classic setup pays once up front, the hub pays at
+runtime when the agent actually opens a capability. Measured against the heaviest
+server in the catalog (Playwright, 24 tools):
+
+| Step | Tokens |
+|---|---:|
+| `search` — find candidates in the catalog | 72 |
+| `inspect` — permissions, transport, config status | 120 |
+| `tools` — names and descriptions, schemas withheld | 558 |
+| **One discovery round trip** | **750** |
+| Hub schema, always resident | 350 |
+| **Total for a task that opens one capability** | **1,100** |
+
+So a realistic single-capability task costs **1,100 tokens against 6,200 — 82.3% less**.
+The break-even is about **8 discovery round trips in one session**: below that the hub
+wins, above it a static configuration is cheaper. The hub is therefore the right trade
+when you have many servers and each task touches few of them, and the wrong one when
+every task uses every tool you have.
+
+Narrowing helps further — `tools` accepts a query, so an agent that already knows what
+it wants pays **42 tokens instead of 558**:
+
+```json
+{"action":"tools","name":"playwright","query":"click"}
+```
+
+Two design decisions came directly out of these measurements:
+
+- `enable` used to return the full tool list, and the documented next step is `tools` —
+  so the workflow paid for the same list twice, 1,567 tokens instead of 780. `enable`
+  now returns a count and a pointer to the next action.
+- Model-facing JSON is serialized compactly. Indentation is not information, and
+  pretty-printing measured 31% more tokens on the same payload.
+
+Raw per-tool measurements are committed under [`bench/snapshots/`](bench/snapshots)
+and the full report in [`bench/results.json`](bench/results.json), so the table can be
+re-derived without network access.
 
 ## Why it exists
 
@@ -114,7 +180,7 @@ These files are examples, not silently trusted defaults. Review paths, versions 
 Model-created proposals are stored under `data/state/pending` and cannot execute. Approve from a separate human-operated command:
 
 ```powershell
-node dist/src/admin.js approve <proposal-id> --state .\data\state --yes
+node dist/src/admin.js approve <proposal-id> --catalog .\data\catalog.json --state .\data\state --yes
 ```
 
 Then call `catalog.reload` and `enable`. Prefer pinned package versions or immutable Git revisions; avoid floating `latest` installers in approved entries.
@@ -124,8 +190,27 @@ Then call `catalog.reload` and `enable`. Prefer pinned package versions or immut
 - MCP transports: `stdio` and `streamable-http`.
 - Templates: `${catalogDir}`, `${packageDir}` and explicitly allowlisted `${config:key}` values.
 - Secrets: environment-variable references only. Secret-like model configuration keys are rejected.
-- Skills: approved local Markdown files, loaded on demand, limited to 256 KiB.
+- Skills: approved local Markdown files, loaded on demand, limited to 256 KiB. Resolved paths must remain under the catalog/package directory; an external directory requires an explicitly reviewed `skill.allowedRoots` entry.
 - State: runtime config and proposals are ignored by Git.
+
+## Strict Harness model smoke
+
+The reusable smoke creates an isolated temporary `DSH_HOME`, forces the `read-only` permission preset, starts a new headless session, and validates the exact six-call workflow through the single outer hub tool. It loads the selected local LM Studio model first (no download), records the actual model process and selected Harness provider/model, rejects retries or any tool error, and writes a compact JSON receipt under `data/state/smoke-receipts`.
+
+```powershell
+pnpm smoke:harness
+```
+
+Defaults are provider/model/model key `lmstudio` / `ling-3.0-tiny` / `ling-3.0-tiny`, with a 32K context and one-hour idle TTL. Useful overrides:
+
+```powershell
+$env:CAPABILITY_HUB_SMOKE_MODEL = "another-api-identifier"
+$env:CAPABILITY_HUB_SMOKE_MODEL_KEY = "installed-lm-studio-model-key"
+$env:CAPABILITY_HUB_SMOKE_RECEIPT = "C:\receipts\capability-hub.json"
+pnpm smoke:harness
+```
+
+Set `CAPABILITY_HUB_SMOKE_DSH_ENTRY` when Harness is installed outside `C:\AI\work\deepseek-harness-runtime`. For non-LM-Studio providers, set `CAPABILITY_HUB_SMOKE_PROVIDER` and, when needed, `CAPABILITY_HUB_SMOKE_PROVIDER_CONFIG_JSON`; the script does not install providers or models.
 
 See [SECURITY.md](SECURITY.md) for the trust boundary.
 
@@ -138,7 +223,7 @@ See [SECURITY.md](SECURITY.md) for the trust boundary.
 
 ## Companion project
 
-Want a compact animated desktop view of agents, context, models, reasoning and chat? See [DeepSeek Harness Widget](https://github.com/NeoXider/deepseek-harness-widget).
+Want a compact animated desktop view of agents, context, models, reasoning and chat? See [NeoXider Agent Deck](https://github.com/NeoXider/neoxider-agent-deck).
 
 ## Contributing
 

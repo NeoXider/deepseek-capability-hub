@@ -1,0 +1,42 @@
+{
+  "tools": [
+    {
+      "name": "create_entities",
+      "cost": 129
+    },
+    {
+      "name": "create_relations",
+      "cost": 134
+    },
+    {
+      "name": "add_observations",
+      "cost": 119
+    },
+    {
+      "name": "delete_entities",
+      "cost": 74
+    },
+    {
+      "name": "delete_observations",
+      "cost": 119
+    },
+    {
+      "name": "delete_relations",
+      "cost": 133
+    },
+    {
+      "name": "read_graph",
+      "cost": 40
+    },
+    {
+      "name": "search_nodes",
+      "cost": 72
+    },
+    {
+      "name": "open_nodes",
+      "cost": 71
+    }
+  ],
+  "toolCount": 9,
+  "totalTokens": 891
+}

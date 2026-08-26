@@ -1,0 +1,102 @@
+{
+  "tools": [
+    {
+      "name": "browser_close",
+      "cost": 45
+    },
+    {
+      "name": "browser_resize",
+      "cost": 80
+    },
+    {
+      "name": "browser_console_messages",
+      "cost": 154
+    },
+    {
+      "name": "browser_handle_dialog",
+      "cost": 85
+    },
+    {
+      "name": "browser_evaluate",
+      "cost": 157
+    },
+    {
+      "name": "browser_file_upload",
+      "cost": 86
+    },
+    {
+      "name": "browser_drop",
+      "cost": 212
+    },
+    {
+      "name": "browser_find",
+      "cost": 194
+    },
+    {
+      "name": "browser_fill_form",
+      "cost": 229
+    },
+    {
+      "name": "browser_press_key",
+      "cost": 83
+    },
+    {
+      "name": "browser_type",
+      "cost": 172
+    },
+    {
+      "name": "browser_navigate",
+      "cost": 64
+    },
+    {
+      "name": "browser_navigate_back",
+      "cost": 53
+    },
+    {
+      "name": "browser_network_requests",
+      "cost": 157
+    },
+    {
+      "name": "browser_network_request",
+      "cost": 179
+    },
+    {
+      "name": "browser_run_code_unsafe",
+      "cost": 172
+    },
+    {
+      "name": "browser_take_screenshot",
+      "cost": 302
+    },
+    {
+      "name": "browser_snapshot",
+      "cost": 159
+    },
+    {
+      "name": "browser_click",
+      "cost": 180
+    },
+    {
+      "name": "browser_drag",
+      "cost": 157
+    },
+    {
+      "name": "browser_hover",
+      "cost": 96
+    },
+    {
+      "name": "browser_select_option",
+      "cost": 136
+    },
+    {
+      "name": "browser_tabs",
+      "cost": 128
+    },
+    {
+      "name": "browser_wait_for",
+      "cost": 103
+    }
+  ],
+  "toolCount": 24,
+  "totalTokens": 3383
+}

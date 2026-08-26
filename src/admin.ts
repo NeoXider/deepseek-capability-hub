@@ -7,17 +7,38 @@ function argumentValue(flag: string): string | undefined {
   return index >= 0 ? process.argv[index + 1] : undefined;
 }
 
+function positionalArguments(): string[] {
+  const valueFlags = new Set(["--state", "--catalog"]);
+  const positional: string[] = [];
+  for (let index = 2; index < process.argv.length; index += 1) {
+    const argument = process.argv[index];
+    if (argument === undefined) continue;
+    if (valueFlags.has(argument)) {
+      index += 1;
+      continue;
+    }
+    if (!argument.startsWith("--")) positional.push(argument);
+  }
+  return positional;
+}
+
 async function main(): Promise<void> {
-  const [command, id] = process.argv.slice(2).filter((arg) => !arg.startsWith("--") && arg !== argumentValue("--state"));
+  const [command, id] = positionalArguments();
   const stateDir = path.resolve(argumentValue("--state") ?? path.join(process.cwd(), "data", "state"));
+  const catalogPath = path.resolve(
+    argumentValue("--catalog") ?? path.join(process.cwd(), "data", "catalog.json"),
+  );
 
   if (command !== "approve" || !id) {
-    throw new Error('Usage: capability-hub-admin approve <proposal-id> --state "<state-dir>" --yes');
+    throw new Error(
+      'Usage: capability-hub-admin approve <proposal-id> --catalog "<catalog.json>" --state "<state-dir>" --yes',
+    );
   }
   if (!process.argv.includes("--yes")) {
     throw new Error("Approval requires --yes after a human reviews the pending proposal JSON");
   }
-  const approved = await CatalogRepository.approve(stateDir, id);
+  const repository = new CatalogRepository(catalogPath, stateDir);
+  const approved = await repository.approve(id);
   process.stdout.write(`${JSON.stringify(approved, null, 2)}\n`);
   process.stdout.write("Approved. Ask the model to run catalog.reload before enabling it.\n");
 }

@@ -1,13 +1,19 @@
 import { randomUUID } from "node:crypto";
-import { mkdir, readFile, readdir, rename, writeFile } from "node:fs/promises";
+import { mkdir, readFile, readdir, realpath, rename, writeFile } from "node:fs/promises";
 import path from "node:path";
-import { catalogDocumentSchema, capabilityEntrySchema, persistedConfigSchema } from "./schema.js";
+import {
+  catalogDocumentSchema,
+  capabilityEntrySchema,
+  persistedConfigSchema,
+  proposalDocumentSchema,
+} from "./schema.js";
 import type {
   CapabilityEntry,
   CatalogDocument,
   JsonValue,
   PersistedConfig,
   ProposalDocument,
+  SkillCapabilityEntry,
 } from "./types.js";
 
 const EMPTY_CONFIG: PersistedConfig = { version: 1, capabilities: {} };
@@ -40,6 +46,14 @@ function assertUnique(entries: readonly CapabilityEntry[]): void {
   }
 }
 
+function isWithin(root: string, candidate: string): boolean {
+  const relative = path.relative(root, candidate);
+  return (
+    relative === "" ||
+    (!relative.startsWith(`..${path.sep}`) && relative !== ".." && !path.isAbsolute(relative))
+  );
+}
+
 export class CatalogRepository {
   readonly catalogPath: string;
   readonly stateDir: string;
@@ -53,7 +67,10 @@ export class CatalogRepository {
     this.catalogPath = path.resolve(catalogPath);
     this.stateDir = path.resolve(stateDir);
     this.catalogDir = path.dirname(this.catalogPath);
-    this.packageDir = path.resolve(this.catalogDir, "..");
+    this.packageDir =
+      path.basename(this.catalogDir).toLocaleLowerCase() === "data"
+        ? path.resolve(this.catalogDir, "..")
+        : this.catalogDir;
   }
 
   async load(): Promise<void> {
@@ -112,6 +129,23 @@ export class CatalogRepository {
     });
   }
 
+  async resolveTrustedSkillPath(entry: SkillCapabilityEntry): Promise<string> {
+    if (!entry.trusted) throw new Error(`Skill "${entry.name}" is untrusted and cannot be loaded`);
+    const candidate = await realpath(this.resolveTemplate(entry.skill.path, {}));
+    const configuredRoots = entry.skill.allowedRoots ?? [];
+    const roots = await Promise.all(
+      [this.catalogDir, this.packageDir, ...configuredRoots].map(async (root) => {
+        return await realpath(this.resolveTemplate(root, {}));
+      }),
+    );
+    if (!roots.some((root) => isWithin(root, candidate))) {
+      throw new Error(
+        `Skill "${entry.name}" resolves outside its trusted roots; approve an explicit skill.allowedRoots entry first`,
+      );
+    }
+    return candidate;
+  }
+
   async saveProposal(entryInput: CapabilityEntry): Promise<ProposalDocument> {
     const parsed = capabilityEntrySchema.parse({ ...entryInput, trusted: false }) as CapabilityEntry;
     const proposal: ProposalDocument = {
@@ -133,28 +167,31 @@ export class CatalogRepository {
       throw error;
     }
     const proposals = await Promise.all(
-      names.filter((name) => name.endsWith(".json")).map(async (name) => {
-        return (await readJson(path.join(directory, name))) as ProposalDocument;
-      }),
+      names
+        .filter((name) => /^[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}\.json$/i.test(name))
+        .map(async (name) => {
+          return proposalDocumentSchema.parse(await readJson(path.join(directory, name))) as ProposalDocument;
+        }),
     );
     return proposals.sort((left, right) => left.createdAt.localeCompare(right.createdAt));
   }
 
-  static async approve(stateDir: string, proposalId: string): Promise<ProposalDocument> {
-    const resolvedState = path.resolve(stateDir);
-    const pendingPath = path.join(resolvedState, "pending", `${proposalId}.json`);
-    const proposal = (await readJson(pendingPath)) as ProposalDocument;
+  async approve(proposalId: string): Promise<ProposalDocument> {
+    const pendingPath = path.join(this.stateDir, "pending", `${proposalId}.json`);
+    const proposal = proposalDocumentSchema.parse(await readJson(pendingPath)) as ProposalDocument;
     const entry = capabilityEntrySchema.parse({ ...proposal.entry, trusted: true }) as CapabilityEntry;
-    const approvedPath = path.join(resolvedState, "approved.json");
+    const base = catalogDocumentSchema.parse(await readJson(this.catalogPath)) as CatalogDocument;
+    const approvedPath = path.join(this.stateDir, "approved.json");
     const currentRaw = await readJsonIfExists(approvedPath);
     const current = currentRaw
       ? (catalogDocumentSchema.parse(currentRaw) as CatalogDocument)
       : ({ version: 1, entries: [] } satisfies CatalogDocument);
-    if (current.entries.some((candidate) => candidate.name === entry.name)) {
-      throw new Error(`Capability "${entry.name}" is already approved`);
+    assertUnique([...base.entries, ...current.entries]);
+    if ([...base.entries, ...current.entries].some((candidate) => candidate.name === entry.name)) {
+      throw new Error(`Capability "${entry.name}" conflicts with the base or approved catalog`);
     }
     await writeJsonAtomic(approvedPath, { version: 1, entries: [...current.entries, entry] });
-    await rename(pendingPath, path.join(resolvedState, "pending", `${proposalId}.approved.json`));
+    await rename(pendingPath, path.join(this.stateDir, "pending", `${proposalId}.approved.json`));
     return { ...proposal, entry };
   }
 }

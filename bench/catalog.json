@@ -1,0 +1,61 @@
+{
+  "version": 1,
+  "entries": [
+    {
+      "kind": "mcp",
+      "name": "playwright",
+      "description": "Drive a real browser: navigate, click, type, read the accessibility tree, take screenshots and inspect network traffic.",
+      "tags": ["browser", "automation", "web", "testing", "screenshot"],
+      "trusted": true,
+      "source": "npm:@playwright/mcp@0.0.79",
+      "permissions": ["Starts a browser process", "Reads and interacts with any page you navigate to"],
+      "transport": {
+        "type": "stdio",
+        "command": "npx",
+        "args": ["-y", "@playwright/mcp@0.0.79"]
+      }
+    },
+    {
+      "kind": "mcp",
+      "name": "sequential-thinking",
+      "description": "Break a hard problem into revisable numbered thoughts with branching and backtracking.",
+      "tags": ["reasoning", "planning", "analysis"],
+      "trusted": true,
+      "source": "npm:@modelcontextprotocol/server-sequential-thinking@2026.7.4",
+      "permissions": ["No filesystem or network access"],
+      "transport": {
+        "type": "stdio",
+        "command": "npx",
+        "args": ["-y", "@modelcontextprotocol/server-sequential-thinking@2026.7.4"]
+      }
+    },
+    {
+      "kind": "mcp",
+      "name": "memory",
+      "description": "Persist entities, relations and observations in a local knowledge graph across sessions.",
+      "tags": ["memory", "knowledge-graph", "storage"],
+      "trusted": true,
+      "source": "npm:@modelcontextprotocol/server-memory@2026.7.4",
+      "permissions": ["Writes a local knowledge-graph file"],
+      "transport": {
+        "type": "stdio",
+        "command": "npx",
+        "args": ["-y", "@modelcontextprotocol/server-memory@2026.7.4"]
+      }
+    },
+    {
+      "kind": "mcp",
+      "name": "everything",
+      "description": "MCP reference server exercising prompts, resources, sampling and every tool primitive.",
+      "tags": ["reference", "testing", "protocol"],
+      "trusted": true,
+      "source": "npm:@modelcontextprotocol/server-everything@2026.8.18",
+      "permissions": ["Local demo server, no external side effects"],
+      "transport": {
+        "type": "stdio",
+        "command": "npx",
+        "args": ["-y", "@modelcontextprotocol/server-everything@2026.8.18"]
+      }
+    }
+  ]
+}

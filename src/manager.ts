@@ -26,14 +26,18 @@ interface LiveMcp {
 const SECRET_KEY_PATTERN = /(secret|token|password|passwd|api[-_.]?key|credential|private[-_.]?key)/i;
 const MAX_SKILL_BYTES = 256 * 1024;
 const MAX_SEARCH_RESULTS = 50;
+const MAX_TOOL_RESULTS = 60;
 
 function asStructured(value: JsonValue): Record<string, unknown> {
   return Array.isArray(value) || value === null || typeof value !== "object" ? { value } : value;
 }
 
+// Every byte here lands in the model's context, and indentation is not information:
+// pretty-printing this payload measured 31% more tokens than the compact form.
+// Programmatic clients still get the parsed object through structuredContent.
 function jsonResult(value: JsonValue): CallToolResult {
   return {
-    content: [{ type: "text", text: JSON.stringify(value, null, 2) }],
+    content: [{ type: "text", text: JSON.stringify(value) }],
     structuredContent: asStructured(value),
   };
 }
@@ -100,7 +104,7 @@ export class CapabilityHub {
       case "disable":
         return jsonResult(await this.disable(requireName(input)));
       case "tools":
-        return await this.tools(requireName(input), input.includeSchema ?? false);
+        return await this.tools(requireName(input), input.includeSchema ?? false, input.query);
       case "call":
         return await this.call(requireName(input), input.tool, input.arguments ?? {}, signal);
       case "skill.load":
@@ -198,9 +202,12 @@ export class CapabilityHub {
       await client.connect(transport);
       live.tools = await this.collectTools(client);
       this.#live.set(name, live);
+      // Returning the whole tool list here made the documented workflow pay for the
+      // same list twice, since the next step is "tools". Report the count instead.
       return {
         enabled: name,
-        tools: live.tools.map((tool) => ({ name: tool.name, description: tool.description ?? "" })),
+        tools: live.tools.length,
+        nextStep: { action: "tools", name },
       };
     } catch (error) {
       await client.close().catch(() => undefined);
@@ -216,17 +223,29 @@ export class CapabilityHub {
     return { disabled: name, wasEnabled: true };
   }
 
-  async tools(name: string, includeSchema: boolean): Promise<CallToolResult> {
+  async tools(name: string, includeSchema: boolean, query?: string): Promise<CallToolResult> {
     if (!this.#live.has(name)) await this.enable(name);
     const live = this.#live.get(name);
     if (!live) throw new Error(`Failed to enable "${name}"`);
+    // A server with a hundred tools would otherwise dump all of them into context.
+    // The query narrows the list first, and the cap bounds the worst case.
+    const needle = query?.trim().toLowerCase();
+    const matched = needle
+      ? live.tools.filter((tool) =>
+          `${tool.name} ${tool.description ?? ""}`.toLowerCase().includes(needle),
+        )
+      : live.tools;
+    const limited = matched.slice(0, MAX_TOOL_RESULTS);
     return jsonResult({
       server: name,
-      tools: live.tools.map((tool) => ({
+      tools: limited.map((tool) => ({
         name: tool.name,
         description: tool.description ?? "",
         ...(includeSchema ? { inputSchema: tool.inputSchema as JsonValue } : {}),
       })),
+      total: live.tools.length,
+      matched: matched.length,
+      truncated: limited.length !== matched.length,
       schemasIncluded: includeSchema,
     });
   }
@@ -257,8 +276,7 @@ export class CapabilityHub {
 
   async loadSkill(name: string): Promise<CallToolResult> {
     const entry = this.requireSkill(name);
-    if (!entry.trusted) throw new Error(`Skill "${name}" is untrusted and cannot be loaded`);
-    const skillPath = this.repository.resolveTemplate(entry.skill.path, {});
+    const skillPath = await this.repository.resolveTrustedSkillPath(entry);
     const content = await readFile(skillPath, "utf8");
     if (Buffer.byteLength(content, "utf8") > MAX_SKILL_BYTES) {
       throw new Error(`Skill "${name}" exceeds the ${MAX_SKILL_BYTES}-byte safety limit`);
@@ -275,7 +293,7 @@ export class CapabilityHub {
     return jsonResult({
       proposal: proposal as unknown as JsonValue,
       executable: false,
-      nextStep: `A human must review and run capability-hub-admin approve ${proposal.id} --state "${this.repository.stateDir}" --yes`,
+      nextStep: `A human must review and run capability-hub-admin approve ${proposal.id} --catalog "${this.repository.catalogPath}" --state "${this.repository.stateDir}" --yes`,
     });
   }
 

@@ -1,6 +1,6 @@
 {
   "name": "@neoxider/deepseek-capability-hub",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "A lazy MCP and skill capability broker for DeepSeek Harness and other MCP clients",
   "type": "module",
   "private": false,
@@ -17,7 +17,8 @@
   "bin": {
     "capability-hub-mcp": "dist/src/server.js",
     "capability-hub-admin": "dist/src/admin.js",
-    "capability-hub-client": "dist/src/client.js"
+    "capability-hub-client": "dist/src/client.js",
+    "capability-hub-harness-smoke": "dist/src/harness-smoke.js"
   },
   "files": [
     "dist",
@@ -31,7 +32,9 @@
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "pnpm run build && node --test dist/test/*.test.js",
     "start": "node dist/src/server.js --catalog data/catalog.json --state data/state",
-    "client": "node dist/src/client.js --catalog data/catalog.json --state data/state"
+    "client": "node dist/src/client.js --catalog data/catalog.json --state data/state",
+    "smoke:harness": "pnpm run build && node dist/src/harness-smoke.js",
+    "bench": "pnpm run build && node bench/measure.mjs"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "1.30.0",
@@ -39,6 +42,7 @@
   },
   "devDependencies": {
     "@types/node": "24.10.1",
+    "gpt-tokenizer": "^4.0.0",
     "typescript": "5.9.3"
   }
 }

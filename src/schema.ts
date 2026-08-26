@@ -47,6 +47,7 @@ export const skillCapabilitySchema = capabilityBaseSchema.extend({
   skill: z.object({
     type: z.literal("file"),
     path: z.string().min(1).max(2_000),
+    allowedRoots: stringList,
   }),
 });
 
@@ -54,6 +55,12 @@ export const capabilityEntrySchema = z.discriminatedUnion("kind", [
   mcpCapabilitySchema,
   skillCapabilitySchema,
 ]);
+
+export const proposalDocumentSchema = z.object({
+  id: z.uuid(),
+  createdAt: z.iso.datetime(),
+  entry: capabilityEntrySchema,
+});
 
 export const catalogDocumentSchema = z.object({
   version: z.literal(1),
@@ -82,7 +89,7 @@ export const hubInputShape = {
       "catalog.reload",
     ])
     .describe("Operation to perform."),
-  query: z.string().max(500).optional().describe("Search text for names, descriptions, and tags."),
+  query: z.string().max(500).optional().describe("Search text. With action search it filters the catalog; with action tools it filters that server's tool names and descriptions."),
   kind: z.enum(["mcp", "skill"]).optional().describe("Optional capability type filter."),
   name: z.string().max(80).optional().describe("Exact capability name."),
   tool: z.string().max(500).optional().describe("Raw child MCP tool name for call."),

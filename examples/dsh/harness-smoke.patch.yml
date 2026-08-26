@@ -1,0 +1,26 @@
+# Reusable headless smoke overlay. src/harness-smoke.ts supplies every path
+# through a temporary, isolated DSH_HOME and never edits the user's profiles.
+- id: settings
+  config:
+    path: !!js process.env.CAPABILITY_HUB_SMOKE_SETTINGS
+
+- id: agent-default-model
+  config:
+    provider: !!js process.env.CAPABILITY_HUB_SMOKE_PROVIDER
+    model: !!js process.env.CAPABILITY_HUB_SMOKE_MODEL
+
+- insert:
+    - id: mcp-capability-hub-smoke
+      name: '@deepseek-ai/dsh-mcp-client'
+      config:
+        serverName: capability_hub
+        transport: stdio
+        command: !!js process.execPath
+        args:
+          - !!js process.env.CAPABILITY_HUB_SMOKE_SERVER
+          - --catalog
+          - !!js process.env.CAPABILITY_HUB_SMOKE_CATALOG
+          - --state
+          - !!js process.env.CAPABILITY_HUB_SMOKE_STATE
+        failOnStartupError: true
+        toolCallTimeoutMs: 120000
