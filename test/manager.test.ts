@@ -488,3 +488,52 @@ test("a transport command cannot be chosen by model-supplied configuration", asy
     await hub.close();
   }
 });
+
+test("a call interrupted by disable explains the next action instead of leaking transport noise", async () => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "capability-hub-interrupt-"));
+  const fixturePath = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../src/fixture-echo.js");
+  const catalogPath = path.join(root, "catalog.json");
+  await writeFile(
+    catalogPath,
+    JSON.stringify({
+      version: 1,
+      entries: [
+        {
+          kind: "mcp",
+          name: "echo-test",
+          description: "Test server",
+          trusted: true,
+          transport: { type: "stdio", command: process.execPath, args: [fixturePath] },
+          configurable: [],
+        },
+      ],
+    }),
+    "utf8",
+  );
+  const repository = new CatalogRepository(catalogPath, path.join(root, "state"));
+  await repository.load();
+  const hub = new CapabilityHub(repository);
+  const signal = new AbortController().signal;
+  try {
+    await hub.execute({ action: "enable", name: "echo-test" }, signal);
+    const inFlight = hub.execute(
+      { action: "call", name: "echo-test", tool: "wait", arguments: { delayMs: 3000 } },
+      signal,
+    );
+    await new Promise((resolve) => setTimeout(resolve, 250));
+    await hub.execute({ action: "disable", name: "echo-test" }, signal);
+
+    // "MCP error -32000: Connection closed" tells a small model nothing it can act on.
+    await assert.rejects(inFlight, /was disabled while "wait" was running; call action "enable" and retry/);
+
+    // The hub must stay usable afterwards.
+    await hub.execute({ action: "enable", name: "echo-test" }, signal);
+    const recovered = await hub.execute(
+      { action: "call", name: "echo-test", tool: "echo", arguments: { text: "still-alive" } },
+      signal,
+    );
+    assert.equal(firstText(recovered), "still-alive");
+  } finally {
+    await hub.close();
+  }
+});

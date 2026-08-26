@@ -5,6 +5,17 @@ All notable changes to DeepSeek Capability Hub are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.3] - 2026-08-26
+
+### Changed
+
+- **A call interrupted by `disable`, or by a child that died, now explains the next
+  action.** Both cases surfaced as the raw transport error `MCP error -32000:
+  Connection closed`, which tells a small model nothing it can act on. The hub now
+  reports which capability stopped and that `enable` is the next call, and it drops a
+  dead child from the live map so the retry actually restarts it. Verified that the hub
+  stays usable after an interrupted call.
+
 ## [0.2.2] - 2026-08-26
 
 Security and lifecycle hardening, each finding reproduced before it was fixed.
@@ -86,6 +97,7 @@ the two places where the implementation was working against its own goal.
 - `stdio` and `streamable-http` child transports, environment-only secrets, and skills
   restricted to reviewed roots.
 
+[0.2.3]: https://github.com/NeoXider/deepseek-capability-hub/releases/tag/v0.2.3
 [0.2.2]: https://github.com/NeoXider/deepseek-capability-hub/releases/tag/v0.2.2
 [0.2.0]: https://github.com/NeoXider/deepseek-capability-hub/releases/tag/v0.2.0
 [0.2.1]: https://github.com/NeoXider/deepseek-capability-hub/releases/tag/v0.2.1

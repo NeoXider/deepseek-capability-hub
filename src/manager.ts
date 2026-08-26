@@ -275,11 +275,20 @@ export class CapabilityHub {
     if (!live.tools.some((tool) => tool.name === toolName)) {
       throw new Error(`MCP "${name}" has no tool "${toolName}"; call action "tools" to refresh names`);
     }
-    const result = await live.client.callTool(
-      { name: toolName, arguments: args },
-      undefined,
-      { signal },
-    );
+    let result;
+    try {
+      result = await live.client.callTool({ name: toolName, arguments: args }, undefined, { signal });
+    } catch (error) {
+      // A transport-level "Connection closed" tells a small model nothing about what to
+      // do next. Disabling a capability mid-call, or a child that died, both land here.
+      if (!this.#live.has(name)) {
+        throw new Error(`MCP "${name}" was disabled while "${toolName}" was running; call action "enable" and retry`);
+      }
+      this.#live.delete(name);
+      await live.client.close().catch(() => undefined);
+      const detail = error instanceof Error ? error.message : String(error);
+      throw new Error(`MCP "${name}" stopped responding during "${toolName}" (${detail}); call action "enable" to restart it`);
+    }
     if (!("content" in result) || !Array.isArray(result.content)) {
       return textResult(JSON.stringify("toolResult" in result ? result.toolResult : result));
     }
