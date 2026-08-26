@@ -83,6 +83,7 @@ function scalarConfig(config: Record<string, JsonValue>): Record<string, string>
 export class CapabilityHub {
   readonly repository: CatalogRepository;
   readonly #live = new Map<string, LiveMcp>();
+  readonly #starting = new Map<string, Promise<JsonValue>>();
 
   constructor(repository: CatalogRepository) {
     this.repository = repository;
@@ -180,10 +181,21 @@ export class CapabilityHub {
     return jsonResult({ configured: name, keys: Object.keys(config) });
   }
 
+  // `tools` and `call` both enable on demand, so two model calls arriving together on
+  // a cold capability used to pass the liveness check at the same time, spawn a child
+  // process each, and leave every process but the last untracked — invisible to
+  // `status` and not reaped by `close()`. Concurrent callers now share one attempt.
   async enable(name: string): Promise<JsonValue> {
     const existing = this.#live.get(name);
     if (existing) return { enabled: name, alreadyEnabled: true, tools: existing.tools.length };
+    const pending = this.#starting.get(name);
+    if (pending) return await pending;
+    const attempt = this.startMcp(name).finally(() => this.#starting.delete(name));
+    this.#starting.set(name, attempt);
+    return await attempt;
+  }
 
+  private async startMcp(name: string): Promise<JsonValue> {
     const entry = this.requireMcp(name);
     if (!entry.trusted) {
       throw new Error(`Capability "${name}" is untrusted. Submit a proposal and approve it outside the MCP first`);
@@ -298,8 +310,12 @@ export class CapabilityHub {
   }
 
   async close(): Promise<void> {
+    // A start still in flight would finish after this and leave an untracked child,
+    // so settle those first and close whatever they registered.
+    await Promise.allSettled([...this.#starting.values()]);
     const clients = [...this.#live.values()];
     this.#live.clear();
+    this.#starting.clear();
     await Promise.allSettled(clients.map(async (live) => await live.client.close()));
   }
 
@@ -337,7 +353,7 @@ export class CapabilityHub {
         ),
       };
       return new StdioClientTransport({
-        command: this.repository.resolveTemplate(transport.command, config),
+        command: this.repository.resolveExecutableTemplate(transport.command),
         args: (transport.args ?? []).map((value) => this.repository.resolveTemplate(value, config)),
         env,
         ...(transport.cwd

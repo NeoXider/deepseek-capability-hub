@@ -5,7 +5,7 @@ import type { AddressInfo } from "node:net";
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import type { Transport } from "@modelcontextprotocol/sdk/shared/transport.js";
@@ -395,6 +395,95 @@ test("context economy: enable reports a count, tools stays compact and filterabl
       JSON.stringify(filtered).length < JSON.stringify(listed).length,
       "a filtered tool list must be smaller than the full one",
     );
+  } finally {
+    await hub.close();
+  }
+});
+
+test("concurrent enable of one capability starts exactly one child process", async () => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "capability-hub-race-"));
+  const distDir = path.dirname(fileURLToPath(import.meta.url));
+  const repoRoot = path.resolve(distDir, "../..");
+  const fixture = path.resolve(distDir, "../src/fixture-echo.js");
+  const counter = path.join(repoRoot, "test", "fixtures", "spawn-counter.mjs");
+  const spawnLog = path.join(root, "spawns.txt");
+  await writeFile(spawnLog, "", "utf8");
+  const catalogPath = path.join(root, "catalog.json");
+  await writeFile(
+    catalogPath,
+    JSON.stringify({
+      version: 1,
+      entries: [
+        {
+          kind: "mcp",
+          name: "echo-test",
+          description: "Test server",
+          trusted: true,
+          transport: {
+            type: "stdio",
+            command: process.execPath,
+            args: [counter],
+            env: { HUB_SPAWN_LOG: spawnLog, HUB_REAL_ENTRY: pathToFileURL(fixture).href },
+          },
+          configurable: [],
+        },
+      ],
+    }),
+    "utf8",
+  );
+  const repository = new CatalogRepository(catalogPath, path.join(root, "state"));
+  await repository.load();
+  const hub = new CapabilityHub(repository);
+  const signal = new AbortController().signal;
+  try {
+    // `tools` and `call` enable on demand, so parallel model calls hit this path.
+    await Promise.all([
+      hub.execute({ action: "enable", name: "echo-test" }, signal),
+      hub.execute({ action: "enable", name: "echo-test" }, signal),
+      hub.execute({ action: "enable", name: "echo-test" }, signal),
+    ]);
+    const status = JSON.parse(firstText(await hub.execute({ action: "status" }, signal)));
+    assert.equal(status.enabled.length, 1);
+  } finally {
+    await hub.close();
+  }
+  const spawned = (await readFile(spawnLog, "utf8")).split(/[\r\n]+/).filter(Boolean);
+  assert.equal(spawned.length, 1, `expected one child process, ${spawned.length} were spawned and the extras leak`);
+});
+
+test("a transport command cannot be chosen by model-supplied configuration", async () => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "capability-hub-exec-"));
+  const catalogPath = path.join(root, "catalog.json");
+  await writeFile(
+    catalogPath,
+    JSON.stringify({
+      version: 1,
+      entries: [
+        {
+          kind: "mcp",
+          name: "templated",
+          description: "Test server",
+          trusted: true,
+          transport: { type: "stdio", command: "${config:binary}", args: [] },
+          configurable: ["binary"],
+        },
+      ],
+    }),
+    "utf8",
+  );
+  const repository = new CatalogRepository(catalogPath, path.join(root, "state"));
+  await repository.load();
+  const hub = new CapabilityHub(repository);
+  const signal = new AbortController().signal;
+  try {
+    await hub.execute({ action: "configure", name: "templated", config: { binary: "calc.exe" } }, signal);
+    await assert.rejects(
+      hub.execute({ action: "enable", name: "templated" }, signal),
+      /cannot interpolate/,
+      "configuration must never decide which executable runs",
+    );
+    // Directory tokens stay usable.
+    assert.equal(repository.resolveExecutableTemplate("${catalogDir}/server.js"), `${root}/server.js`);
   } finally {
     await hub.close();
   }

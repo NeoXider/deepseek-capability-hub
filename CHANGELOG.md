@@ -5,6 +5,32 @@ All notable changes to DeepSeek Capability Hub are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.2] - 2026-08-26
+
+Security and lifecycle hardening, each finding reproduced before it was fixed.
+
+### Fixed
+
+- **Concurrent `enable` leaked child processes.** `tools` and `call` both enable a
+  capability on demand, so two model calls arriving together on a cold capability
+  passed the liveness check at the same time and spawned a child process each. Only
+  the last was tracked; the rest were invisible to `status` and survived `close()`.
+  Measured with a PID-recording wrapper: three parallel enables spawned three
+  processes where one was expected. Concurrent callers now share a single start,
+  and `close()` settles in-flight starts before reaping.
+- **A transport command could be chosen by model-supplied configuration.**
+  `transport.command` was expanded with `${config:...}`, so an operator who
+  allowlisted the wrong key would let the model pick which executable runs. Directory
+  tokens still expand; `${config:...}` in a command is now rejected outright. Child
+  processes were already spawned without a shell, so no argument injection was possible.
+- **`approve` accepted any string as a proposal id**, which becomes a filename. It is
+  now constrained to the UUID shape `saveProposal` generates.
+
+### Added
+
+- Regression tests for both lifecycle and executable-selection findings, including the
+  spawn-counting fixture that makes a leaked process observable.
+
 ## [0.2.1] - 2026-08-26
 
 ### Added
@@ -60,6 +86,7 @@ the two places where the implementation was working against its own goal.
 - `stdio` and `streamable-http` child transports, environment-only secrets, and skills
   restricted to reviewed roots.
 
+[0.2.2]: https://github.com/NeoXider/deepseek-capability-hub/releases/tag/v0.2.2
 [0.2.0]: https://github.com/NeoXider/deepseek-capability-hub/releases/tag/v0.2.0
 [0.2.1]: https://github.com/NeoXider/deepseek-capability-hub/releases/tag/v0.2.1
 [0.1.0]: https://github.com/NeoXider/deepseek-capability-hub/releases/tag/v0.1.0

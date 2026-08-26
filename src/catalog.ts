@@ -129,6 +129,15 @@ export class CatalogRepository {
     });
   }
 
+  // The executable itself must never come from model-supplied configuration, even if
+  // an operator allowlisted the key: directory tokens are fine, ${config:...} is not.
+  resolveExecutableTemplate(value: string): string {
+    if (/\$\{config:/.test(value)) {
+      throw new Error("A transport command cannot interpolate ${config:...}; put configurable values in args or env");
+    }
+    return this.resolveTemplate(value, {});
+  }
+
   async resolveTrustedSkillPath(entry: SkillCapabilityEntry): Promise<string> {
     if (!entry.trusted) throw new Error(`Skill "${entry.name}" is untrusted and cannot be loaded`);
     const candidate = await realpath(this.resolveTemplate(entry.skill.path, {}));
@@ -177,6 +186,11 @@ export class CatalogRepository {
   }
 
   async approve(proposalId: string): Promise<ProposalDocument> {
+    // The id becomes a filename, so it is constrained to the UUID shape that
+    // saveProposal generates instead of being trusted as an operator-typed string.
+    if (!/^[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/i.test(proposalId)) {
+      throw new Error(`"${proposalId}" is not a valid proposal id`);
+    }
     const pendingPath = path.join(this.stateDir, "pending", `${proposalId}.json`);
     const proposal = proposalDocumentSchema.parse(await readJson(pendingPath)) as ProposalDocument;
     const entry = capabilityEntrySchema.parse({ ...proposal.entry, trusted: true }) as CapabilityEntry;
