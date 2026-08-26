@@ -83,6 +83,42 @@ Raw per-tool measurements are committed under [`bench/snapshots/`](bench/snapsho
 and the full report in [`bench/results.json`](bench/results.json), so the table can be
 re-derived without network access.
 
+## Proof that it is actually dynamic
+
+The table above shows what the model does *not* have to carry. This shows the other
+half — that a capability nobody loaded at startup can be found by intent, opened, used
+for a real tool call, and shut down again. Nothing in it is mocked: the child is the
+published `@playwright/mcp` package.
+
+```powershell
+pnpm proof
+```
+
+```text
+host-visible tools          capability_hub
+
+search (by intent)              72 tokens   playwright found, enabled=false
+inspect (permissions)          120 tokens   permissions listed, still stopped
+enable (starts process)         22 tokens   real child process, 24 tools live
+tools (schemas withheld)       558 tokens   names + descriptions, schemasIncluded=false
+tools (narrowed by query)       60 tokens   matched 1 of 24
+tools (one schema, opt-in)     144 tokens   schema returned only when asked
+call (real child tool)         107 tokens   browser_navigate executed
+disable (stops process)         11 tokens   wasEnabled=true
+search (after disable)          72 tokens   enabled=false again
+```
+
+Each step is asserted, not just printed: the run fails if more than one tool is exposed
+to the host, if a capability reports itself running before `enable`, if a child schema
+appears in the default `tools` listing, if `includeSchema` is ignored, if the query does
+not narrow the list, or if the capability is still marked running after `disable`. The
+receipt is written to [`bench/dynamic-proof.json`](bench/dynamic-proof.json).
+
+The contrast with a static configuration is the point: those same 24 Playwright tools
+cost 3,383 resident tokens in every prompt of every turn, whether or not the task ever
+touches a browser. Here they cost nothing until the model asks, and 24 tools' worth of
+names costs 558 tokens once — or 60 if it already knows what it wants.
+
 ## Why it exists
 
 Large static MCP configurations waste context and make tool choice noisier. Capability Hub keeps the model-facing surface stable:

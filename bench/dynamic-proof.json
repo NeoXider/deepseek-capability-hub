@@ -1,0 +1,96 @@
+{
+  "exposedTools": [
+    "capability_hub"
+  ],
+  "childToolCount": 24,
+  "calledTool": "browser_navigate",
+  "discoveryTokens": 772,
+  "steps": [
+    {
+      "step": "search (by intent)",
+      "input": {
+        "action": "search",
+        "query": "browser automation"
+      },
+      "tokens": 72,
+      "preview": "{\"capabilities\":[{\"kind\":\"mcp\",\"name\":\"playwright\",\"description\":\"Drive a real browser: navigate, click, type, read the accessibility tree, take screenshots and"
+    },
+    {
+      "step": "inspect (permissions)",
+      "input": {
+        "action": "inspect",
+        "name": "playwright"
+      },
+      "tokens": 120,
+      "preview": "{\"kind\":\"mcp\",\"name\":\"playwright\",\"description\":\"Drive a real browser: navigate, click, type, read the accessibility tree, take screenshots and inspect network "
+    },
+    {
+      "step": "enable (starts process)",
+      "input": {
+        "action": "enable",
+        "name": "playwright"
+      },
+      "tokens": 22,
+      "preview": "{\"enabled\":\"playwright\",\"tools\":24,\"nextStep\":{\"action\":\"tools\",\"name\":\"playwright\"}}"
+    },
+    {
+      "step": "tools (schemas withheld)",
+      "input": {
+        "action": "tools",
+        "name": "playwright"
+      },
+      "tokens": 558,
+      "preview": "{\"server\":\"playwright\",\"tools\":[{\"name\":\"browser_close\",\"description\":\"Close the page\"},{\"name\":\"browser_resize\",\"description\":\"Resize the browser window\"},{\"na"
+    },
+    {
+      "step": "tools (narrowed by query)",
+      "input": {
+        "action": "tools",
+        "name": "playwright",
+        "query": "navigate"
+      },
+      "tokens": 60,
+      "preview": "{\"server\":\"playwright\",\"tools\":[{\"name\":\"browser_navigate\",\"description\":\"Navigate to a URL\"},{\"name\":\"browser_navigate_back\",\"description\":\"Go back to the prev"
+    },
+    {
+      "step": "tools (one schema, opt-in)",
+      "input": {
+        "action": "tools",
+        "name": "playwright",
+        "query": "browser_navigate",
+        "includeSchema": true
+      },
+      "tokens": 144,
+      "preview": "{\"server\":\"playwright\",\"tools\":[{\"name\":\"browser_navigate\",\"description\":\"Navigate to a URL\",\"inputSchema\":{\"type\":\"object\",\"properties\":{\"url\":{\"type\":\"string\""
+    },
+    {
+      "step": "call (real child tool)",
+      "input": {
+        "action": "call",
+        "name": "playwright",
+        "tool": "browser_navigate",
+        "argumentsJson": "{\"url\":\"data:text/html,<title>capability-hub-proof</title><h1>ok</h1>\"}"
+      },
+      "tokens": 107,
+      "preview": "### Ran Playwright code\n```js\nawait page.goto('data:text/html,<title>capability-hub-proof</title><h1>ok</h1>');\n```\n### Page\n- Page URL: data:text/html,<title>c"
+    },
+    {
+      "step": "disable (stops process)",
+      "input": {
+        "action": "disable",
+        "name": "playwright"
+      },
+      "tokens": 11,
+      "preview": "{\"disabled\":\"playwright\",\"wasEnabled\":true}"
+    },
+    {
+      "step": "search (after disable)",
+      "input": {
+        "action": "search",
+        "query": "browser automation"
+      },
+      "tokens": 72,
+      "preview": "{\"capabilities\":[{\"kind\":\"mcp\",\"name\":\"playwright\",\"description\":\"Drive a real browser: navigate, click, type, read the accessibility tree, take screenshots and"
+    }
+  ]
+}

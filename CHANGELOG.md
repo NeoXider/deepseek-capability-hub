@@ -5,6 +5,23 @@ All notable changes to DeepSeek Capability Hub are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.4] - 2026-08-26
+
+### Added
+
+- **An end-to-end proof that the broker is actually dynamic** (`pnpm proof`). The token
+  benchmark shows what the model does not have to carry; this shows the other half. A
+  capability that nothing loaded at startup is found by intent, inspected for
+  permissions, started as a real child process, listed without schemas, narrowed by
+  query, asked for one schema deliberately, used for a real `browser_navigate` call
+  against the published `@playwright/mcp`, and stopped again — while the host still sees
+  exactly one tool.
+- Every step is asserted rather than printed: the run fails if more than one tool is
+  exposed, if a capability reports itself running before `enable`, if a child schema
+  leaks into the default listing, if `includeSchema` is ignored, if the query does not
+  narrow the list, or if the capability is still marked running after `disable`. The
+  receipt is committed as `bench/dynamic-proof.json`.
+
 ## [0.2.3] - 2026-08-26
 
 ### Changed
@@ -97,6 +114,7 @@ the two places where the implementation was working against its own goal.
 - `stdio` and `streamable-http` child transports, environment-only secrets, and skills
   restricted to reviewed roots.
 
+[0.2.4]: https://github.com/NeoXider/deepseek-capability-hub/releases/tag/v0.2.4
 [0.2.3]: https://github.com/NeoXider/deepseek-capability-hub/releases/tag/v0.2.3
 [0.2.2]: https://github.com/NeoXider/deepseek-capability-hub/releases/tag/v0.2.2
 [0.2.0]: https://github.com/NeoXider/deepseek-capability-hub/releases/tag/v0.2.0
