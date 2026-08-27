@@ -183,11 +183,11 @@ the two places where the implementation was working against its own goal.
 - `stdio` and `streamable-http` child transports, environment-only secrets, and skills
   restricted to reviewed roots.
 
-[0.3.1]: https://github.com/NeoXider/deepseek-capability-hub/releases/tag/v0.3.1
-[0.3.0]: https://github.com/NeoXider/deepseek-capability-hub/releases/tag/v0.3.0
-[0.2.4]: https://github.com/NeoXider/deepseek-capability-hub/releases/tag/v0.2.4
-[0.2.3]: https://github.com/NeoXider/deepseek-capability-hub/releases/tag/v0.2.3
-[0.2.2]: https://github.com/NeoXider/deepseek-capability-hub/releases/tag/v0.2.2
-[0.2.0]: https://github.com/NeoXider/deepseek-capability-hub/releases/tag/v0.2.0
-[0.2.1]: https://github.com/NeoXider/deepseek-capability-hub/releases/tag/v0.2.1
-[0.1.0]: https://github.com/NeoXider/deepseek-capability-hub/releases/tag/v0.1.0
+[0.3.1]: https://github.com/NeoXider/neoxider-mcp-hub/releases/tag/v0.3.1
+[0.3.0]: https://github.com/NeoXider/neoxider-mcp-hub/releases/tag/v0.3.0
+[0.2.4]: https://github.com/NeoXider/neoxider-mcp-hub/releases/tag/v0.2.4
+[0.2.3]: https://github.com/NeoXider/neoxider-mcp-hub/releases/tag/v0.2.3
+[0.2.2]: https://github.com/NeoXider/neoxider-mcp-hub/releases/tag/v0.2.2
+[0.2.0]: https://github.com/NeoXider/neoxider-mcp-hub/releases/tag/v0.2.0
+[0.2.1]: https://github.com/NeoXider/neoxider-mcp-hub/releases/tag/v0.2.1
+[0.1.0]: https://github.com/NeoXider/neoxider-mcp-hub/releases/tag/v0.1.0

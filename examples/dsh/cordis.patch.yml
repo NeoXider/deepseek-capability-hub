@@ -8,10 +8,10 @@
         transport: stdio
         command: node
         args:
-          - C:/path/to/deepseek-capability-hub/dist/src/server.js
+          - C:/path/to/neoxider-mcp-hub/dist/src/server.js
           - --catalog
-          - C:/path/to/deepseek-capability-hub/data/catalog.json
+          - C:/path/to/neoxider-mcp-hub/data/catalog.json
           - --state
-          - C:/path/to/deepseek-capability-hub/data/state
+          - C:/path/to/neoxider-mcp-hub/data/state
         failOnStartupError: true
         toolCallTimeoutMs: 120000

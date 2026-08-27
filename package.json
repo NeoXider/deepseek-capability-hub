@@ -1,5 +1,5 @@
 {
-  "name": "@neoxider/deepseek-capability-hub",
+  "name": "@neoxider/mcp-hub",
   "version": "0.3.1",
   "description": "A lazy MCP and skill capability broker for DeepSeek Harness and other MCP clients",
   "type": "module",
@@ -7,10 +7,10 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/NeoXider/deepseek-capability-hub.git"
+    "url": "https://github.com/NeoXider/neoxider-mcp-hub.git"
   },
-  "homepage": "https://github.com/NeoXider/deepseek-capability-hub#readme",
-  "bugs": "https://github.com/NeoXider/deepseek-capability-hub/issues",
+  "homepage": "https://github.com/NeoXider/neoxider-mcp-hub#readme",
+  "bugs": "https://github.com/NeoXider/neoxider-mcp-hub/issues",
   "engines": {
     "node": ">=22.19"
   },

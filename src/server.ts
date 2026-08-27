@@ -68,7 +68,7 @@ async function main(): Promise<void> {
   const repository = new CatalogRepository(catalogPath, stateDir);
   await repository.load();
   const hub = new CapabilityHub(repository);
-  const server = new McpServer({ name: "deepseek-capability-hub", version: "0.1.0" });
+  const server = new McpServer({ name: "neoxider-mcp-hub", version: "0.1.0" });
   server.server.onclose = () => void hub.close();
 
   server.registerTool(

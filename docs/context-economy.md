@@ -155,8 +155,8 @@ Neither was visible by reading the code. Both were obvious the moment a number e
 ## Reproducing
 
 ```bash
-git clone https://github.com/NeoXider/deepseek-capability-hub.git
-cd deepseek-capability-hub
+git clone https://github.com/NeoXider/neoxider-mcp-hub.git
+cd neoxider-mcp-hub
 pnpm install --frozen-lockfile
 pnpm bench    # the token table
 pnpm proof    # the end-to-end dynamic assertions

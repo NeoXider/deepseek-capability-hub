@@ -7,7 +7,7 @@
 <p align="center"><strong>One stable MCP tool instead of every schema you own — measured 94.4% smaller resident context.</strong></p>
 
 <p align="center">
-  <a href="https://github.com/NeoXider/deepseek-capability-hub/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/NeoXider/deepseek-capability-hub/actions/workflows/ci.yml/badge.svg" /></a>
+  <a href="https://github.com/NeoXider/neoxider-mcp-hub/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/NeoXider/neoxider-mcp-hub/actions/workflows/ci.yml/badge.svg" /></a>
   <img alt="Node.js 22+" src="https://img.shields.io/badge/Node.js-22%2B-49e7c6" />
   <img alt="MCP" src="https://img.shields.io/badge/MCP-1.30-8b79ff" />
   <img alt="Context saved" src="https://img.shields.io/badge/context-94.4%25%20smaller-49e7c6" />
@@ -142,8 +142,8 @@ search → inspect → enable → tools → call → disable
 Requirements: Node.js 22.19+ and pnpm.
 
 ```powershell
-git clone https://github.com/NeoXider/deepseek-capability-hub.git
-cd deepseek-capability-hub
+git clone https://github.com/NeoXider/neoxider-mcp-hub.git
+cd neoxider-mcp-hub
 pnpm install --frozen-lockfile
 pnpm test
 pnpm client -- --json '{"action":"search","query":"demo"}'
