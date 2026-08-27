@@ -5,6 +5,48 @@ All notable changes to DeepSeek Capability Hub are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] - 2026-08-27
+
+An audit pass. Two of these were incomplete fixes from the previous release, not new
+defects — the earlier work closed one door and left the adjacent one open.
+
+### Fixed
+
+- **A catalog entry could load arbitrary code into a child process.** The previous
+  release blocked `${config:...}` in `transport.command` but left `transport.env`
+  untouched, and the guard's own error message told operators to "put configurable values
+  in args or env". A model-supplied value reaching `NODE_OPTIONS`, `LD_PRELOAD`,
+  `PYTHONSTARTUP` and similar runs before the server's entry point. Those names are now
+  refused outright, `cwd` no longer interpolates configuration, and the error text no
+  longer points at the hole.
+- **Any failed call tore down a healthy child.** The previous release turned every
+  rejection into "the server stopped responding", closed the client and killed the
+  process — including a cancelled call and a local serialisation error the child never
+  saw. Cancellation, a rejected request and a genuinely broken pipe are now told apart,
+  and only the last one restarts anything.
+- **The hub and its children never exited when the host closed stdin.** The stdio
+  transport does not listen for end-of-input, so shutdown never ran. With no capability
+  running the process happened to exit anyway; with one live child it lingered forever,
+  leaving another orphan on every host restart. On Windows this was the only reachable
+  exit path at all, because SIGTERM there terminates without running a handler. Shutdown
+  now also races a five-second deadline so a child hung in `initialize` cannot hold it.
+- **The approval queue had no quota.** Nothing capped the pending directory or rejected a
+  repeated name: 200 proposals wrote 163 MiB in two seconds, and `proposals` then returned
+  all of them in full — a 170 MB reply to a model whose entire purpose is a small context.
+  The queue is capped, duplicate names are refused, and `proposals` returns a bounded
+  summary with `total` and `truncated`.
+- **Revoking a capability did nothing while it was running.** Deleting its catalog entry
+  or clearing `trusted` left the live child serving calls, because the live map held its
+  own reference to the old entry. `catalog.reload` now stops anything that was removed,
+  untrusted or whose transport changed, and reports what it stopped.
+- **The skill size limit was checked after the file was read.** A 768 MB file pushed
+  memory past 600 MB and failed with V8's "Invalid string length" rather than the limit
+  message. The size is checked before reading.
+- **`disable` during a start in flight reported nothing to stop**, then let the child
+  start and stay running. It now waits for the pending start and stops it.
+- `catalog.reload` swapped entries before parsing the config, so a corrupt `config.json`
+  left new entries paired with stale configuration. Both swap together or neither does.
+
 ## [0.2.4] - 2026-08-26
 
 ### Added
@@ -123,6 +165,7 @@ the two places where the implementation was working against its own goal.
 - `stdio` and `streamable-http` child transports, environment-only secrets, and skills
   restricted to reviewed roots.
 
+[0.3.0]: https://github.com/NeoXider/deepseek-capability-hub/releases/tag/v0.3.0
 [0.2.4]: https://github.com/NeoXider/deepseek-capability-hub/releases/tag/v0.2.4
 [0.2.3]: https://github.com/NeoXider/deepseek-capability-hub/releases/tag/v0.2.3
 [0.2.2]: https://github.com/NeoXider/deepseek-capability-hub/releases/tag/v0.2.2

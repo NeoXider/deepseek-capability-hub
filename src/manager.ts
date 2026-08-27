@@ -1,4 +1,4 @@
-import { readFile } from "node:fs/promises";
+import { readFile, stat } from "node:fs/promises";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import {
   StdioClientTransport,
@@ -27,6 +27,15 @@ const SECRET_KEY_PATTERN = /(secret|token|password|passwd|api[-_.]?key|credentia
 const MAX_SKILL_BYTES = 256 * 1024;
 const MAX_SEARCH_RESULTS = 50;
 const MAX_TOOL_RESULTS = 60;
+const MAX_PROPOSAL_RESULTS = 25;
+const MAX_FIELD_CHARS = 400;
+// Setting any of these makes the child interpreter load code before the server's own
+// entry point runs, so a value reaching one of them is arbitrary code execution — no
+// matter how innocuous the catalog key that produced it looks.
+// Only these mean the pipe to the child is gone. Anything else — a tool that returned an
+// error, a schema mismatch, a local stringify blowing the stack — leaves the child alive.
+const TRANSPORT_FAILURE = /connection closed|EPIPE|ECONNRESET|ECONNREFUSED|terminated|socket hang up|write after end/i;
+const LOADER_ENV = /^(NODE_OPTIONS|NODE_REPL_EXTERNAL_MODULE|LD_PRELOAD|LD_AUDIT|LD_LIBRARY_PATH|DYLD_[A-Z_]+|PYTHONSTARTUP|PYTHONPATH|PERL5OPT|PERL5LIB|RUBYOPT|BASH_ENV|ENV|GIT_SSH|GIT_SSH_COMMAND|GIT_EXTERNAL_DIFF)$/i;
 
 function asStructured(value: JsonValue): Record<string, unknown> {
   return Array.isArray(value) || value === null || typeof value !== "object" ? { value } : value;
@@ -113,10 +122,9 @@ export class CapabilityHub {
       case "propose":
         return await this.propose(input.entry);
       case "proposals":
-        return jsonResult({ proposals: (await this.repository.proposals()) as unknown as JsonValue });
+        return await this.listProposals();
       case "catalog.reload":
-        await this.repository.load();
-        return jsonResult({ reloaded: true, entries: this.repository.all().length });
+        return await this.reloadCatalog();
     }
   }
 
@@ -228,6 +236,11 @@ export class CapabilityHub {
   }
 
   async disable(name: string): Promise<JsonValue> {
+    // A start still in flight has not reached the live map yet, so reporting
+    // wasEnabled:false here told the model nothing needed stopping while the child went
+    // on to start and stay running.
+    const starting = this.#starting.get(name);
+    if (starting) await starting.catch(() => undefined);
     const live = this.#live.get(name);
     if (!live) return { disabled: name, wasEnabled: false };
     this.#live.delete(name);
@@ -279,14 +292,22 @@ export class CapabilityHub {
     try {
       result = await live.client.callTool({ name: toolName, arguments: args }, undefined, { signal });
     } catch (error) {
-      // A transport-level "Connection closed" tells a small model nothing about what to
-      // do next. Disabling a capability mid-call, or a child that died, both land here.
+      const detail = error instanceof Error ? error.message : String(error);
+      // Not every failure means the child died, and tearing a healthy server down on a
+      // cancelled call or a local serialisation error is a self-inflicted restart loop.
       if (!this.#live.has(name)) {
         throw new Error(`MCP "${name}" was disabled while "${toolName}" was running; call action "enable" and retry`);
       }
+      if (signal.aborted) {
+        throw new Error(`Call "${toolName}" on "${name}" was cancelled (${detail}); the server is still enabled`);
+      }
+      if (!TRANSPORT_FAILURE.test(detail)) {
+        // The child answered, or the request never left this process. Either way it is
+        // still usable, and the model should see the real reason rather than a restart.
+        throw new Error(`MCP "${name}" rejected "${toolName}": ${detail}`);
+      }
       this.#live.delete(name);
       await live.client.close().catch(() => undefined);
-      const detail = error instanceof Error ? error.message : String(error);
       throw new Error(`MCP "${name}" stopped responding during "${toolName}" (${detail}); call action "enable" to restart it`);
     }
     if (!("content" in result) || !Array.isArray(result.content)) {
@@ -298,10 +319,14 @@ export class CapabilityHub {
   async loadSkill(name: string): Promise<CallToolResult> {
     const entry = this.requireSkill(name);
     const skillPath = await this.repository.resolveTrustedSkillPath(entry);
-    const content = await readFile(skillPath, "utf8");
-    if (Buffer.byteLength(content, "utf8") > MAX_SKILL_BYTES) {
+    // Checking after the read defeated the point: a 768 MB file pushed RSS past 600 MB and
+    // failed with V8's "Invalid string length" instead of the limit message. stat runs on
+    // the already-realpath'd path, so this does not widen the TOCTOU window.
+    const { size } = await stat(skillPath);
+    if (size > MAX_SKILL_BYTES) {
       throw new Error(`Skill "${name}" exceeds the ${MAX_SKILL_BYTES}-byte safety limit`);
     }
+    const content = await readFile(skillPath, "utf8");
     return textResult(
       `<skill_content name="${entry.name}">\n<skill_instructions>\n${content}\n</skill_instructions>\n</skill_content>`,
       { name: entry.name, source: entry.source ?? skillPath },
@@ -316,6 +341,44 @@ export class CapabilityHub {
       executable: false,
       nextStep: `A human must review and run capability-hub-admin approve ${proposal.id} --catalog "${this.repository.catalogPath}" --state "${this.repository.stateDir}" --yes`,
     });
+  }
+
+  // The full documents are for the human reviewing them on disk. Returning every one in
+  // full measured a 170 MB payload after a proposal loop — a context bomb by any measure.
+  async listProposals(): Promise<CallToolResult> {
+    const all = await this.repository.proposals();
+    const limited = all.slice(0, MAX_PROPOSAL_RESULTS);
+    return jsonResult({
+      proposals: limited.map((proposal) => ({
+        id: proposal.id,
+        createdAt: proposal.createdAt,
+        kind: proposal.entry.kind,
+        name: proposal.entry.name,
+        description: proposal.entry.description.slice(0, MAX_FIELD_CHARS),
+      })),
+      total: all.length,
+      truncated: limited.length !== all.length,
+    });
+  }
+
+  // Removing an entry, or clearing its trusted flag, is how an operator revokes a
+  // compromised server. That did nothing while it was running: the live map held its own
+  // reference to the old entry, so the revoked capability kept answering calls.
+  async reloadCatalog(): Promise<CallToolResult> {
+    await this.repository.load();
+    const stopped: string[] = [];
+    for (const [name, live] of [...this.#live]) {
+      const fresh = this.repository.get(name);
+      const revoked = !fresh
+        || fresh.kind !== "mcp"
+        || !fresh.trusted
+        || JSON.stringify(fresh.transport) !== JSON.stringify(live.entry.transport);
+      if (revoked) {
+        stopped.push(name);
+        await this.disable(name);
+      }
+    }
+    return jsonResult({ reloaded: true, entries: this.repository.all().length, stopped });
   }
 
   async close(): Promise<void> {
@@ -355,10 +418,12 @@ export class CapabilityHub {
         ...getDefaultEnvironment(),
         ...Object.fromEntries((transport.requiredEnv ?? []).map((name) => [name, process.env[name] as string])),
         ...Object.fromEntries(
-          Object.entries(transport.env ?? {}).map(([key, value]) => [
-            key,
-            this.repository.resolveTemplate(value, config),
-          ]),
+          Object.entries(transport.env ?? {}).map(([key, value]) => {
+            if (LOADER_ENV.test(key)) {
+              throw new Error(`Environment variable "${key}" can load code into the child and cannot be set from a catalog entry`);
+            }
+            return [key, this.repository.resolveTemplate(value, config)];
+          }),
         ),
       };
       return new StdioClientTransport({
@@ -366,7 +431,7 @@ export class CapabilityHub {
         args: (transport.args ?? []).map((value) => this.repository.resolveTemplate(value, config)),
         env,
         ...(transport.cwd
-          ? { cwd: this.repository.resolveTemplate(transport.cwd, config) }
+          ? { cwd: this.repository.resolveExecutableTemplate(transport.cwd) }
           : {}),
         stderr: "inherit",
       });

@@ -17,6 +17,7 @@ import type {
 } from "./types.js";
 
 const EMPTY_CONFIG: PersistedConfig = { version: 1, capabilities: {} };
+const MAX_PENDING_PROPOSALS = 50;
 
 async function readJson(filePath: string): Promise<unknown> {
   return JSON.parse(await readFile(filePath, "utf8"));
@@ -81,12 +82,14 @@ export class CatalogRepository {
       : ({ version: 1, entries: [] } satisfies CatalogDocument);
     const combined = [...base.entries, ...approved.entries];
     assertUnique(combined);
-    this.#entries = new Map(combined.map((entry) => [entry.name, entry]));
-
     const configRaw = await readJsonIfExists(path.join(this.stateDir, "config.json"));
-    this.#configs = configRaw
+    const configs = configRaw
       ? (persistedConfigSchema.parse(configRaw) as PersistedConfig)
       : structuredClone(EMPTY_CONFIG);
+    // Both fields swap only after every document has parsed, so a corrupt config.json
+    // no longer leaves new entries paired with stale configuration.
+    this.#entries = new Map(combined.map((entry) => [entry.name, entry]));
+    this.#configs = configs;
   }
 
   all(): CapabilityEntry[] {
@@ -133,7 +136,7 @@ export class CatalogRepository {
   // an operator allowlisted the key: directory tokens are fine, ${config:...} is not.
   resolveExecutableTemplate(value: string): string {
     if (/\$\{config:/.test(value)) {
-      throw new Error("A transport command cannot interpolate ${config:...}; put configurable values in args or env");
+      throw new Error("A transport command cannot interpolate ${config:...}; put configurable values in args");
     }
     return this.resolveTemplate(value, {});
   }
@@ -157,6 +160,15 @@ export class CatalogRepository {
 
   async saveProposal(entryInput: CapabilityEntry): Promise<ProposalDocument> {
     const parsed = capabilityEntrySchema.parse({ ...entryInput, trusted: false }) as CapabilityEntry;
+    // Without a quota a looping model fills the disk: an entry may be 200 KB and nothing
+    // stopped it re-proposing the same name, which measured 163 MiB in two seconds.
+    const existing = await this.proposals();
+    if (existing.length >= MAX_PENDING_PROPOSALS) {
+      throw new Error(`The approval queue already holds ${existing.length} proposals; a human must review them before more are accepted`);
+    }
+    if (existing.some((proposal) => proposal.entry.name === parsed.name)) {
+      throw new Error(`A proposal for "${parsed.name}" is already awaiting review`);
+    }
     const proposal: ProposalDocument = {
       id: randomUUID(),
       createdAt: new Date().toISOString(),

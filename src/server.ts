@@ -94,12 +94,27 @@ async function main(): Promise<void> {
     },
   );
 
+  // A child that hangs in initialize would otherwise hold the exit for the SDK's full
+  // 60s request timeout, so shutdown races a deadline rather than waiting on it.
   const shutdown = async (): Promise<void> => {
-    await hub.close();
-    await server.close();
+    await Promise.race([
+      (async () => {
+        await hub.close();
+        await server.close();
+      })(),
+      new Promise((resolve) => setTimeout(resolve, 5000).unref()),
+    ]);
   };
-  process.once("SIGINT", () => void shutdown().finally(() => process.exit(0)));
-  process.once("SIGTERM", () => void shutdown().finally(() => process.exit(0)));
+  for (const signal of ["SIGINT", "SIGTERM", "SIGHUP", "SIGBREAK"] as const) {
+    process.once(signal, () => void shutdown().finally(() => process.exit(0)));
+  }
+  // StdioServerTransport never listens for end-of-input, so onclose never fires. With no
+  // capability running the process happens to exit on its own, but a single live child
+  // keeps the event loop alive and the hub lingers forever — one more orphan per host
+  // restart. On Windows this is the only path that runs at all: SIGTERM there is
+  // TerminateProcess, which no handler observes.
+  process.stdin.once("end", () => void shutdown().finally(() => process.exit(0)));
+  process.stdin.once("close", () => void shutdown().finally(() => process.exit(0)));
 
   await server.connect(new StdioServerTransport());
   process.stderr.write(`[capability-hub] ready; catalog=${catalogPath}; entries=${repository.all().length}\n`);

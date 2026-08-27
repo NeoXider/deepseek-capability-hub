@@ -537,3 +537,101 @@ test("a call interrupted by disable explains the next action instead of leaking 
     await hub.close();
   }
 });
+
+test("a catalog entry cannot load code into a child through the environment", async () => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "capability-hub-env-"));
+  const fixture = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../src/fixture-echo.js");
+  const catalogPath = path.join(root, "catalog.json");
+  await writeFile(
+    catalogPath,
+    JSON.stringify({
+      version: 1,
+      entries: [
+        {
+          kind: "mcp",
+          name: "loader",
+          description: "Test server",
+          trusted: true,
+          transport: {
+            type: "stdio",
+            command: process.execPath,
+            args: [fixture],
+            // Guarding only `command` left this wide open: anything reaching NODE_OPTIONS
+            // runs before the server's own entry point, whatever the key is called.
+            env: { NODE_OPTIONS: "${config:harmless}" },
+          },
+          configurable: ["harmless"],
+        },
+      ],
+    }),
+    "utf8",
+  );
+  const repository = new CatalogRepository(catalogPath, path.join(root, "state"));
+  await repository.load();
+  const hub = new CapabilityHub(repository);
+  const signal = new AbortController().signal;
+  try {
+    await hub.execute({ action: "configure", name: "loader", config: { harmless: "--require ./evil.js" } }, signal);
+    await assert.rejects(
+      hub.execute({ action: "enable", name: "loader" }, signal),
+      /can load code into the child/,
+    );
+  } finally {
+    await hub.close();
+  }
+});
+
+test("a failed call does not tear down a healthy child", async () => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "capability-hub-teardown-"));
+  const fixture = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../src/fixture-echo.js");
+  const catalogPath = path.join(root, "catalog.json");
+  await writeFile(
+    catalogPath,
+    JSON.stringify({
+      version: 1,
+      entries: [
+        {
+          kind: "mcp",
+          name: "echo-test",
+          description: "Test server",
+          trusted: true,
+          transport: { type: "stdio", command: process.execPath, args: [fixture] },
+          configurable: [],
+        },
+      ],
+    }),
+    "utf8",
+  );
+  const repository = new CatalogRepository(catalogPath, path.join(root, "state"));
+  await repository.load();
+  const hub = new CapabilityHub(repository);
+  const signal = new AbortController().signal;
+  try {
+    await hub.execute({ action: "enable", name: "echo-test" }, signal);
+    // A tool error comes back as a result, not an exception, and must leave the child alone.
+    const rejected = await hub.execute(
+      { action: "call", name: "echo-test", tool: "wait", arguments: { delayMs: 999999 } },
+      signal,
+    );
+    assert.equal(rejected.isError, true);
+
+    // Cancellation is the case that used to kill a healthy server: one aborted call tore
+    // the child down, so the next call had to pay for a full restart.
+    const controller = new AbortController();
+    const cancelled = hub.execute(
+      { action: "call", name: "echo-test", tool: "wait", arguments: { delayMs: 5000 } },
+      controller.signal,
+    );
+    setTimeout(() => controller.abort(), 150);
+    await assert.rejects(cancelled, /was cancelled/, "an aborted call must report cancellation");
+    const status = JSON.parse(firstText(await hub.execute({ action: "status" }, signal)));
+    assert.equal(status.enabled.length, 1, "the child must still be enabled after a failed call");
+    const recovered = await hub.execute(
+      { action: "call", name: "echo-test", tool: "echo", arguments: { text: "alive" } },
+      signal,
+    );
+    assert.equal(firstText(recovered), "alive");
+  } finally {
+    await hub.close();
+  }
+});

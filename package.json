@@ -1,6 +1,6 @@
 {
   "name": "@neoxider/deepseek-capability-hub",
-  "version": "0.2.4",
+  "version": "0.3.0",
   "description": "A lazy MCP and skill capability broker for DeepSeek Harness and other MCP clients",
   "type": "module",
   "private": false,
