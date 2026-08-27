@@ -5,6 +5,24 @@ All notable changes to DeepSeek Capability Hub are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.1] - 2026-08-27
+
+### Fixed
+
+- **Nothing capped the size of a model-facing reply.** Row limits were in place but field
+  limits were not, and the schema permits a 2,000-character description with 100 tags of
+  500 characters each — 50 search rows measured 2.6 MB. A `call` result went through
+  untouched; one measured 8.4 MB, roughly two million tokens, returned by the very tool
+  whose purpose is a small context. Descriptions and tags are now truncated, tool
+  descriptions with them, and a call result is capped with a `truncated` flag rather than
+  silently cut.
+- **A streamable-http entry could name any scheme and follow any redirect.** `z.url()`
+  accepts `file://` and plain http to an internal host, and the transport followed
+  redirects, so a compromised endpoint could bounce a request — along with any
+  non-Authorization header from `headersFromEnv` — into a service on the host's private
+  network. Encrypted transport is now required except on loopback, redirects are refused,
+  and a resolved URL whose origin no longer matches the catalog entry is rejected.
+
 ## [0.3.0] - 2026-08-27
 
 An audit pass. Two of these were incomplete fixes from the previous release, not new
@@ -165,6 +183,7 @@ the two places where the implementation was working against its own goal.
 - `stdio` and `streamable-http` child transports, environment-only secrets, and skills
   restricted to reviewed roots.
 
+[0.3.1]: https://github.com/NeoXider/deepseek-capability-hub/releases/tag/v0.3.1
 [0.3.0]: https://github.com/NeoXider/deepseek-capability-hub/releases/tag/v0.3.0
 [0.2.4]: https://github.com/NeoXider/deepseek-capability-hub/releases/tag/v0.2.4
 [0.2.3]: https://github.com/NeoXider/deepseek-capability-hub/releases/tag/v0.2.3

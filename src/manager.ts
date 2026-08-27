@@ -29,6 +29,9 @@ const MAX_SEARCH_RESULTS = 50;
 const MAX_TOOL_RESULTS = 60;
 const MAX_PROPOSAL_RESULTS = 25;
 const MAX_FIELD_CHARS = 400;
+const MAX_TAGS = 10;
+const MAX_TAG_CHARS = 60;
+const MAX_CALL_RESULT_CHARS = 200_000;
 // Setting any of these makes the child interpreter load code before the server's own
 // entry point runs, so a value reaching one of them is arbitrary code execution — no
 // matter how innocuous the catalog key that produced it looks.
@@ -63,12 +66,19 @@ function requireName(input: HubInput): string {
   return input.name;
 }
 
+// Capping the number of rows was never enough: the schema allows a 2,000-character
+// description and 100 tags of 500 characters each, so 50 rows measured 2.6 MB of
+// model-facing text. A row limit without a field limit is not a limit.
+function truncate(value: string, limit = MAX_FIELD_CHARS): string {
+  return value.length <= limit ? value : `${value.slice(0, limit)}…`;
+}
+
 function publicEntry(entry: CapabilityEntry, enabled: boolean): Record<string, JsonValue> {
   return {
     kind: entry.kind,
     name: entry.name,
-    description: entry.description,
-    tags: entry.tags ?? [],
+    description: truncate(entry.description),
+    tags: (entry.tags ?? []).slice(0, MAX_TAGS).map((tag) => truncate(tag, MAX_TAG_CHARS)),
     trusted: entry.trusted,
     enabled,
   };
@@ -265,7 +275,7 @@ export class CapabilityHub {
       server: name,
       tools: limited.map((tool) => ({
         name: tool.name,
-        description: tool.description ?? "",
+        description: truncate(tool.description ?? ""),
         ...(includeSchema ? { inputSchema: tool.inputSchema as JsonValue } : {}),
       })),
       total: live.tools.length,
@@ -311,9 +321,37 @@ export class CapabilityHub {
       throw new Error(`MCP "${name}" stopped responding during "${toolName}" (${detail}); call action "enable" to restart it`);
     }
     if (!("content" in result) || !Array.isArray(result.content)) {
-      return textResult(JSON.stringify("toolResult" in result ? result.toolResult : result));
+      return textResult(truncate(JSON.stringify("toolResult" in result ? result.toolResult : result), MAX_CALL_RESULT_CHARS));
     }
-    return result as CallToolResult;
+    return this.capResult(result as CallToolResult);
+  }
+
+  // A child's answer went straight through: one measured reply was 8.4 MB, about two
+  // million tokens, from the very tool whose purpose is a small context.
+  private capResult(result: CallToolResult): CallToolResult {
+    let budget = MAX_CALL_RESULT_CHARS;
+    let truncated = false;
+    const content = result.content.map((part) => {
+      if (part.type !== "text" || typeof part.text !== "string") return part;
+      if (budget <= 0) {
+        truncated = true;
+        return { ...part, text: "" };
+      }
+      if (part.text.length <= budget) {
+        budget -= part.text.length;
+        return part;
+      }
+      const text = part.text.slice(0, budget);
+      budget = 0;
+      truncated = true;
+      return { ...part, text };
+    });
+    if (!truncated) return result;
+    return {
+      ...result,
+      content,
+      structuredContent: { ...(result.structuredContent ?? {}), truncated: true, limitChars: MAX_CALL_RESULT_CHARS },
+    };
   }
 
   async loadSkill(name: string): Promise<CallToolResult> {
@@ -444,10 +482,18 @@ export class CapabilityHub {
         return [header, `${definition.prefix ?? ""}${value}`];
       }),
     );
-    return new StreamableHTTPClientTransport(
-      new URL(this.repository.resolveTemplate(transport.url, config)),
-      { requestInit: { headers } },
-    );
+    // The template is resolved from model-supplied configuration, so the result is
+    // re-checked against the origin the catalog declared. Following a redirect would let a
+    // compromised endpoint bounce the request — and any non-Authorization header defined
+    // in headersFromEnv — into an internal service, so redirects are refused outright.
+    const resolvedUrl = new URL(this.repository.resolveTemplate(transport.url, config));
+    const declaredOrigin = new URL(transport.url.replace(/\$\{[^}]+\}/g, "placeholder")).origin;
+    if (resolvedUrl.origin !== declaredOrigin) {
+      throw new Error(`Configuration changed the transport origin for this capability to ${resolvedUrl.origin}`);
+    }
+    return new StreamableHTTPClientTransport(resolvedUrl, {
+      requestInit: { headers, redirect: "error" },
+    });
   }
 
   private async collectTools(client: Client): Promise<Tool[]> {

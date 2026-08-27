@@ -635,3 +635,42 @@ test("a failed call does not tear down a healthy child", async () => {
     await hub.close();
   }
 });
+
+test("model-facing rows are capped by field, not only by row count", async () => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "capability-hub-caps-"));
+  const catalogPath = path.join(root, "catalog.json");
+  // The schema permits a 2,000-character description and 100 tags of 500 characters, so a
+  // row cap alone still allowed a multi-megabyte reply from a context-saving tool.
+  await writeFile(
+    catalogPath,
+    JSON.stringify({
+      version: 1,
+      entries: [
+        {
+          kind: "skill",
+          name: "fat",
+          description: "x".repeat(2000),
+          tags: Array.from({ length: 100 }, (_, index) => `tag${index}-${"y".repeat(400)}`),
+          trusted: true,
+          skill: { type: "file", path: "SKILL.md" },
+        },
+      ],
+    }),
+    "utf8",
+  );
+  const repository = new CatalogRepository(catalogPath, path.join(root, "state"));
+  await repository.load();
+  const hub = new CapabilityHub(repository);
+  const signal = new AbortController().signal;
+  try {
+    const parsed = JSON.parse(firstText(await hub.execute({ action: "search", query: "" }, signal)));
+    const row = parsed.capabilities[0];
+    assert.ok(row.description.length <= 401, `description was ${row.description.length} chars`);
+    assert.ok(row.tags.length <= 10, `${row.tags.length} tags survived`);
+    for (const tag of row.tags) assert.ok(tag.length <= 61, `tag was ${tag.length} chars`);
+    // The whole payload must stay small enough to belong in a prompt.
+    assert.ok(firstText(await hub.execute({ action: "search", query: "" }, signal)).length < 4000);
+  } finally {
+    await hub.close();
+  }
+});

@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+const LOOPBACK_HOSTS = new Set(["localhost", "127.0.0.1", "::1", "[::1]"]);
+
 const nameSchema = z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/).max(80);
 const stringList = z.array(z.string().min(1).max(500)).max(100).optional();
 
@@ -24,7 +26,20 @@ const stdioTransportSchema = z.object({
 
 const httpTransportSchema = z.object({
   type: z.literal("streamable-http"),
-  url: z.url(),
+  // z.url() accepts any scheme, so a catalog entry could name file:// or point plain http
+  // at an internal host. Encrypted transport is required, except on loopback where there
+  // is no network to intercept and local development would otherwise need certificates.
+  url: z
+    .url()
+    .refine((value) => {
+      try {
+        const url = new URL(value);
+        if (url.protocol === "https:") return true;
+        return url.protocol === "http:" && LOOPBACK_HOSTS.has(url.hostname);
+      } catch {
+        return false;
+      }
+    }, "A streamable-http transport must use https, or http on loopback"),
   headersFromEnv: z
     .record(
       z.string(),

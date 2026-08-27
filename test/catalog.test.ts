@@ -4,6 +4,7 @@ import os from "node:os";
 import path from "node:path";
 import test from "node:test";
 import { CatalogRepository } from "../src/catalog.js";
+import { capabilityEntrySchema } from "../src/schema.js";
 
 test("catalog rejects duplicate capability names", async () => {
   const root = await mkdtemp(path.join(os.tmpdir(), "capability-hub-catalog-"));
@@ -97,4 +98,23 @@ test("approval and reload reject names that duplicate the base catalog without c
   await writeFile(approvedPath, JSON.stringify({ version: 1, entries: [baseEntry] }), "utf8");
   await assert.rejects(repository.load(), /Duplicate capability name: base-skill/);
   assert.deepEqual(repository.all().map((entry) => entry.name), ["base-skill"]);
+});
+
+test("a streamable-http transport must be encrypted unless it is loopback", () => {
+  const entry = (url: string) => ({
+    kind: "mcp" as const,
+    name: "remote",
+    description: "Test",
+    trusted: true,
+    transport: { type: "streamable-http" as const, url },
+  });
+
+  // z.url() alone accepted any scheme, so a catalog entry could name a local file or
+  // send plain http to an internal host.
+  for (const rejected of ["file:///c:/windows/win.ini", "http://internal.corp/mcp", "ftp://example.com/mcp"]) {
+    assert.throws(() => capabilityEntrySchema.parse(entry(rejected)), /https/i, `${rejected} must be rejected`);
+  }
+  for (const accepted of ["https://api.example.com/mcp", "http://127.0.0.1:8931/mcp", "http://localhost:8931/mcp"]) {
+    assert.doesNotThrow(() => capabilityEntrySchema.parse(entry(accepted)), `${accepted} must be accepted`);
+  }
 });
