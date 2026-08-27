@@ -9,7 +9,9 @@ test("package allowlist excludes runtime state and compiled tests", async () => 
   const packageRoot = path.resolve(compiledRoot, "..");
   const manifest = JSON.parse(await readFile(path.join(packageRoot, "package.json"), "utf8")) as {
     files?: string[];
+    version?: string;
   };
+  const readme = await readFile(path.join(packageRoot, "README.md"), "utf8");
 
   assert.deepEqual(manifest.files, [
     "dist/src",
@@ -19,4 +21,5 @@ test("package allowlist excludes runtime state and compiled tests", async () => 
     "README.md",
     "LICENSE",
   ]);
+  assert.match(readme, new RegExp(`changelog-${manifest.version?.replaceAll(".", "\\.")}`));
 });
