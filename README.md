@@ -4,15 +4,15 @@
 
 <h1 align="center">DeepSeek Capability Hub</h1>
 
-<p align="center"><strong>One stable MCP tool instead of every schema you own — 92.5% smaller resident context, at the same tool-selection accuracy. Both measured.</strong></p>
+<p align="center"><strong>One stable MCP tool instead of every schema you own — 93.2% smaller resident context, at the same tool-selection accuracy. Both measured.</strong></p>
 
 <p align="center">
   <a href="https://github.com/NeoXider/neoxider-mcp-hub/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/NeoXider/neoxider-mcp-hub/actions/workflows/ci.yml/badge.svg" /></a>
   <img alt="Node.js 22+" src="https://img.shields.io/badge/Node.js-22%2B-49e7c6" />
   <img alt="MCP" src="https://img.shields.io/badge/MCP-1.30-8b79ff" />
-  <img alt="Context saved" src="https://img.shields.io/badge/context-92.5%25%20smaller-49e7c6" />
+  <img alt="Context saved" src="https://img.shields.io/badge/context-93.2%25%20smaller-49e7c6" />
   <img alt="Accuracy" src="https://img.shields.io/badge/accuracy-96.4%25%20vs%2096.4%25-49e7c6" />
-  <a href="CHANGELOG.md"><img alt="Changelog" src="https://img.shields.io/badge/changelog-0.4.0-8b79ff" /></a>
+  <a href="CHANGELOG.md"><img alt="Changelog" src="https://img.shields.io/badge/changelog-0.5.0-8b79ff" /></a>
   <a href="LICENSE"><img alt="MIT License" src="https://img.shields.io/badge/license-MIT-blue.svg" /></a>
 </p>
 
@@ -39,9 +39,9 @@ pnpm bench
 | `@modelcontextprotocol/server-sequential-thinking` | Structured reasoning | 1 | 851 |
 | `@playwright/mcp` | Browser automation | 24 | 3,383 |
 | **Total — classic MCP** | four servers, always resident | **47** | **6,200** |
-| **Total — Capability Hub** | one broker tool | **1** | **466** |
+| **Total — Capability Hub** | one broker tool | **1** | **422** |
 
-**The permanent cost drops 92.5%, or 13.3x.** That is the part of the prompt you pay
+**The permanent cost drops 93.2%, or 14.7x.** That is the part of the prompt you pay
 for on every single turn, whether or not the task touches a tool.
 
 ### The saving grows with your catalog
@@ -53,11 +53,11 @@ by starting the real server against a catalog of that size, not projected:
 
 | Servers configured | Classic tokens | Hub resident | Saved |
 |---:|---:|---:|---:|
-| 4 | 6,200 | 474 | 92.4% |
-| 10 | 15,500 | 628 | 95.9% |
-| 20 | 31,000 | 870 | 97.2% |
-| 30 | 46,500 | 512 | 98.9% |
-| 60 | 93,000 | 639 | **99.3%** |
+| 4 | 6,200 | 430 | 93.1% |
+| 10 | 15,500 | 584 | 96.2% |
+| 20 | 31,000 | 826 | 97.3% |
+| 30 | 46,500 | 468 | 99.0% |
+| 60 | 93,000 | 595 | **99.4%** |
 
 The drop at 30 is the degradation firing: full descriptions no longer fit the budget, the
 list falls back to names, and the resident cost roughly halves.
@@ -71,9 +71,9 @@ expensive possible path presented as typical. Three scenarios:
 
 | Scenario | Path | Hub tokens | vs 6,200 |
 |---|---|---:|---:|
-| **idle** — task needs no capability | resident schema only | 466 | **92.5%** saved |
-| **direct** — task opens one capability | `search` + `tools` with a query | 598 | **90.4%** saved |
-| **cautious** — also reviews permissions, reads the full list | `search` + `inspect` + `enable` + `tools` | 1,239 | 80.0% saved |
+| **idle** — task needs no capability | resident schema only | 422 | **93.2%** saved |
+| **direct** — task opens one capability | `search` + `tools` with a query | 554 | **91.1%** saved |
+| **cautious** — also reviews permissions, reads the full list | `search` + `inspect` + `enable` + `tools` | 1,195 | 80.7% saved |
 
 The direct row still charges a `search`, which the inlined catalog list often makes
 unnecessary — a conservative choice, since the bias should run against our own number.
@@ -115,11 +115,11 @@ pnpm bench:accuracy
 | Condition | Resident | Overall | No-tool tasks | False calls | Avg turns | Avg prompt |
 |---|---:|---:|---:|---:|---:|---:|
 | **classic** — 47 schemas resident | 6,200 | **96.4%** | 83.3% | **1** | 1 | 7,269 |
-| hub, vague catalog | 466 | 85.7% | 83.3% | 1 | 2.93 | 2,922 |
-| hub, list not inlined | 372 | 92.9% | 100% | 0 | 3.61 | 3,403 |
-| **hub, as shipped** | 577 | **96.4%** | 100% | **0** | 2.18 | **2,262** |
+| hub, vague catalog | 422 | 82.1% | 83.3% | 1 | 3.00 | 2,818 |
+| hub, list not inlined | 328 | 85.7% | 100% | 0 | 3.54 | 3,047 |
+| **hub, as shipped** | 533 | **96.4%** | 100% | **0** | 1.96 | **1,873** |
 
-**Same accuracy on a tenth of the resident context — and fewer total tokens.** 2,262
+**Same accuracy on a twelfth of the resident context — and fewer total tokens.** 1,873
 prompt tokens per task against 7,269, summed across every turn of the multi-turn
 protocol. The penalty a broker is supposed to pay for extra round trips did not appear.
 
@@ -128,7 +128,12 @@ model with 47 tools resident reached for `sequentialthinking`. Every hub conditi
 usable catalog scored 100% on the no-tool tasks.
 
 The vague-catalog row is the same code and the same servers — only the descriptions
-differ. **Write your catalog so it can be found**; it is worth ~11 points.
+differ. **Write your catalog so it can be found**; it is worth ~14 points.
+
+The hub rows are multi-turn against live child processes, so borderline tasks move a few
+points between runs. Across three runs the classic condition reproduced at exactly 96.4%
+every time and the shipped hub scored 96.4–100%; the two ablation rows always landed below
+both, never above.
 
 The full write-up, including where a broker stops being the right trade, prior art, and
 the limits of this sample, is in [docs/context-economy.md](docs/context-economy.md).
@@ -237,7 +242,7 @@ Discover and call a tool:
   "action": "call",
   "name": "web-search-neo",
   "tool": "web_info",
-  "argumentsJson": "{\"topic\":\"search_status\"}"
+  "payloadJson": "{\"topic\":\"search_status\"}"
 }
 ```
 
@@ -247,12 +252,12 @@ Available actions:
 |---|---|
 | `search` | Search compact capability metadata |
 | `inspect` | Review one capability, permissions, config and environment status |
-| `configure` | Set allowlisted non-secret values through `configJson` |
+| `configure` | Set allowlisted non-secret values through `payloadJson` |
 | `enable` / `disable` | Start or stop one trusted MCP |
 | `tools` | List child tools; schemas remain optional |
-| `call` | Proxy one child tool call through `argumentsJson` |
+| `call` | Proxy one child tool call through `payloadJson` |
 | `skill.load` | Load one approved local skill body |
-| `propose` | Store an untrusted proposal from `entryJson` |
+| `propose` | Store an untrusted proposal from `payloadJson` |
 | `proposals` | List pending proposals |
 | `catalog.reload` | Reload approved catalog state |
 

@@ -108,7 +108,7 @@ await step("tools (one schema, opt-in)", {
 const target = "data:text/html,<title>capability-hub-proof</title><h1>ok</h1>";
 await step("call (real child tool)", {
   action: "call", name: "playwright", tool: wanted,
-  argumentsJson: JSON.stringify({ url: target }),
+  payloadJson: JSON.stringify({ url: target }),
 }, (text) => (text.trim() ? null : "the child returned nothing"));
 
 // 8. Give the resources back.

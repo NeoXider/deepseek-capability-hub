@@ -95,18 +95,24 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 // LM Studio can evict a model mid-run (idle TTL, or a JIT load for another request).
 // The first version of this benchmark treated that as a scored failure and threw away
 // two thirds of a 40-minute run, so an eviction is now retried instead of counted.
-const TRANSIENT = /model unloaded|failed to load|model_not_found|no model loaded|ECONNREFUSED|fetch failed/i;
+// `bad allocation` and bare `server_error` were added after a run died two thirds of the
+// way through: at a 100k context the 27B model sits at ~22.6 GB of 24 GB, and an
+// allocation occasionally loses. These are pressure, not defects, and they retry fine.
+const TRANSIENT =
+  /model unloaded|failed to load|model_not_found|no model loaded|ECONNREFUSED|fetch failed|bad allocation|server_error|out of memory/i;
 
 async function chat(messages, tools, toolChoice = "auto") {
   let lastError;
-  for (let attempt = 0; attempt < 4; attempt += 1) {
+  for (let attempt = 0; attempt < 6; attempt += 1) {
     try {
       return await chatOnce(messages, tools, toolChoice);
     } catch (error) {
       lastError = error;
       if (!TRANSIENT.test(String(error?.message ?? error))) throw error;
-      process.stderr.write(`    (transient: ${String(error.message).slice(0, 80)}; retry ${attempt + 1}/3)\n`);
-      await sleep(5000 * (attempt + 1));
+      process.stderr.write(`    (transient: ${String(error.message).slice(0, 80)}; retry ${attempt + 1}/5)\n`);
+      // Longer than feels necessary on purpose: an allocation failure needs the previous
+      // request's buffers actually released, and a tight retry just fails again.
+      await sleep(8000 * (attempt + 1));
     }
   }
   throw lastError;

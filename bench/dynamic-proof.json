@@ -69,7 +69,7 @@
         "action": "call",
         "name": "playwright",
         "tool": "browser_navigate",
-        "argumentsJson": "{\"url\":\"data:text/html,<title>capability-hub-proof</title><h1>ok</h1>\"}"
+        "payloadJson": "{\"url\":\"data:text/html,<title>capability-hub-proof</title><h1>ok</h1>\"}"
       },
       "tokens": 107,
       "preview": "### Ran Playwright code\n```js\nawait page.goto('data:text/html,<title>capability-hub-proof</title><h1>ok</h1>');\n```\n### Page\n- Page URL: data:text/html,<title>c"

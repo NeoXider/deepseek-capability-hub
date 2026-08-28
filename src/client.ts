@@ -10,17 +10,23 @@ function argumentValue(flag: string): string | undefined {
   return index >= 0 ? process.argv[index + 1] : undefined;
 }
 
+// The three payload fields collapsed into `payloadJson` in 0.5.0. This CLI still accepts
+// the readable object forms, because a human typing a request should not have to escape
+// JSON inside JSON, and it still accepts the retired *Json spellings — unlike the server,
+// which cannot, since the MCP SDK strips unknown keys before the handler sees them.
 function normalizeConvenienceFields(input: Record<string, unknown>): Record<string, unknown> {
   const normalized = { ...input };
-  for (const [source, target] of [
-    ["arguments", "argumentsJson"],
-    ["config", "configJson"],
-    ["entry", "entryJson"],
-  ] as const) {
-    if (normalized[source] !== undefined && normalized[target] === undefined) {
-      normalized[target] = JSON.stringify(normalized[source]);
-      delete normalized[source];
+  for (const source of ["arguments", "config", "entry"] as const) {
+    if (normalized[source] !== undefined && normalized.payloadJson === undefined) {
+      normalized.payloadJson = JSON.stringify(normalized[source]);
     }
+    delete normalized[source];
+  }
+  for (const retired of ["argumentsJson", "configJson", "entryJson"] as const) {
+    if (normalized[retired] !== undefined && normalized.payloadJson === undefined) {
+      normalized.payloadJson = normalized[retired];
+    }
+    delete normalized[retired];
   }
   return normalized;
 }

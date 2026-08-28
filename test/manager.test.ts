@@ -674,3 +674,119 @@ test("model-facing rows are capped by field, not only by row count", async () =>
     await hub.close();
   }
 });
+
+// An empty tool list used to be a dead end. A capability whose backing application is
+// not running starts cleanly and publishes nothing, so the caller saw `total: 0` with no
+// cause and no next step — observed against a Unity MCP with the editor closed. A query
+// that matches nothing produces the same shape for an entirely different reason, so the
+// two are now distinguished in the reply.
+test("an empty tool list explains which of its two causes happened", async () => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "capability-hub-empty-"));
+  const fixturePath = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../src/fixture-echo.js");
+  const catalogPath = path.join(root, "catalog.json");
+  await writeFile(
+    catalogPath,
+    JSON.stringify({
+      version: 1,
+      entries: [
+        {
+          kind: "mcp",
+          name: "echo-test",
+          description: "Publishes tools normally",
+          trusted: true,
+          transport: { type: "stdio", command: process.execPath, args: [fixturePath] },
+          configurable: [],
+        },
+        {
+          kind: "mcp",
+          name: "silent-test",
+          description: "Starts cleanly and publishes nothing, like a fronted app that is not running",
+          trusted: true,
+          transport: {
+            type: "stdio",
+            command: process.execPath,
+            args: [fixturePath],
+            env: { CAPABILITY_HUB_FIXTURE_MODE: "silent" },
+          },
+          configurable: [],
+        },
+      ],
+    }),
+    "utf8",
+  );
+  const repository = new CatalogRepository(catalogPath, path.join(root, "state"));
+  await repository.load();
+  const hub = new CapabilityHub(repository);
+  const signal = new AbortController().signal;
+  try {
+    const silent = JSON.parse(firstText(await hub.execute({ action: "tools", name: "silent-test" }, signal)));
+    assert.equal(silent.total, 0);
+    assert.match(silent.note, /published no tools/, "the cause is named");
+    assert.match(silent.note, /not running/, "the likely reason is named");
+    assert.match(silent.note, /call this action again/i, "a next step is offered");
+
+    // Same empty shape, different cause: the server has tools, the query matched none.
+    const unmatched = JSON.parse(
+      firstText(await hub.execute({ action: "tools", name: "echo-test", query: "zzzz-no-such-tool" }, signal)),
+    );
+    assert.equal(unmatched.matched, 0);
+    assert.equal(unmatched.total, 4);
+    assert.match(unmatched.note, /matched/, "the query is blamed, not the server");
+    assert.doesNotMatch(unmatched.note, /not running/, "a healthy server is not called broken");
+    assert.match(unmatched.note, /all 4/, "the caller is told how many it could see instead");
+
+    // A populated list stays clean: no note means no tokens spent on one.
+    const listed = JSON.parse(firstText(await hub.execute({ action: "tools", name: "echo-test" }, signal)));
+    assert.equal(listed.note, undefined);
+  } finally {
+    await hub.close();
+  }
+});
+
+// A server that exposes only prompts or resources never registers a tools/list handler
+// and answers -32601. That is a legitimate MCP server, but the raw JSON-RPC error used to
+// escape from `enable`, so opening one looked like a crash instead of "it has no tools".
+test("a child without a tools/list handler enables with zero tools instead of erroring", async () => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "capability-hub-toolless-"));
+  const fixturePath = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../src/fixture-echo.js");
+  const catalogPath = path.join(root, "catalog.json");
+  await writeFile(
+    catalogPath,
+    JSON.stringify({
+      version: 1,
+      entries: [
+        {
+          kind: "mcp",
+          name: "toolless-test",
+          description: "Answers -32601 for tools/list, like a prompts-only server",
+          trusted: true,
+          transport: {
+            type: "stdio",
+            command: process.execPath,
+            args: [fixturePath],
+            env: { CAPABILITY_HUB_FIXTURE_MODE: "toolless" },
+          },
+          configurable: [],
+        },
+      ],
+    }),
+    "utf8",
+  );
+  const repository = new CatalogRepository(catalogPath, path.join(root, "state"));
+  await repository.load();
+  const hub = new CapabilityHub(repository);
+  const signal = new AbortController().signal;
+  try {
+    const enabled = JSON.parse(firstText(await hub.execute({ action: "enable", name: "toolless-test" }, signal)));
+    assert.equal(enabled.enabled, "toolless-test", "enable succeeds rather than throwing -32601");
+    assert.equal(enabled.tools, 0);
+
+    const listedText = firstText(await hub.execute({ action: "tools", name: "toolless-test" }, signal));
+    assert.doesNotMatch(listedText, /-32601|Method not found/, "no raw JSON-RPC error reaches the model");
+    const listed = JSON.parse(listedText);
+    assert.equal(listed.total, 0);
+    assert.match(listed.note, /published no tools/);
+  } finally {
+    await hub.close();
+  }
+});

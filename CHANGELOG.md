@@ -5,6 +5,46 @@ All notable changes to DeepSeek Capability Hub are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.0] - 2026-08-28
+
+Compactness and reliability, both driven by looking at where the cost and the failures
+actually were rather than where they were assumed to be.
+
+### Changed
+
+- **BREAKING: `argumentsJson`, `configJson` and `entryJson` are replaced by one
+  `payloadJson`.** Decomposing the 466-token resident cost put **288 of it in the input
+  schema** — more than the catalog listing and the description combined — and three of
+  those fields were mutually exclusive: no action ever read more than one, yet every host
+  paid for all three in every prompt. Resident cost is now **422 tokens, 93.2% below a
+  four-server classic setup**.
+
+  There is no compatibility shim, and one was attempted and removed: the MCP SDK validates
+  the incoming object against the advertised shape and **strips unknown keys before the
+  handler runs**, so a shim could never fire. A caller pinned to the old names gets an
+  empty payload and a confusing error from the child, not a deprecation warning. The
+  bundled CLI still accepts the old spellings, because nothing strips them there.
+
+### Fixed
+
+- **An empty tool list was a dead end.** A capability whose backing application is not
+  running starts cleanly and publishes nothing, so `tools` returned `total: 0` with no
+  cause and no next step — found against the Unity MCP with the editor closed. The reply
+  now names which of the two possible causes happened: a server that published nothing
+  (with the likely reason and a retry) or a query that matched nothing (with the count it
+  could have seen instead). A populated list still carries no note, so it costs nothing.
+- **A child with no `tools/list` handler crashed `enable` with a raw `-32601`.** A server
+  exposing only prompts or resources is legitimately like that; it now enables with zero
+  tools and explains itself through the same note, instead of surfacing JSON-RPC
+  internals to the model.
+
+### Internal
+
+- The accuracy benchmark retries `bad allocation` and `out of memory` alongside the
+  eviction errors it already handled. A 27B model at a 100k context sits at ~22.6 GB of
+  24 GB, and an allocation occasionally loses; a run died two thirds of the way through
+  before this.
+
 ## [0.4.0] - 2026-08-28
 
 Two measurements changed the product, and one of them corrected a claim this project had

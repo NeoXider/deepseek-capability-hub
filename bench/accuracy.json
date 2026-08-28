@@ -291,11 +291,11 @@
       "residentTokens": 6200
     },
     "hubVagueCatalog": {
-      "overall": 85.7,
-      "toolTasks": 86.4,
+      "overall": 82.1,
+      "toolTasks": 81.8,
       "noToolTasks": 83.3,
       "falseToolCalls": 1,
-      "exhausted": 1,
+      "exhausted": 3,
       "perServer": {
         "playwright": {
           "total": 8,
@@ -309,18 +309,18 @@
         },
         "everything": {
           "total": 6,
-          "correct": 4,
-          "percent": 66.7
+          "correct": 2,
+          "percent": 33.3
         },
         "sequential-thinking": {
           "total": 2,
-          "correct": 1,
-          "percent": 50
+          "correct": 2,
+          "percent": 100
         }
       },
-      "avgTurns": 2.93,
-      "avgPromptTokens": 2922,
-      "avgCompletionTokens": 168,
+      "avgTurns": 3,
+      "avgPromptTokens": 2818,
+      "avgCompletionTokens": 160,
       "rows": [
         {
           "id": "pw-navigate",
@@ -329,8 +329,8 @@
           "server": "playwright",
           "correct": true,
           "turns": 2,
-          "promptTokens": 1747,
-          "completionTokens": 123,
+          "promptTokens": 1623,
+          "completionTokens": 124,
           "trace": [
             {
               "action": "tools",
@@ -350,7 +350,7 @@
           "server": "playwright",
           "correct": true,
           "turns": 2,
-          "promptTokens": 1775,
+          "promptTokens": 1651,
           "completionTokens": 118,
           "trace": [
             {
@@ -370,14 +370,10 @@
           "picked": "browser_resize",
           "server": "playwright",
           "correct": true,
-          "turns": 4,
-          "promptTokens": 4363,
-          "completionTokens": 219,
+          "turns": 3,
+          "promptTokens": 3133,
+          "completionTokens": 172,
           "trace": [
-            {
-              "action": "tools",
-              "name": "playwright"
-            },
             {
               "action": "tools",
               "name": "playwright"
@@ -399,10 +395,14 @@
           "picked": "browser_navigate_back",
           "server": "playwright",
           "correct": true,
-          "turns": 2,
-          "promptTokens": 1739,
-          "completionTokens": 118,
+          "turns": 3,
+          "promptTokens": 3114,
+          "completionTokens": 157,
           "trace": [
+            {
+              "action": "tools",
+              "name": "playwright"
+            },
             {
               "action": "tools",
               "name": "playwright"
@@ -421,7 +421,7 @@
           "server": "playwright",
           "correct": true,
           "turns": 2,
-          "promptTokens": 1732,
+          "promptTokens": 1608,
           "completionTokens": 116,
           "trace": [
             {
@@ -442,8 +442,8 @@
           "server": "playwright",
           "correct": true,
           "turns": 2,
-          "promptTokens": 1737,
-          "completionTokens": 119,
+          "promptTokens": 1613,
+          "completionTokens": 120,
           "trace": [
             {
               "action": "tools",
@@ -463,7 +463,7 @@
           "server": "playwright",
           "correct": true,
           "turns": 2,
-          "promptTokens": 1747,
+          "promptTokens": 1623,
           "completionTokens": 124,
           "trace": [
             {
@@ -484,7 +484,7 @@
           "server": "playwright",
           "correct": true,
           "turns": 2,
-          "promptTokens": 1738,
+          "promptTokens": 1614,
           "completionTokens": 115,
           "trace": [
             {
@@ -505,7 +505,7 @@
           "server": "memory",
           "correct": true,
           "turns": 2,
-          "promptTokens": 1881,
+          "promptTokens": 1757,
           "completionTokens": 114,
           "trace": [
             {
@@ -526,7 +526,7 @@
           "server": "memory",
           "correct": true,
           "turns": 2,
-          "promptTokens": 1859,
+          "promptTokens": 1735,
           "completionTokens": 102,
           "trace": [
             {
@@ -547,8 +547,8 @@
           "server": "memory",
           "correct": true,
           "turns": 2,
-          "promptTokens": 1867,
-          "completionTokens": 107,
+          "promptTokens": 1611,
+          "completionTokens": 119,
           "trace": [
             {
               "action": "tools",
@@ -568,8 +568,8 @@
           "server": "memory",
           "correct": true,
           "turns": 2,
-          "promptTokens": 1772,
-          "completionTokens": 119,
+          "promptTokens": 1747,
+          "completionTokens": 108,
           "trace": [
             {
               "action": "tools",
@@ -589,8 +589,8 @@
           "server": "memory",
           "correct": true,
           "turns": 2,
-          "promptTokens": 1875,
-          "completionTokens": 117,
+          "promptTokens": 1751,
+          "completionTokens": 121,
           "trace": [
             {
               "action": "tools",
@@ -610,8 +610,8 @@
           "server": "memory",
           "correct": true,
           "turns": 2,
-          "promptTokens": 1889,
-          "completionTokens": 120,
+          "promptTokens": 1765,
+          "completionTokens": 127,
           "trace": [
             {
               "action": "tools",
@@ -631,8 +631,8 @@
           "server": "everything",
           "correct": true,
           "turns": 8,
-          "promptTokens": 9175,
-          "completionTokens": 344,
+          "promptTokens": 8733,
+          "completionTokens": 347,
           "trace": [
             {
               "action": "search"
@@ -672,7 +672,7 @@
           "server": "everything",
           "correct": true,
           "turns": 5,
-          "promptTokens": 4875,
+          "promptTokens": 4565,
           "completionTokens": 231,
           "trace": [
             {
@@ -701,8 +701,8 @@
           "picked": null,
           "correct": false,
           "turns": 6,
-          "promptTokens": 6971,
-          "completionTokens": 580,
+          "promptTokens": 6599,
+          "completionTokens": 591,
           "trace": [
             {
               "action": "status"
@@ -728,13 +728,15 @@
         {
           "id": "ev-gzip",
           "expect": "gzip-file-as-resource",
-          "picked": "gzip-file-as-resource",
-          "server": "everything",
-          "correct": true,
+          "picked": null,
+          "correct": false,
           "turns": 8,
-          "promptTokens": 8869,
-          "completionTokens": 373,
+          "promptTokens": 7979,
+          "completionTokens": 338,
           "trace": [
+            {
+              "action": "search"
+            },
             {
               "action": "search"
             },
@@ -756,23 +758,18 @@
             {
               "action": "tools",
               "name": "everything"
-            },
-            {
-              "action": "call",
-              "name": "everything",
-              "tool": "gzip-file-as-resource"
             }
-          ]
+          ],
+          "exhausted": true
         },
         {
           "id": "ev-image",
           "expect": "get-tiny-image",
-          "picked": "get-tiny-image",
-          "server": "everything",
-          "correct": true,
-          "turns": 6,
-          "promptTokens": 6326,
-          "completionTokens": 261,
+          "picked": null,
+          "correct": false,
+          "turns": 8,
+          "promptTokens": 7992,
+          "completionTokens": 336,
           "trace": [
             {
               "action": "search"
@@ -787,15 +784,19 @@
               "action": "search"
             },
             {
-              "action": "tools",
-              "name": "everything"
+              "action": "search"
             },
             {
-              "action": "call",
-              "name": "everything",
-              "tool": "get-tiny-image"
+              "action": "search"
+            },
+            {
+              "action": "search"
+            },
+            {
+              "action": "search"
             }
-          ]
+          ],
+          "exhausted": true
         },
         {
           "id": "ev-logging",
@@ -803,7 +804,7 @@
           "picked": null,
           "correct": false,
           "turns": 8,
-          "promptTokens": 8444,
+          "promptTokens": 7948,
           "completionTokens": 328,
           "trace": [
             {
@@ -840,8 +841,8 @@
           "server": "sequential-thinking",
           "correct": true,
           "turns": 2,
-          "promptTokens": 1806,
-          "completionTokens": 160,
+          "promptTokens": 1682,
+          "completionTokens": 153,
           "trace": [
             {
               "action": "tools",
@@ -857,11 +858,12 @@
         {
           "id": "st-2",
           "expect": "sequentialthinking",
-          "picked": null,
-          "correct": false,
+          "picked": "sequentialthinking",
+          "server": "sequential-thinking",
+          "correct": true,
           "turns": 3,
-          "promptTokens": 2763,
-          "completionTokens": 186,
+          "promptTokens": 2577,
+          "completionTokens": 178,
           "trace": [
             {
               "action": "enable",
@@ -870,6 +872,11 @@
             {
               "action": "tools",
               "name": "sequential-thinking"
+            },
+            {
+              "action": "call",
+              "name": "sequential-thinking",
+              "tool": "sequentialthinking"
             }
           ]
         },
@@ -879,7 +886,7 @@
           "picked": null,
           "correct": true,
           "turns": 1,
-          "promptTokens": 808,
+          "promptTokens": 746,
           "completionTokens": 8,
           "trace": []
         },
@@ -889,24 +896,24 @@
           "picked": null,
           "correct": true,
           "turns": 1,
-          "promptTokens": 813,
-          "completionTokens": 81,
+          "promptTokens": 751,
+          "completionTokens": 82,
           "trace": []
         },
         {
           "id": "none-haiku",
           "expect": null,
-          "picked": "sequentialthinking",
-          "server": "sequential-thinking",
+          "picked": "sample",
+          "server": "everything",
           "correct": false,
           "turns": 1,
-          "promptTokens": 808,
-          "completionTokens": 366,
+          "promptTokens": 746,
+          "completionTokens": 100,
           "trace": [
             {
               "action": "call",
-              "name": "sequential-thinking",
-              "tool": "sequentialthinking"
+              "name": "everything",
+              "tool": "sample"
             }
           ]
         },
@@ -916,7 +923,7 @@
           "picked": null,
           "correct": true,
           "turns": 1,
-          "promptTokens": 809,
+          "promptTokens": 747,
           "completionTokens": 28,
           "trace": []
         },
@@ -926,8 +933,8 @@
           "picked": null,
           "correct": true,
           "turns": 1,
-          "promptTokens": 814,
-          "completionTokens": 3,
+          "promptTokens": 752,
+          "completionTokens": 2,
           "trace": []
         },
         {
@@ -936,26 +943,26 @@
           "picked": null,
           "correct": true,
           "turns": 1,
-          "promptTokens": 809,
+          "promptTokens": 747,
           "completionTokens": 15,
           "trace": []
         }
       ],
       "catalog": "catalog.json",
       "strippedList": false,
-      "residentTokens": 466
+      "residentTokens": 422
     },
     "hubNoList": {
-      "overall": 92.9,
-      "toolTasks": 90.9,
+      "overall": 85.7,
+      "toolTasks": 81.8,
       "noToolTasks": 100,
       "falseToolCalls": 0,
-      "exhausted": 0,
+      "exhausted": 2,
       "perServer": {
         "playwright": {
           "total": 8,
-          "correct": 8,
-          "percent": 100
+          "correct": 7,
+          "percent": 87.5
         },
         "memory": {
           "total": 6,
@@ -964,8 +971,8 @@
         },
         "everything": {
           "total": 6,
-          "correct": 6,
-          "percent": 100
+          "correct": 5,
+          "percent": 83.3
         },
         "sequential-thinking": {
           "total": 2,
@@ -973,9 +980,9 @@
           "percent": 0
         }
       },
-      "avgTurns": 3.61,
-      "avgPromptTokens": 3403,
-      "avgCompletionTokens": 190,
+      "avgTurns": 3.54,
+      "avgPromptTokens": 3047,
+      "avgCompletionTokens": 180,
       "rows": [
         {
           "id": "pw-navigate",
@@ -984,8 +991,8 @@
           "server": "playwright",
           "correct": true,
           "turns": 4,
-          "promptTokens": 4010,
-          "completionTokens": 190,
+          "promptTokens": 3762,
+          "completionTokens": 191,
           "trace": [
             {
               "action": "search"
@@ -1011,7 +1018,7 @@
           "server": "playwright",
           "correct": true,
           "turns": 4,
-          "promptTokens": 3563,
+          "promptTokens": 3315,
           "completionTokens": 199,
           "trace": [
             {
@@ -1037,13 +1044,10 @@
           "picked": "browser_resize",
           "server": "playwright",
           "correct": true,
-          "turns": 4,
-          "promptTokens": 3534,
-          "completionTokens": 207,
+          "turns": 3,
+          "promptTokens": 2416,
+          "completionTokens": 171,
           "trace": [
-            {
-              "action": "search"
-            },
             {
               "action": "search"
             },
@@ -1065,7 +1069,7 @@
           "server": "playwright",
           "correct": true,
           "turns": 4,
-          "promptTokens": 3521,
+          "promptTokens": 3273,
           "completionTokens": 196,
           "trace": [
             {
@@ -1092,8 +1096,8 @@
           "server": "playwright",
           "correct": true,
           "turns": 3,
-          "promptTokens": 2588,
-          "completionTokens": 176,
+          "promptTokens": 2402,
+          "completionTokens": 156,
           "trace": [
             {
               "action": "search"
@@ -1116,8 +1120,8 @@
           "server": "playwright",
           "correct": true,
           "turns": 3,
-          "promptTokens": 2590,
-          "completionTokens": 158,
+          "promptTokens": 2404,
+          "completionTokens": 159,
           "trace": [
             {
               "action": "search"
@@ -1136,12 +1140,11 @@
         {
           "id": "pw-wait",
           "expect": "browser_wait_for",
-          "picked": "browser_wait_for",
-          "server": "playwright",
-          "correct": true,
-          "turns": 6,
-          "promptTokens": 6261,
-          "completionTokens": 284,
+          "picked": null,
+          "correct": false,
+          "turns": 8,
+          "promptTokens": 7328,
+          "completionTokens": 348,
           "trace": [
             {
               "action": "search"
@@ -1153,19 +1156,22 @@
               "action": "search"
             },
             {
-              "action": "tools",
-              "name": "playwright"
+              "action": "search"
             },
             {
-              "action": "tools",
-              "name": "playwright"
+              "action": "search"
             },
             {
-              "action": "call",
-              "name": "playwright",
-              "tool": "browser_wait_for"
+              "action": "search"
+            },
+            {
+              "action": "search"
+            },
+            {
+              "action": "search"
             }
-          ]
+          ],
+          "exhausted": true
         },
         {
           "id": "pw-close",
@@ -1173,19 +1179,15 @@
           "picked": "browser_close",
           "server": "playwright",
           "correct": true,
-          "turns": 5,
-          "promptTokens": 5135,
-          "completionTokens": 235,
+          "turns": 4,
+          "promptTokens": 3261,
+          "completionTokens": 194,
           "trace": [
             {
               "action": "search"
             },
             {
               "action": "search"
-            },
-            {
-              "action": "tools",
-              "name": "playwright"
             },
             {
               "action": "tools",
@@ -1204,19 +1206,15 @@
           "picked": "create_entities",
           "server": "memory",
           "correct": true,
-          "turns": 5,
-          "promptTokens": 5049,
-          "completionTokens": 260,
+          "turns": 4,
+          "promptTokens": 3391,
+          "completionTokens": 194,
           "trace": [
             {
               "action": "search"
             },
             {
               "action": "search"
-            },
-            {
-              "action": "tools",
-              "name": "memory"
             },
             {
               "action": "tools",
@@ -1236,8 +1234,8 @@
           "server": "memory",
           "correct": true,
           "turns": 3,
-          "promptTokens": 2667,
-          "completionTokens": 157,
+          "promptTokens": 2481,
+          "completionTokens": 141,
           "trace": [
             {
               "action": "search"
@@ -1260,7 +1258,7 @@
           "server": "memory",
           "correct": true,
           "turns": 4,
-          "promptTokens": 3608,
+          "promptTokens": 3360,
           "completionTokens": 187,
           "trace": [
             {
@@ -1287,8 +1285,8 @@
           "server": "memory",
           "correct": true,
           "turns": 4,
-          "promptTokens": 3616,
-          "completionTokens": 186,
+          "promptTokens": 3368,
+          "completionTokens": 187,
           "trace": [
             {
               "action": "search"
@@ -1314,8 +1312,8 @@
           "server": "memory",
           "correct": true,
           "turns": 5,
-          "promptTokens": 4621,
-          "completionTokens": 234,
+          "promptTokens": 4187,
+          "completionTokens": 223,
           "trace": [
             {
               "action": "search"
@@ -1324,7 +1322,7 @@
               "action": "search"
             },
             {
-              "action": "search"
+              "action": "status"
             },
             {
               "action": "tools",
@@ -1344,15 +1342,14 @@
           "server": "memory",
           "correct": true,
           "turns": 4,
-          "promptTokens": 4068,
-          "completionTokens": 225,
+          "promptTokens": 3407,
+          "completionTokens": 200,
           "trace": [
             {
               "action": "search"
             },
             {
-              "action": "tools",
-              "name": "memory"
+              "action": "search"
             },
             {
               "action": "tools",
@@ -1372,8 +1369,8 @@
           "server": "everything",
           "correct": true,
           "turns": 4,
-          "promptTokens": 3993,
-          "completionTokens": 201,
+          "promptTokens": 3799,
+          "completionTokens": 204,
           "trace": [
             {
               "action": "search"
@@ -1400,7 +1397,7 @@
           "server": "everything",
           "correct": true,
           "turns": 3,
-          "promptTokens": 2596,
+          "promptTokens": 2410,
           "completionTokens": 154,
           "trace": [
             {
@@ -1424,7 +1421,7 @@
           "server": "everything",
           "correct": true,
           "turns": 6,
-          "promptTokens": 6707,
+          "promptTokens": 6335,
           "completionTokens": 369,
           "trace": [
             {
@@ -1459,19 +1456,15 @@
           "picked": "gzip-file-as-resource",
           "server": "everything",
           "correct": true,
-          "turns": 5,
-          "promptTokens": 4973,
-          "completionTokens": 292,
+          "turns": 4,
+          "promptTokens": 3314,
+          "completionTokens": 223,
           "trace": [
             {
               "action": "search"
             },
             {
               "action": "search"
-            },
-            {
-              "action": "tools",
-              "name": "everything"
             },
             {
               "action": "tools",
@@ -1487,12 +1480,11 @@
         {
           "id": "ev-image",
           "expect": "get-tiny-image",
-          "picked": "get-tiny-image",
-          "server": "everything",
-          "correct": true,
+          "picked": null,
+          "correct": false,
           "turns": 8,
-          "promptTokens": 7907,
-          "completionTokens": 351,
+          "promptTokens": 7330,
+          "completionTokens": 313,
           "trace": [
             {
               "action": "search"
@@ -1507,6 +1499,9 @@
               "action": "search"
             },
             {
+              "action": "status"
+            },
+            {
               "action": "search"
             },
             {
@@ -1515,13 +1510,9 @@
             {
               "action": "tools",
               "name": "everything"
-            },
-            {
-              "action": "call",
-              "name": "everything",
-              "tool": "get-tiny-image"
             }
-          ]
+          ],
+          "exhausted": true
         },
         {
           "id": "ev-logging",
@@ -1530,7 +1521,7 @@
           "server": "everything",
           "correct": true,
           "turns": 4,
-          "promptTokens": 3540,
+          "promptTokens": 3292,
           "completionTokens": 201,
           "trace": [
             {
@@ -1555,23 +1546,19 @@
           "expect": "sequentialthinking",
           "picked": null,
           "correct": false,
-          "turns": 2,
-          "promptTokens": 1521,
-          "completionTokens": 356,
-          "trace": [
-            {
-              "action": "search"
-            }
-          ]
+          "turns": 1,
+          "promptTokens": 662,
+          "completionTokens": 330,
+          "trace": []
         },
         {
           "id": "st-2",
           "expect": "sequentialthinking",
           "picked": null,
           "correct": false,
-          "turns": 5,
-          "promptTokens": 4913,
-          "completionTokens": 354,
+          "turns": 6,
+          "promptTokens": 5906,
+          "completionTokens": 339,
           "trace": [
             {
               "action": "search"
@@ -1586,6 +1573,10 @@
             {
               "action": "tools",
               "name": "sequential-thinking"
+            },
+            {
+              "action": "enable",
+              "name": "sequential-thinking"
             }
           ]
         },
@@ -1595,7 +1586,7 @@
           "picked": null,
           "correct": true,
           "turns": 1,
-          "promptTokens": 714,
+          "promptTokens": 652,
           "completionTokens": 9,
           "trace": []
         },
@@ -1605,7 +1596,7 @@
           "picked": null,
           "correct": true,
           "turns": 1,
-          "promptTokens": 719,
+          "promptTokens": 657,
           "completionTokens": 74,
           "trace": []
         },
@@ -1615,7 +1606,7 @@
           "picked": null,
           "correct": true,
           "turns": 1,
-          "promptTokens": 714,
+          "promptTokens": 652,
           "completionTokens": 25,
           "trace": []
         },
@@ -1625,7 +1616,7 @@
           "picked": null,
           "correct": true,
           "turns": 1,
-          "promptTokens": 715,
+          "promptTokens": 653,
           "completionTokens": 28,
           "trace": []
         },
@@ -1635,7 +1626,7 @@
           "picked": null,
           "correct": true,
           "turns": 1,
-          "promptTokens": 720,
+          "promptTokens": 658,
           "completionTokens": 2,
           "trace": []
         },
@@ -1645,14 +1636,14 @@
           "picked": null,
           "correct": true,
           "turns": 1,
-          "promptTokens": 715,
+          "promptTokens": 653,
           "completionTokens": 15,
           "trace": []
         }
       ],
       "catalog": "catalog-described.json",
       "strippedList": true,
-      "residentTokens": 372
+      "residentTokens": 328
     },
     "hub": {
       "overall": 96.4,
@@ -1682,9 +1673,9 @@
           "percent": 50
         }
       },
-      "avgTurns": 2.18,
-      "avgPromptTokens": 2262,
-      "avgCompletionTokens": 119,
+      "avgTurns": 1.96,
+      "avgPromptTokens": 1873,
+      "avgCompletionTokens": 110,
       "rows": [
         {
           "id": "pw-navigate",
@@ -1693,8 +1684,8 @@
           "server": "playwright",
           "correct": true,
           "turns": 2,
-          "promptTokens": 1969,
-          "completionTokens": 123,
+          "promptTokens": 1845,
+          "completionTokens": 124,
           "trace": [
             {
               "action": "tools",
@@ -1714,7 +1705,7 @@
           "server": "playwright",
           "correct": true,
           "turns": 2,
-          "promptTokens": 1997,
+          "promptTokens": 1873,
           "completionTokens": 118,
           "trace": [
             {
@@ -1735,8 +1726,8 @@
           "server": "playwright",
           "correct": true,
           "turns": 2,
-          "promptTokens": 1963,
-          "completionTokens": 128,
+          "promptTokens": 1839,
+          "completionTokens": 131,
           "trace": [
             {
               "action": "tools",
@@ -1756,7 +1747,7 @@
           "server": "playwright",
           "correct": true,
           "turns": 2,
-          "promptTokens": 1961,
+          "promptTokens": 1837,
           "completionTokens": 118,
           "trace": [
             {
@@ -1777,7 +1768,7 @@
           "server": "playwright",
           "correct": true,
           "turns": 2,
-          "promptTokens": 1954,
+          "promptTokens": 1830,
           "completionTokens": 116,
           "trace": [
             {
@@ -1798,8 +1789,8 @@
           "server": "playwright",
           "correct": true,
           "turns": 2,
-          "promptTokens": 1959,
-          "completionTokens": 119,
+          "promptTokens": 1835,
+          "completionTokens": 120,
           "trace": [
             {
               "action": "tools",
@@ -1819,7 +1810,7 @@
           "server": "playwright",
           "correct": true,
           "turns": 2,
-          "promptTokens": 1969,
+          "promptTokens": 1845,
           "completionTokens": 124,
           "trace": [
             {
@@ -1840,7 +1831,7 @@
           "server": "playwright",
           "correct": true,
           "turns": 2,
-          "promptTokens": 1960,
+          "promptTokens": 1836,
           "completionTokens": 115,
           "trace": [
             {
@@ -1860,18 +1851,10 @@
           "picked": "create_entities",
           "server": "memory",
           "correct": true,
-          "turns": 5,
-          "promptTokens": 5680,
-          "completionTokens": 263,
+          "turns": 3,
+          "promptTokens": 3087,
+          "completionTokens": 164,
           "trace": [
-            {
-              "action": "tools",
-              "name": "memory"
-            },
-            {
-              "action": "tools",
-              "name": "memory"
-            },
             {
               "action": "tools",
               "name": "memory"
@@ -1894,7 +1877,7 @@
           "server": "memory",
           "correct": true,
           "turns": 2,
-          "promptTokens": 2081,
+          "promptTokens": 1957,
           "completionTokens": 102,
           "trace": [
             {
@@ -1915,8 +1898,8 @@
           "server": "memory",
           "correct": true,
           "turns": 2,
-          "promptTokens": 1957,
-          "completionTokens": 118,
+          "promptTokens": 1833,
+          "completionTokens": 119,
           "trace": [
             {
               "action": "tools",
@@ -1936,7 +1919,7 @@
           "server": "memory",
           "correct": true,
           "turns": 2,
-          "promptTokens": 1994,
+          "promptTokens": 1870,
           "completionTokens": 119,
           "trace": [
             {
@@ -1956,22 +1939,10 @@
           "picked": "add_observations",
           "server": "memory",
           "correct": true,
-          "turns": 5,
-          "promptTokens": 5789,
-          "completionTokens": 268,
+          "turns": 2,
+          "promptTokens": 1859,
+          "completionTokens": 128,
           "trace": [
-            {
-              "action": "tools",
-              "name": "memory"
-            },
-            {
-              "action": "tools",
-              "name": "memory"
-            },
-            {
-              "action": "inspect",
-              "name": "memory"
-            },
             {
               "action": "tools",
               "name": "memory"
@@ -1989,14 +1960,10 @@
           "picked": "create_relations",
           "server": "memory",
           "correct": true,
-          "turns": 3,
-          "promptTokens": 3341,
-          "completionTokens": 195,
+          "turns": 2,
+          "promptTokens": 1895,
+          "completionTokens": 137,
           "trace": [
-            {
-              "action": "tools",
-              "name": "memory"
-            },
             {
               "action": "tools",
               "name": "memory"
@@ -2015,8 +1982,8 @@
           "server": "everything",
           "correct": true,
           "turns": 4,
-          "promptTokens": 4813,
-          "completionTokens": 201,
+          "promptTokens": 4619,
+          "completionTokens": 204,
           "trace": [
             {
               "action": "search"
@@ -2043,8 +2010,8 @@
           "server": "everything",
           "correct": true,
           "turns": 1,
-          "promptTokens": 925,
-          "completionTokens": 67,
+          "promptTokens": 863,
+          "completionTokens": 68,
           "trace": [
             {
               "action": "call",
@@ -2060,7 +2027,7 @@
           "server": "everything",
           "correct": true,
           "turns": 2,
-          "promptTokens": 1962,
+          "promptTokens": 1838,
           "completionTokens": 113,
           "trace": [
             {
@@ -2081,8 +2048,8 @@
           "server": "everything",
           "correct": true,
           "turns": 3,
-          "promptTokens": 3246,
-          "completionTokens": 160,
+          "promptTokens": 3060,
+          "completionTokens": 161,
           "trace": [
             {
               "action": "search"
@@ -2105,7 +2072,7 @@
           "server": "everything",
           "correct": true,
           "turns": 3,
-          "promptTokens": 3200,
+          "promptTokens": 3014,
           "completionTokens": 153,
           "trace": [
             {
@@ -2129,7 +2096,7 @@
           "server": "everything",
           "correct": true,
           "turns": 2,
-          "promptTokens": 1957,
+          "promptTokens": 1833,
           "completionTokens": 121,
           "trace": [
             {
@@ -2150,7 +2117,7 @@
           "server": "sequential-thinking",
           "correct": true,
           "turns": 2,
-          "promptTokens": 2028,
+          "promptTokens": 1904,
           "completionTokens": 160,
           "trace": [
             {
@@ -2170,8 +2137,8 @@
           "picked": null,
           "correct": false,
           "turns": 3,
-          "promptTokens": 3096,
-          "completionTokens": 172,
+          "promptTokens": 2910,
+          "completionTokens": 179,
           "trace": [
             {
               "action": "enable",
@@ -2189,7 +2156,7 @@
           "picked": null,
           "correct": true,
           "turns": 1,
-          "promptTokens": 919,
+          "promptTokens": 857,
           "completionTokens": 8,
           "trace": []
         },
@@ -2199,7 +2166,7 @@
           "picked": null,
           "correct": true,
           "turns": 1,
-          "promptTokens": 924,
+          "promptTokens": 862,
           "completionTokens": 82,
           "trace": []
         },
@@ -2209,7 +2176,7 @@
           "picked": null,
           "correct": true,
           "turns": 1,
-          "promptTokens": 919,
+          "promptTokens": 857,
           "completionTokens": 25,
           "trace": []
         },
@@ -2219,7 +2186,7 @@
           "picked": null,
           "correct": true,
           "turns": 1,
-          "promptTokens": 920,
+          "promptTokens": 858,
           "completionTokens": 28,
           "trace": []
         },
@@ -2229,8 +2196,8 @@
           "picked": null,
           "correct": true,
           "turns": 1,
-          "promptTokens": 925,
-          "completionTokens": 2,
+          "promptTokens": 863,
+          "completionTokens": 3,
           "trace": []
         },
         {
@@ -2239,14 +2206,14 @@
           "picked": null,
           "correct": true,
           "turns": 1,
-          "promptTokens": 920,
-          "completionTokens": 15,
+          "promptTokens": 858,
+          "completionTokens": 28,
           "trace": []
         }
       ],
       "catalog": "catalog-described.json",
       "strippedList": false,
-      "residentTokens": 577
+      "residentTokens": 533
     }
   }
 }

@@ -266,7 +266,7 @@ export function validateHarnessRecords(
     toolErrorCount,
   } = parseHarnessTrace(records);
   const callArgs = calls[3]?.args;
-  const childArguments = parseObject(callArgs?.argumentsJson);
+  const childArguments = parseObject(callArgs?.payloadJson);
   const searchText = resultAt(0)?.text ?? "";
   const evidence = {
     searchFoundDemo: /demo-echo/.test(searchText),
@@ -365,7 +365,7 @@ export function validateExternalHarnessRecords(
   const tools = parseResultObject(resultAt(3)?.text);
   const listedTools = Array.isArray(tools?.tools) ? tools.tools.map(asRecord) : [];
   const callArgs = calls[4]?.args;
-  const childArguments = parseObject(callArgs?.argumentsJson);
+  const childArguments = parseObject(callArgs?.payloadJson);
   const statusBefore = parseResultObject(resultAt(6)?.text);
   const enabledBefore = Array.isArray(statusBefore?.enabled) ? statusBefore.enabled.map(asRecord) : [];
   const disabled = parseResultObject(resultAt(7)?.text);
@@ -555,7 +555,7 @@ function smokePrompt(): string {
     '1. {"action":"search"}',
     '2. {"action":"inspect","name":"demo-echo"}',
     '3. {"action":"tools","name":"demo-echo"}',
-    '4. {"action":"call","name":"demo-echo","tool":"add","argumentsJson":"{\\"a\\":2,\\"b\\":3}"}',
+    '4. {"action":"call","name":"demo-echo","tool":"add","payloadJson":"{\\"a\\":2,\\"b\\":3}"}',
     '5. {"action":"skill.load","name":"ml-experiment-review"}',
     '6. {"action":"status"}',
     '7. {"action":"disable","name":"demo-echo"}',
@@ -571,7 +571,7 @@ function externalSmokePrompt(): string {
     '2. {"action":"inspect","name":"playwright"}',
     '3. {"action":"enable","name":"playwright"}',
     '4. {"action":"tools","name":"playwright","query":"navigate"}',
-    `5. {"action":"call","name":"playwright","tool":"browser_navigate","argumentsJson":"{\\"url\\":\\"${EXTERNAL_PLAYWRIGHT_URL}\\"}"}`,
+    `5. {"action":"call","name":"playwright","tool":"browser_navigate","payloadJson":"{\\"url\\":\\"${EXTERNAL_PLAYWRIGHT_URL}\\"}"}`,
     '6. {"action":"skill.load","name":"ml-experiment-review"}',
     '7. {"action":"status"}',
     '8. {"action":"disable","name":"playwright"}',

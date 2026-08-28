@@ -55,7 +55,7 @@ test("outer MCP exposes exactly one tool and proxies through it", async () => {
         action: "call",
         name: "wire-echo",
         tool: "echo",
-        argumentsJson: JSON.stringify({ text: "wire-ok" }),
+        payloadJson: JSON.stringify({ text: "wire-ok" }),
       },
     });
     assert.match(JSON.stringify(called), /wire-ok/);

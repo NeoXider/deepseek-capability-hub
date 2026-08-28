@@ -57,9 +57,9 @@ pnpm bench
 | `@modelcontextprotocol/server-sequential-thinking` | Structured reasoning | 1 | 851 |
 | `@playwright/mcp` | Browser automation | 24 | 3,383 |
 | **Classic MCP — four servers** | always resident | **47** | **6,200** |
-| **Capability Hub** | one broker tool | **1** | **466** |
+| **Capability Hub** | one broker tool | **1** | **422** |
 
-**92.5% smaller. 13.3x.**
+**93.2% smaller. 14.7x.**
 
 Worth noting how uneven the distribution is. `sequential-thinking` exposes *one* tool
 and still costs 851 tokens, because its schema is large. Tool count is a bad proxy for
@@ -80,14 +80,14 @@ the measured mean of 1,550 tokens per server:
 
 | Servers configured | Classic tokens | Hub resident | Saved |
 |---:|---:|---:|---:|
-| 4 | 6,200 | 474 | 92.4% |
-| 7 | 10,850 | 551 | 94.9% |
-| 10 | 15,500 | 628 | 95.9% |
-| 15 | 23,250 | 749 | 96.8% |
-| 20 | 31,000 | 870 | 97.2% |
-| 30 | 46,500 | 512 | 98.9% |
-| 43 | 66,650 | 567 | 99.1% |
-| 60 | 93,000 | 639 | **99.3%** |
+| 4 | 6,200 | 430 | 93.1% |
+| 7 | 10,850 | 507 | 95.3% |
+| 10 | 15,500 | 584 | 96.2% |
+| 15 | 23,250 | 705 | 97.0% |
+| 20 | 31,000 | 826 | 97.3% |
+| 30 | 46,500 | 468 | 99.0% |
+| 43 | 66,650 | 523 | 99.2% |
+| 60 | 93,000 | 595 | **99.4%** |
 
 The drop between 20 and 30 entries is the degradation firing: the full descriptions no
 longer fit the budget, the list falls back to names, and the resident cost roughly halves.
@@ -107,9 +107,9 @@ as typical. Three scenarios, ordered by how often they actually occur:
 
 | Scenario | Path | Hub tokens | vs 6,200 |
 |---|---|---:|---:|
-| **idle** — task needs no capability | resident schema only | 466 | **92.5%** saved |
-| **direct** — task opens one, knows roughly what it wants | `search` + `tools` with a query | 598 | **90.4%** saved |
-| **cautious** — agent also reviews permissions and reads the full list | `search` + `inspect` + `enable` + `tools` | 1,239 | 80.0% saved |
+| **idle** — task needs no capability | resident schema only | 422 | **93.2%** saved |
+| **direct** — task opens one, knows roughly what it wants | `search` + `tools` with a query | 554 | **91.1%** saved |
+| **cautious** — agent also reviews permissions and reads the full list | `search` + `inspect` + `enable` + `tools` | 1,195 | 80.7% saved |
 
 Two things make the direct path cheap, and both were already in the implementation while
 the benchmark was ignoring them:
@@ -182,16 +182,16 @@ the model searches, lists and calls, and the run stops when it commits to a tool
 | Condition | Resident | Overall | Tool tasks | No-tool | False calls | Avg turns | Avg prompt |
 |---|---:|---:|---:|---:|---:|---:|---:|
 | **classic** — 47 schemas resident | 6,200 | **96.4%** | 100% | 83.3% | **1** | 1 | 7,269 |
-| **hub, vague catalog** | 466 | 85.7% | 86.4% | 83.3% | 1 | 2.93 | 2,922 |
-| **hub, list not inlined** | 372 | 92.9% | 90.9% | 100% | 0 | 3.61 | 3,403 |
-| **hub, as shipped** | 577 | **96.4%** | 95.5% | 100% | **0** | 2.18 | **2,262** |
+| **hub, vague catalog** | 422 | 82.1% | 81.8% | 83.3% | 1 | 3.00 | 2,818 |
+| **hub, list not inlined** | 328 | 85.7% | 81.8% | 100% | 0 | 3.54 | 3,047 |
+| **hub, as shipped** | 533 | **96.4%** | 95.5% | 100% | **0** | 1.96 | **1,873** |
 
 Four things fall out of this, and two of them were surprises.
 
-**The broker matches the classic setup, on a tenth of the resident context.** 96.4% either
-way, with 577 resident tokens instead of 6,200.
+**The broker matches the classic setup, on a twelfth of the resident context.** 96.4%
+either way, with 533 resident tokens instead of 6,200.
 
-**It also uses fewer tokens in total.** 2,262 average prompt tokens per task against 7,269
+**It also uses fewer tokens in total.** 1,873 average prompt tokens per task against 7,269
 — and that is *summed across every turn* of a multi-turn protocol. Three cheap turns beat
 one turn that drags 47 schemas along with it. The multi-turn cost that a broker is
 supposed to be penalised for did not materialise.
@@ -207,7 +207,7 @@ code, the same servers, the same protocol — only the descriptions differ. `cat
 calls one server "MCP reference server exercising prompts, resources, sampling and every
 tool primitive", which never matches a search for adding two numbers.
 `catalog-described.json` says it can echo a string, add two numbers and gzip a file. That
-edit alone is worth ~11 points. **If you write a catalog, write it so it can be found.**
+edit alone is worth ~14 points. **If you write a catalog, write it so it can be found.**
 
 ### Why the capability list is inlined
 
@@ -215,7 +215,7 @@ The middle two rows are the ablation that changed the implementation. With the l
 stripped from the tool description the model must spend a `search` to learn what exists —
 and on tasks that do not *read* like a search query it never searched at all, answered
 directly, and failed. Inlining the list costs about 200 resident tokens and buys back
-accuracy and a turn and a half per task.
+roughly ten accuracy points and a turn and a half per task.
 
 So `capability_hub` now ships its catalog inside its own description, degrading to names
 only, and then to a bare count, as the catalog grows past a character budget. That is the
@@ -226,9 +226,11 @@ kink in the scaling table above.
 - **One model, one sample.** 28 tasks on a single 27B local model. It is a real result, not
   a large one.
 - **The hub conditions vary between runs.** They are multi-turn against live child
-  processes, so borderline tasks flip: the shipped condition scored between 96.4% and 100%
-  across two runs, and the classic condition reproduced at exactly 96.4% both times. Treat
-  differences of one task as noise; the vague-catalog gap is larger than that.
+  processes, so borderline tasks flip. Across three runs the classic condition reproduced
+  at exactly 96.4% every time, the shipped hub scored 96.4–100%, and the two ablation rows
+  landed below both every time — but moved by as much as seven points between runs. Treat
+  a one-task difference as noise; treat the direction of the ablations as the finding, not
+  their exact size.
 - **Selection, not execution.** A hub run stops when the model commits to a tool. That the
   execution path works end to end is asserted separately, above.
 - **Ground truth is a judgement.** Two Playwright tasks were removed after the first run

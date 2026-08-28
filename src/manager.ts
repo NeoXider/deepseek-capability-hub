@@ -38,6 +38,15 @@ const MAX_CALL_RESULT_CHARS = 200_000;
 // Only these mean the pipe to the child is gone. Anything else — a tool that returned an
 // error, a schema mismatch, a local stringify blowing the stack — leaves the child alive.
 const TRANSPORT_FAILURE = /connection closed|EPIPE|ECONNRESET|ECONNREFUSED|terminated|socket hang up|write after end/i;
+
+// JSON-RPC "Method not found". Matched on the code where the SDK exposes one and on the
+// message otherwise, because the error crosses a transport boundary and not every server
+// preserves the typed shape.
+function isMethodNotFound(error: unknown): boolean {
+  const code = (error as { code?: unknown } | null)?.code;
+  if (code === -32601) return true;
+  return /-32601|method not found/i.test(error instanceof Error ? error.message : String(error));
+}
 const LOADER_ENV = /^(NODE_OPTIONS|NODE_REPL_EXTERNAL_MODULE|LD_PRELOAD|LD_AUDIT|LD_LIBRARY_PATH|DYLD_[A-Z_]+|PYTHONSTARTUP|PYTHONPATH|PERL5OPT|PERL5LIB|RUBYOPT|BASH_ENV|ENV|GIT_SSH|GIT_SSH_COMMAND|GIT_EXTERNAL_DIFF)$/i;
 
 function asStructured(value: JsonValue): Record<string, unknown> {
@@ -271,6 +280,18 @@ export class CapabilityHub {
         )
       : live.tools;
     const limited = matched.slice(0, MAX_TOOL_RESULTS);
+    // An empty list has two very different causes that used to look identical: a server
+    // that published nothing, and a query that matched nothing. The first is the more
+    // confusing one — a capability whose backing application is not running starts
+    // cleanly and then exposes zero tools, so the caller sees `total: 0` and no reason.
+    // Observed against a Unity MCP with the editor closed. Naming the cause costs a dozen
+    // tokens and is the difference between a retry and a dead end.
+    const note =
+      live.tools.length === 0
+        ? `"${name}" started but published no tools. Its backing application is probably not running; start it and call this action again.`
+        : matched.length === 0
+          ? `No tool on "${name}" matched ${JSON.stringify(query ?? "")}. Call this action without a query to see all ${String(live.tools.length)}.`
+          : undefined;
     return jsonResult({
       server: name,
       tools: limited.map((tool) => ({
@@ -282,6 +303,7 @@ export class CapabilityHub {
       matched: matched.length,
       truncated: limited.length !== matched.length,
       schemasIncluded: includeSchema,
+      ...(note === undefined ? {} : { note }),
     });
   }
 
@@ -500,7 +522,17 @@ export class CapabilityHub {
     const tools: Tool[] = [];
     let cursor: string | undefined;
     do {
-      const page = await client.listTools(cursor ? { cursor } : undefined);
+      let page;
+      try {
+        page = await client.listTools(cursor ? { cursor } : undefined);
+      } catch (error) {
+        // A server that exposes only prompts or resources never registers a tools/list
+        // handler and answers -32601. That is a legitimate MCP server, not a broken one,
+        // and letting the raw JSON-RPC error escape turned `enable` into an unexplained
+        // failure. Zero tools is the honest answer; `tools` then says why.
+        if (isMethodNotFound(error)) return tools;
+        throw error;
+      }
       tools.push(...page.tools);
       cursor = page.nextCursor;
     } while (cursor);

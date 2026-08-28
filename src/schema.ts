@@ -108,23 +108,23 @@ export const hubInputShape = {
   kind: z.enum(["mcp", "skill"]).optional().describe("Optional capability type filter."),
   name: z.string().max(80).optional().describe("Exact capability name."),
   tool: z.string().max(500).optional().describe("Raw child MCP tool name for call."),
-  argumentsJson: z
+  // One payload field instead of three. `argumentsJson`, `configJson` and `entryJson`
+  // were mutually exclusive — no action ever read more than one — yet every host paid
+  // for all three schemas in every prompt. A measured decomposition of the 466-token
+  // resident cost put 288 of it in this input schema, more than the catalog listing and
+  // the description put together, which made the redundancy the largest target left.
+  //
+  // This is a breaking change with no compatibility shim, because the MCP SDK strips
+  // unknown keys against this shape before the handler ever runs — a shim could not fire.
+  payloadJson: z
     .string()
-    .max(100_000)
+    .max(200_000)
     .optional()
-    .describe('JSON object forwarded to the selected child MCP tool, for example {"query":"MCP"}.'),
-  configJson: z
-    .string()
-    .max(100_000)
-    .optional()
-    .describe("JSON object with non-secret configuration. Only catalog-whitelisted keys are accepted."),
+    .describe(
+      'JSON object for the action: arguments for call (e.g. {"url":"https://example.com"}), non-secret whitelisted configuration for configure and enable, or a capability proposal for propose.',
+    ),
   includeSchema: z
     .boolean()
     .optional()
     .describe("Include full child tool schemas. Leave false unless arguments cannot be inferred."),
-  entryJson: z
-    .string()
-    .max(200_000)
-    .optional()
-    .describe("JSON capability proposal. It remains untrusted until a human approves it outside this MCP."),
 };
