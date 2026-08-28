@@ -1,6 +1,6 @@
 {
   "name": "@neoxider/mcp-hub",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "A lazy MCP and skill capability broker for DeepSeek Harness and other MCP clients",
   "type": "module",
   "private": false,
@@ -39,7 +39,9 @@
     "bench": "pnpm run build && node bench/measure.mjs",
     "proof": "pnpm run build && node bench/dynamic-proof.mjs",
     "bench:accuracy": "pnpm run build && node bench/accuracy.mjs",
-    "bench:schemas": "node bench/capture-schemas.mjs"
+    "bench:schemas": "node bench/capture-schemas.mjs",
+    "bench:head-to-head": "pnpm run build && node bench/head-to-head.mjs",
+    "bench:distractors": "node bench/capture-distractors.mjs"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "1.30.0",

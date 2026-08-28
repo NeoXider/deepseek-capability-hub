@@ -1,0 +1,2697 @@
+{
+  "model": "qwen3.8-27b-unleashed",
+  "tasks": 28,
+  "toolSearchTopK": 5,
+  "scales": {
+    "small": {
+      "tools": 47,
+      "conditions": {
+        "classic": {
+          "residentTokens": 6200,
+          "overall": 96.4,
+          "toolTasks": 100,
+          "noToolTasks": 83.3,
+          "falseToolCalls": 1,
+          "exhausted": 0,
+          "avgTurns": 1,
+          "avgPromptTokens": 7269,
+          "rows": [
+            {
+              "id": "pw-navigate",
+              "expect": "browser_navigate",
+              "picked": "browser_navigate",
+              "correct": true,
+              "turns": 1,
+              "promptTokens": 7266,
+              "completionTokens": 30
+            },
+            {
+              "id": "pw-screenshot",
+              "expect": "browser_take_screenshot",
+              "picked": "browser_take_screenshot",
+              "correct": true,
+              "turns": 1,
+              "promptTokens": 7268,
+              "completionTokens": 29
+            },
+            {
+              "id": "pw-resize",
+              "expect": "browser_resize",
+              "picked": "browser_resize",
+              "correct": true,
+              "turns": 1,
+              "promptTokens": 7273,
+              "completionTokens": 44
+            },
+            {
+              "id": "pw-back",
+              "expect": "browser_navigate_back",
+              "picked": "browser_navigate_back",
+              "correct": true,
+              "turns": 1,
+              "promptTokens": 7268,
+              "completionTokens": 17
+            },
+            {
+              "id": "pw-console",
+              "expect": "browser_console_messages",
+              "picked": "browser_console_messages",
+              "correct": true,
+              "turns": 1,
+              "promptTokens": 7268,
+              "completionTokens": 28
+            },
+            {
+              "id": "pw-tabs",
+              "expect": "browser_tabs",
+              "picked": "browser_tabs",
+              "correct": true,
+              "turns": 1,
+              "promptTokens": 7267,
+              "completionTokens": 27
+            },
+            {
+              "id": "pw-wait",
+              "expect": "browser_wait_for",
+              "picked": "browser_wait_for",
+              "correct": true,
+              "turns": 1,
+              "promptTokens": 7270,
+              "completionTokens": 28
+            },
+            {
+              "id": "pw-close",
+              "expect": "browser_close",
+              "picked": "browser_close",
+              "correct": true,
+              "turns": 1,
+              "promptTokens": 7262,
+              "completionTokens": 15
+            },
+            {
+              "id": "mem-create",
+              "expect": "create_entities",
+              "picked": "create_entities",
+              "correct": true,
+              "turns": 1,
+              "promptTokens": 7275,
+              "completionTokens": 44
+            },
+            {
+              "id": "mem-read",
+              "expect": "read_graph",
+              "picked": "read_graph",
+              "correct": true,
+              "turns": 1,
+              "promptTokens": 7264,
+              "completionTokens": 14
+            },
+            {
+              "id": "mem-search",
+              "expect": "search_nodes",
+              "picked": "search_nodes",
+              "correct": true,
+              "turns": 1,
+              "promptTokens": 7268,
+              "completionTokens": 26
+            },
+            {
+              "id": "mem-delete",
+              "expect": "delete_entities",
+              "picked": "delete_entities",
+              "correct": true,
+              "turns": 1,
+              "promptTokens": 7270,
+              "completionTokens": 31
+            },
+            {
+              "id": "mem-observe",
+              "expect": "add_observations",
+              "picked": "add_observations",
+              "correct": true,
+              "turns": 1,
+              "promptTokens": 7272,
+              "completionTokens": 44
+            },
+            {
+              "id": "mem-relate",
+              "expect": "create_relations",
+              "picked": "create_relations",
+              "correct": true,
+              "turns": 1,
+              "promptTokens": 7279,
+              "completionTokens": 49
+            },
+            {
+              "id": "ev-sum",
+              "expect": "get-sum",
+              "picked": "get-sum",
+              "correct": true,
+              "turns": 1,
+              "promptTokens": 7273,
+              "completionTokens": 38
+            },
+            {
+              "id": "ev-echo",
+              "expect": "echo",
+              "picked": "echo",
+              "correct": true,
+              "turns": 1,
+              "promptTokens": 7270,
+              "completionTokens": 25
+            },
+            {
+              "id": "ev-env",
+              "expect": "get-env",
+              "picked": "get-env",
+              "correct": true,
+              "turns": 1,
+              "promptTokens": 7270,
+              "completionTokens": 14
+            },
+            {
+              "id": "ev-gzip",
+              "expect": "gzip-file-as-resource",
+              "picked": "gzip-file-as-resource",
+              "correct": true,
+              "turns": 1,
+              "promptTokens": 7266,
+              "completionTokens": 42
+            },
+            {
+              "id": "ev-image",
+              "expect": "get-tiny-image",
+              "picked": "get-tiny-image",
+              "correct": true,
+              "turns": 1,
+              "promptTokens": 7265,
+              "completionTokens": 16
+            },
+            {
+              "id": "ev-logging",
+              "expect": "toggle-simulated-logging",
+              "picked": "toggle-simulated-logging",
+              "correct": true,
+              "turns": 1,
+              "promptTokens": 7265,
+              "completionTokens": 17
+            },
+            {
+              "id": "st-1",
+              "expect": "sequentialthinking",
+              "picked": "sequentialthinking",
+              "correct": true,
+              "turns": 1,
+              "promptTokens": 7274,
+              "completionTokens": 142
+            },
+            {
+              "id": "st-2",
+              "expect": "sequentialthinking",
+              "picked": "sequentialthinking",
+              "correct": true,
+              "turns": 1,
+              "promptTokens": 7273,
+              "completionTokens": 133
+            },
+            {
+              "id": "none-capital",
+              "expect": null,
+              "picked": null,
+              "correct": true,
+              "turns": 1,
+              "promptTokens": 7264,
+              "completionTokens": 9
+            },
+            {
+              "id": "none-tcp",
+              "expect": null,
+              "picked": null,
+              "correct": true,
+              "turns": 1,
+              "promptTokens": 7269,
+              "completionTokens": 64
+            },
+            {
+              "id": "none-haiku",
+              "expect": null,
+              "picked": null,
+              "correct": true,
+              "turns": 1,
+              "promptTokens": 7264,
+              "completionTokens": 25
+            },
+            {
+              "id": "none-acronym",
+              "expect": null,
+              "picked": null,
+              "correct": true,
+              "turns": 1,
+              "promptTokens": 7265,
+              "completionTokens": 131
+            },
+            {
+              "id": "none-prime",
+              "expect": null,
+              "picked": "sequentialthinking",
+              "correct": false,
+              "turns": 1,
+              "promptTokens": 7270,
+              "completionTokens": 161
+            },
+            {
+              "id": "none-translate",
+              "expect": null,
+              "picked": null,
+              "correct": true,
+              "turns": 1,
+              "promptTokens": 7265,
+              "completionTokens": 15
+            }
+          ]
+        },
+        "toolSearch": {
+          "residentTokens": 75,
+          "overall": 96.4,
+          "toolTasks": 95.5,
+          "noToolTasks": 100,
+          "falseToolCalls": 0,
+          "exhausted": 0,
+          "avgTurns": 1.79,
+          "avgPromptTokens": 1373,
+          "rows": [
+            {
+              "id": "pw-navigate",
+              "expect": "browser_navigate",
+              "picked": "browser_navigate",
+              "correct": true,
+              "turns": 2,
+              "promptTokens": 1416,
+              "completionTokens": 60,
+              "trace": [
+                {
+                  "query": "open URL in web browser",
+                  "found": [
+                    "browser_navigate",
+                    "browser_click",
+                    "browser_close",
+                    "browser_tabs",
+                    "browser_press_key"
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "pw-screenshot",
+              "expect": "browser_take_screenshot",
+              "picked": "browser_take_screenshot",
+              "correct": true,
+              "turns": 2,
+              "promptTokens": 1843,
+              "completionTokens": 62,
+              "trace": [
+                {
+                  "query": "take a screenshot of the current browser page",
+                  "found": [
+                    "browser_take_screenshot",
+                    "browser_snapshot",
+                    "browser_close",
+                    "browser_tabs",
+                    "browser_find"
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "pw-resize",
+              "expect": "browser_resize",
+              "picked": "browser_resize",
+              "correct": true,
+              "turns": 2,
+              "promptTokens": 1442,
+              "completionTokens": 73,
+              "trace": [
+                {
+                  "query": "resize browser window dimensions",
+                  "found": [
+                    "browser_resize",
+                    "browser_tabs",
+                    "browser_type",
+                    "browser_close",
+                    "browser_hover"
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "pw-back",
+              "expect": "browser_navigate_back",
+              "picked": "browser_navigate_back",
+              "correct": true,
+              "turns": 2,
+              "promptTokens": 1531,
+              "completionTokens": 49,
+              "trace": [
+                {
+                  "query": "browser navigation go back previous page history",
+                  "found": [
+                    "browser_navigate_back",
+                    "browser_navigate",
+                    "browser_close",
+                    "browser_take_screenshot",
+                    "browser_tabs"
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "pw-console",
+              "expect": "browser_console_messages",
+              "picked": "browser_console_messages",
+              "correct": true,
+              "turns": 2,
+              "promptTokens": 1820,
+              "completionTokens": 58,
+              "trace": [
+                {
+                  "query": "browser console messages current page",
+                  "found": [
+                    "browser_console_messages",
+                    "browser_snapshot",
+                    "browser_take_screenshot",
+                    "browser_close",
+                    "browser_click"
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "pw-tabs",
+              "expect": "browser_tabs",
+              "picked": "browser_tabs",
+              "correct": true,
+              "turns": 2,
+              "promptTokens": 1518,
+              "completionTokens": 56,
+              "trace": [
+                {
+                  "query": "list open browser tabs",
+                  "found": [
+                    "browser_tabs",
+                    "browser_close",
+                    "browser_navigate",
+                    "browser_click",
+                    "browser_network_requests"
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "pw-wait",
+              "expect": "browser_wait_for",
+              "picked": "browser_wait_for",
+              "correct": true,
+              "turns": 2,
+              "promptTokens": 1654,
+              "completionTokens": 65,
+              "trace": [
+                {
+                  "query": "wait for text to appear on web page (browser automation)",
+                  "found": [
+                    "browser_wait_for",
+                    "browser_click",
+                    "browser_hover",
+                    "browser_tabs",
+                    "browser_type"
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "pw-close",
+              "expect": "browser_close",
+              "picked": "browser_close",
+              "correct": true,
+              "turns": 2,
+              "promptTokens": 1442,
+              "completionTokens": 44,
+              "trace": [
+                {
+                  "query": "close browser page tab",
+                  "found": [
+                    "browser_close",
+                    "browser_tabs",
+                    "browser_click",
+                    "browser_resize",
+                    "browser_hover"
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "mem-create",
+              "expect": "create_entities",
+              "picked": "create_entities",
+              "correct": true,
+              "turns": 2,
+              "promptTokens": 1516,
+              "completionTokens": 74,
+              "trace": [
+                {
+                  "query": "create entity in knowledge graph",
+                  "found": [
+                    "create_entities",
+                    "add_observations",
+                    "delete_entities",
+                    "create_relations",
+                    "search_nodes"
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "mem-read",
+              "expect": "read_graph",
+              "picked": "read_graph",
+              "correct": true,
+              "turns": 2,
+              "promptTokens": 1467,
+              "completionTokens": 45,
+              "trace": [
+                {
+                  "query": "read knowledge graph entities and relations",
+                  "found": [
+                    "delete_entities",
+                    "read_graph",
+                    "create_relations",
+                    "create_entities",
+                    "delete_relations"
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "mem-search",
+              "expect": "search_nodes",
+              "picked": "search_nodes",
+              "correct": true,
+              "turns": 2,
+              "promptTokens": 1312,
+              "completionTokens": 57,
+              "trace": [
+                {
+                  "query": "search knowledge graph nodes by term",
+                  "found": [
+                    "search_nodes",
+                    "open_nodes",
+                    "read_graph",
+                    "create_entities",
+                    "delete_entities"
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "mem-delete",
+              "expect": "delete_entities",
+              "picked": "delete_entities",
+              "correct": true,
+              "turns": 2,
+              "promptTokens": 1451,
+              "completionTokens": 61,
+              "trace": [
+                {
+                  "query": "delete entity from knowledge graph",
+                  "found": [
+                    "delete_entities",
+                    "delete_observations",
+                    "delete_relations",
+                    "create_entities",
+                    "read_graph"
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "mem-observe",
+              "expect": "add_observations",
+              "picked": "add_observations",
+              "correct": true,
+              "turns": 2,
+              "promptTokens": 1439,
+              "completionTokens": 75,
+              "trace": [
+                {
+                  "query": "add observation to entity knowledge graph",
+                  "found": [
+                    "add_observations",
+                    "create_entities",
+                    "delete_observations",
+                    "delete_entities",
+                    "read_graph"
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "mem-relate",
+              "expect": "create_relations",
+              "picked": "create_relations",
+              "correct": true,
+              "turns": 2,
+              "promptTokens": 1526,
+              "completionTokens": 81,
+              "trace": [
+                {
+                  "query": "knowledge graph create relation edge between entities",
+                  "found": [
+                    "create_entities",
+                    "create_relations",
+                    "delete_entities",
+                    "add_observations",
+                    "search_nodes"
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "ev-sum",
+              "expect": "get-sum",
+              "picked": "get-sum",
+              "correct": true,
+              "turns": 2,
+              "promptTokens": 1688,
+              "completionTokens": 68,
+              "trace": [
+                {
+                  "query": "arithmetic add two numbers",
+                  "found": [
+                    "get-sum",
+                    "add_observations",
+                    "create_relations",
+                    "create_entities",
+                    "browser_fill_form"
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "ev-echo",
+              "expect": "echo",
+              "picked": "echo",
+              "correct": true,
+              "turns": 2,
+              "promptTokens": 1337,
+              "completionTokens": 54,
+              "trace": [
+                {
+                  "query": "echo a string back",
+                  "found": [
+                    "echo",
+                    "browser_navigate_back",
+                    "browser_console_messages",
+                    "get-sum",
+                    "browser_hover"
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "ev-env",
+              "expect": "get-env",
+              "picked": "get-env",
+              "correct": true,
+              "turns": 2,
+              "promptTokens": 1292,
+              "completionTokens": 44,
+              "trace": [
+                {
+                  "query": "read environment variables env vars",
+                  "found": [
+                    "get-env",
+                    "read_graph",
+                    "browser_evaluate",
+                    "echo",
+                    "browser_hover"
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "ev-gzip",
+              "expect": "gzip-file-as-resource",
+              "picked": "gzip-file-as-resource",
+              "correct": true,
+              "turns": 2,
+              "promptTokens": 1569,
+              "completionTokens": 99,
+              "trace": [
+                {
+                  "query": "compress file with gzip",
+                  "found": [
+                    "gzip-file-as-resource",
+                    "browser_file_upload",
+                    "browser_press_key",
+                    "browser_resize",
+                    "browser_snapshot"
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "ev-image",
+              "expect": "get-tiny-image",
+              "picked": "get-tiny-image",
+              "correct": true,
+              "turns": 2,
+              "promptTokens": 1571,
+              "completionTokens": 52,
+              "trace": [
+                {
+                  "query": "get or fetch an image file (MCP logo)",
+                  "found": [
+                    "get-tiny-image",
+                    "get-resource-reference",
+                    "get-env",
+                    "gzip-file-as-resource",
+                    "browser_network_request"
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "ev-logging",
+              "expect": "toggle-simulated-logging",
+              "picked": "toggle-simulated-logging",
+              "correct": true,
+              "turns": 2,
+              "promptTokens": 1437,
+              "completionTokens": 48,
+              "trace": [
+                {
+                  "query": "toggle simulated random level logging setting",
+                  "found": [
+                    "toggle-simulated-logging",
+                    "toggle-subscriber-updates",
+                    "simulate-research-query",
+                    "add_observations",
+                    "delete_observations"
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "st-1",
+              "expect": "sequentialthinking",
+              "picked": "sequentialthinking",
+              "correct": true,
+              "turns": 2,
+              "promptTokens": 2963,
+              "completionTokens": 154,
+              "trace": [
+                {
+                  "query": "numbered thoughts revision branching thinking framework",
+                  "found": [
+                    "sequentialthinking",
+                    "create_entities",
+                    "create_relations",
+                    "add_observations",
+                    "delete_entities"
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "st-2",
+              "expect": "sequentialthinking",
+              "picked": null,
+              "correct": false,
+              "turns": 2,
+              "promptTokens": 3067,
+              "completionTokens": 475,
+              "trace": [
+                {
+                  "query": "structured reasoning steps that can be revised or updated later, scratchpad / plan management",
+                  "found": [
+                    "sequentialthinking",
+                    "simulate-research-query",
+                    "create_entities",
+                    "create_relations",
+                    "add_observations"
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "none-capital",
+              "expect": null,
+              "picked": null,
+              "correct": true,
+              "turns": 1,
+              "promptTokens": 354,
+              "completionTokens": 9,
+              "trace": []
+            },
+            {
+              "id": "none-tcp",
+              "expect": null,
+              "picked": null,
+              "correct": true,
+              "turns": 1,
+              "promptTokens": 359,
+              "completionTokens": 90,
+              "trace": []
+            },
+            {
+              "id": "none-haiku",
+              "expect": null,
+              "picked": null,
+              "correct": true,
+              "turns": 1,
+              "promptTokens": 354,
+              "completionTokens": 23,
+              "trace": []
+            },
+            {
+              "id": "none-acronym",
+              "expect": null,
+              "picked": null,
+              "correct": true,
+              "turns": 1,
+              "promptTokens": 355,
+              "completionTokens": 28,
+              "trace": []
+            },
+            {
+              "id": "none-prime",
+              "expect": null,
+              "picked": null,
+              "correct": true,
+              "turns": 1,
+              "promptTokens": 360,
+              "completionTokens": 3,
+              "trace": []
+            },
+            {
+              "id": "none-translate",
+              "expect": null,
+              "picked": null,
+              "correct": true,
+              "turns": 1,
+              "promptTokens": 355,
+              "completionTokens": 15,
+              "trace": []
+            }
+          ]
+        },
+        "hub": {
+          "residentTokens": 533,
+          "overall": 96.4,
+          "toolTasks": 95.5,
+          "noToolTasks": 100,
+          "falseToolCalls": 0,
+          "exhausted": 0,
+          "avgTurns": 1.96,
+          "avgPromptTokens": 1873,
+          "rows": [
+            {
+              "id": "pw-navigate",
+              "expect": "browser_navigate",
+              "picked": "browser_navigate",
+              "server": "playwright",
+              "correct": true,
+              "turns": 2,
+              "promptTokens": 1845,
+              "completionTokens": 124,
+              "trace": [
+                {
+                  "action": "tools",
+                  "name": "playwright"
+                },
+                {
+                  "action": "call",
+                  "name": "playwright",
+                  "tool": "browser_navigate"
+                }
+              ]
+            },
+            {
+              "id": "pw-screenshot",
+              "expect": "browser_take_screenshot",
+              "picked": "browser_take_screenshot",
+              "server": "playwright",
+              "correct": true,
+              "turns": 2,
+              "promptTokens": 1873,
+              "completionTokens": 118,
+              "trace": [
+                {
+                  "action": "tools",
+                  "name": "playwright"
+                },
+                {
+                  "action": "call",
+                  "name": "playwright",
+                  "tool": "browser_take_screenshot"
+                }
+              ]
+            },
+            {
+              "id": "pw-resize",
+              "expect": "browser_resize",
+              "picked": "browser_resize",
+              "server": "playwright",
+              "correct": true,
+              "turns": 2,
+              "promptTokens": 1839,
+              "completionTokens": 131,
+              "trace": [
+                {
+                  "action": "tools",
+                  "name": "playwright"
+                },
+                {
+                  "action": "call",
+                  "name": "playwright",
+                  "tool": "browser_resize"
+                }
+              ]
+            },
+            {
+              "id": "pw-back",
+              "expect": "browser_navigate_back",
+              "picked": "browser_navigate_back",
+              "server": "playwright",
+              "correct": true,
+              "turns": 2,
+              "promptTokens": 1837,
+              "completionTokens": 118,
+              "trace": [
+                {
+                  "action": "tools",
+                  "name": "playwright"
+                },
+                {
+                  "action": "call",
+                  "name": "playwright",
+                  "tool": "browser_navigate_back"
+                }
+              ]
+            },
+            {
+              "id": "pw-console",
+              "expect": "browser_console_messages",
+              "picked": "browser_console_messages",
+              "server": "playwright",
+              "correct": true,
+              "turns": 2,
+              "promptTokens": 1830,
+              "completionTokens": 116,
+              "trace": [
+                {
+                  "action": "tools",
+                  "name": "playwright"
+                },
+                {
+                  "action": "call",
+                  "name": "playwright",
+                  "tool": "browser_console_messages"
+                }
+              ]
+            },
+            {
+              "id": "pw-tabs",
+              "expect": "browser_tabs",
+              "picked": "browser_tabs",
+              "server": "playwright",
+              "correct": true,
+              "turns": 2,
+              "promptTokens": 1835,
+              "completionTokens": 120,
+              "trace": [
+                {
+                  "action": "tools",
+                  "name": "playwright"
+                },
+                {
+                  "action": "call",
+                  "name": "playwright",
+                  "tool": "browser_tabs"
+                }
+              ]
+            },
+            {
+              "id": "pw-wait",
+              "expect": "browser_wait_for",
+              "picked": "browser_wait_for",
+              "server": "playwright",
+              "correct": true,
+              "turns": 2,
+              "promptTokens": 1845,
+              "completionTokens": 124,
+              "trace": [
+                {
+                  "action": "tools",
+                  "name": "playwright"
+                },
+                {
+                  "action": "call",
+                  "name": "playwright",
+                  "tool": "browser_wait_for"
+                }
+              ]
+            },
+            {
+              "id": "pw-close",
+              "expect": "browser_close",
+              "picked": "browser_close",
+              "server": "playwright",
+              "correct": true,
+              "turns": 2,
+              "promptTokens": 1836,
+              "completionTokens": 115,
+              "trace": [
+                {
+                  "action": "tools",
+                  "name": "playwright"
+                },
+                {
+                  "action": "call",
+                  "name": "playwright",
+                  "tool": "browser_close"
+                }
+              ]
+            },
+            {
+              "id": "mem-create",
+              "expect": "create_entities",
+              "picked": "create_entities",
+              "server": "memory",
+              "correct": true,
+              "turns": 3,
+              "promptTokens": 3087,
+              "completionTokens": 164,
+              "trace": [
+                {
+                  "action": "tools",
+                  "name": "memory"
+                },
+                {
+                  "action": "tools",
+                  "name": "memory"
+                },
+                {
+                  "action": "call",
+                  "name": "memory",
+                  "tool": "create_entities"
+                }
+              ]
+            },
+            {
+              "id": "mem-read",
+              "expect": "read_graph",
+              "picked": "read_graph",
+              "server": "memory",
+              "correct": true,
+              "turns": 2,
+              "promptTokens": 1957,
+              "completionTokens": 102,
+              "trace": [
+                {
+                  "action": "tools",
+                  "name": "memory"
+                },
+                {
+                  "action": "call",
+                  "name": "memory",
+                  "tool": "read_graph"
+                }
+              ]
+            },
+            {
+              "id": "mem-search",
+              "expect": "search_nodes",
+              "picked": "search_nodes",
+              "server": "memory",
+              "correct": true,
+              "turns": 2,
+              "promptTokens": 1833,
+              "completionTokens": 119,
+              "trace": [
+                {
+                  "action": "tools",
+                  "name": "memory"
+                },
+                {
+                  "action": "call",
+                  "name": "memory",
+                  "tool": "search_nodes"
+                }
+              ]
+            },
+            {
+              "id": "mem-delete",
+              "expect": "delete_entities",
+              "picked": "delete_entities",
+              "server": "memory",
+              "correct": true,
+              "turns": 2,
+              "promptTokens": 1870,
+              "completionTokens": 119,
+              "trace": [
+                {
+                  "action": "tools",
+                  "name": "memory"
+                },
+                {
+                  "action": "call",
+                  "name": "memory",
+                  "tool": "delete_entities"
+                }
+              ]
+            },
+            {
+              "id": "mem-observe",
+              "expect": "add_observations",
+              "picked": "add_observations",
+              "server": "memory",
+              "correct": true,
+              "turns": 2,
+              "promptTokens": 1859,
+              "completionTokens": 128,
+              "trace": [
+                {
+                  "action": "tools",
+                  "name": "memory"
+                },
+                {
+                  "action": "call",
+                  "name": "memory",
+                  "tool": "add_observations"
+                }
+              ]
+            },
+            {
+              "id": "mem-relate",
+              "expect": "create_relations",
+              "picked": "create_relations",
+              "server": "memory",
+              "correct": true,
+              "turns": 2,
+              "promptTokens": 1895,
+              "completionTokens": 137,
+              "trace": [
+                {
+                  "action": "tools",
+                  "name": "memory"
+                },
+                {
+                  "action": "call",
+                  "name": "memory",
+                  "tool": "create_relations"
+                }
+              ]
+            },
+            {
+              "id": "ev-sum",
+              "expect": "get-sum",
+              "picked": "get-sum",
+              "server": "everything",
+              "correct": true,
+              "turns": 4,
+              "promptTokens": 4619,
+              "completionTokens": 204,
+              "trace": [
+                {
+                  "action": "search"
+                },
+                {
+                  "action": "tools",
+                  "name": "everything"
+                },
+                {
+                  "action": "tools",
+                  "name": "everything"
+                },
+                {
+                  "action": "call",
+                  "name": "everything",
+                  "tool": "get-sum"
+                }
+              ]
+            },
+            {
+              "id": "ev-echo",
+              "expect": "echo",
+              "picked": "echo",
+              "server": "everything",
+              "correct": true,
+              "turns": 1,
+              "promptTokens": 863,
+              "completionTokens": 68,
+              "trace": [
+                {
+                  "action": "call",
+                  "name": "everything",
+                  "tool": "echo"
+                }
+              ]
+            },
+            {
+              "id": "ev-env",
+              "expect": "get-env",
+              "picked": "get-env",
+              "server": "everything",
+              "correct": true,
+              "turns": 2,
+              "promptTokens": 1838,
+              "completionTokens": 113,
+              "trace": [
+                {
+                  "action": "tools",
+                  "name": "everything"
+                },
+                {
+                  "action": "call",
+                  "name": "everything",
+                  "tool": "get-env"
+                }
+              ]
+            },
+            {
+              "id": "ev-gzip",
+              "expect": "gzip-file-as-resource",
+              "picked": "gzip-file-as-resource",
+              "server": "everything",
+              "correct": true,
+              "turns": 3,
+              "promptTokens": 3060,
+              "completionTokens": 161,
+              "trace": [
+                {
+                  "action": "search"
+                },
+                {
+                  "action": "tools",
+                  "name": "everything"
+                },
+                {
+                  "action": "call",
+                  "name": "everything",
+                  "tool": "gzip-file-as-resource"
+                }
+              ]
+            },
+            {
+              "id": "ev-image",
+              "expect": "get-tiny-image",
+              "picked": "get-tiny-image",
+              "server": "everything",
+              "correct": true,
+              "turns": 3,
+              "promptTokens": 3014,
+              "completionTokens": 153,
+              "trace": [
+                {
+                  "action": "search"
+                },
+                {
+                  "action": "tools",
+                  "name": "everything"
+                },
+                {
+                  "action": "call",
+                  "name": "everything",
+                  "tool": "get-tiny-image"
+                }
+              ]
+            },
+            {
+              "id": "ev-logging",
+              "expect": "toggle-simulated-logging",
+              "picked": "toggle-simulated-logging",
+              "server": "everything",
+              "correct": true,
+              "turns": 2,
+              "promptTokens": 1833,
+              "completionTokens": 121,
+              "trace": [
+                {
+                  "action": "tools",
+                  "name": "everything"
+                },
+                {
+                  "action": "call",
+                  "name": "everything",
+                  "tool": "toggle-simulated-logging"
+                }
+              ]
+            },
+            {
+              "id": "st-1",
+              "expect": "sequentialthinking",
+              "picked": "sequentialthinking",
+              "server": "sequential-thinking",
+              "correct": true,
+              "turns": 2,
+              "promptTokens": 1904,
+              "completionTokens": 160,
+              "trace": [
+                {
+                  "action": "tools",
+                  "name": "sequential-thinking"
+                },
+                {
+                  "action": "call",
+                  "name": "sequential-thinking",
+                  "tool": "sequentialthinking"
+                }
+              ]
+            },
+            {
+              "id": "st-2",
+              "expect": "sequentialthinking",
+              "picked": null,
+              "correct": false,
+              "turns": 3,
+              "promptTokens": 2910,
+              "completionTokens": 178,
+              "trace": [
+                {
+                  "action": "enable",
+                  "name": "sequential-thinking"
+                },
+                {
+                  "action": "tools",
+                  "name": "sequential-thinking"
+                }
+              ]
+            },
+            {
+              "id": "none-capital",
+              "expect": null,
+              "picked": null,
+              "correct": true,
+              "turns": 1,
+              "promptTokens": 857,
+              "completionTokens": 8,
+              "trace": []
+            },
+            {
+              "id": "none-tcp",
+              "expect": null,
+              "picked": null,
+              "correct": true,
+              "turns": 1,
+              "promptTokens": 862,
+              "completionTokens": 82,
+              "trace": []
+            },
+            {
+              "id": "none-haiku",
+              "expect": null,
+              "picked": null,
+              "correct": true,
+              "turns": 1,
+              "promptTokens": 857,
+              "completionTokens": 25,
+              "trace": []
+            },
+            {
+              "id": "none-acronym",
+              "expect": null,
+              "picked": null,
+              "correct": true,
+              "turns": 1,
+              "promptTokens": 858,
+              "completionTokens": 28,
+              "trace": []
+            },
+            {
+              "id": "none-prime",
+              "expect": null,
+              "picked": null,
+              "correct": true,
+              "turns": 1,
+              "promptTokens": 863,
+              "completionTokens": 3,
+              "trace": []
+            },
+            {
+              "id": "none-translate",
+              "expect": null,
+              "picked": null,
+              "correct": true,
+              "turns": 1,
+              "promptTokens": 858,
+              "completionTokens": 28,
+              "trace": []
+            }
+          ]
+        }
+      }
+    },
+    "large": {
+      "tools": 98,
+      "conditions": {
+        "classic": {
+          "residentTokens": 12422,
+          "overall": 92.9,
+          "toolTasks": 95.5,
+          "noToolTasks": 83.3,
+          "falseToolCalls": 1,
+          "exhausted": 0,
+          "avgTurns": 1,
+          "avgPromptTokens": 14701,
+          "rows": [
+            {
+              "id": "pw-navigate",
+              "expect": "browser_navigate",
+              "picked": "browser_navigate",
+              "correct": true,
+              "turns": 1,
+              "promptTokens": 14698,
+              "completionTokens": 30
+            },
+            {
+              "id": "pw-screenshot",
+              "expect": "browser_take_screenshot",
+              "picked": "browser_take_screenshot",
+              "correct": true,
+              "turns": 1,
+              "promptTokens": 14700,
+              "completionTokens": 29
+            },
+            {
+              "id": "pw-resize",
+              "expect": "browser_resize",
+              "picked": "browser_resize",
+              "correct": true,
+              "turns": 1,
+              "promptTokens": 14705,
+              "completionTokens": 44
+            },
+            {
+              "id": "pw-back",
+              "expect": "browser_navigate_back",
+              "picked": "browser_navigate_back",
+              "correct": true,
+              "turns": 1,
+              "promptTokens": 14700,
+              "completionTokens": 17
+            },
+            {
+              "id": "pw-console",
+              "expect": "browser_console_messages",
+              "picked": "browser_console_messages",
+              "correct": true,
+              "turns": 1,
+              "promptTokens": 14700,
+              "completionTokens": 28
+            },
+            {
+              "id": "pw-tabs",
+              "expect": "browser_tabs",
+              "picked": "browser_tabs",
+              "correct": true,
+              "turns": 1,
+              "promptTokens": 14699,
+              "completionTokens": 27
+            },
+            {
+              "id": "pw-wait",
+              "expect": "browser_wait_for",
+              "picked": "browser_wait_for",
+              "correct": true,
+              "turns": 1,
+              "promptTokens": 14702,
+              "completionTokens": 28
+            },
+            {
+              "id": "pw-close",
+              "expect": "browser_close",
+              "picked": "browser_close",
+              "correct": true,
+              "turns": 1,
+              "promptTokens": 14694,
+              "completionTokens": 15
+            },
+            {
+              "id": "mem-create",
+              "expect": "create_entities",
+              "picked": "create_entities",
+              "correct": true,
+              "turns": 1,
+              "promptTokens": 14707,
+              "completionTokens": 44
+            },
+            {
+              "id": "mem-read",
+              "expect": "read_graph",
+              "picked": "read_graph",
+              "correct": true,
+              "turns": 1,
+              "promptTokens": 14696,
+              "completionTokens": 14
+            },
+            {
+              "id": "mem-search",
+              "expect": "search_nodes",
+              "picked": "search_nodes",
+              "correct": true,
+              "turns": 1,
+              "promptTokens": 14700,
+              "completionTokens": 26
+            },
+            {
+              "id": "mem-delete",
+              "expect": "delete_entities",
+              "picked": "delete_entities",
+              "correct": true,
+              "turns": 1,
+              "promptTokens": 14702,
+              "completionTokens": 31
+            },
+            {
+              "id": "mem-observe",
+              "expect": "add_observations",
+              "picked": "add_observations",
+              "correct": true,
+              "turns": 1,
+              "promptTokens": 14704,
+              "completionTokens": 44
+            },
+            {
+              "id": "mem-relate",
+              "expect": "create_relations",
+              "picked": "create_relations",
+              "correct": true,
+              "turns": 1,
+              "promptTokens": 14711,
+              "completionTokens": 49
+            },
+            {
+              "id": "ev-sum",
+              "expect": "get-sum",
+              "picked": "get-sum",
+              "correct": true,
+              "turns": 1,
+              "promptTokens": 14705,
+              "completionTokens": 38
+            },
+            {
+              "id": "ev-echo",
+              "expect": "echo",
+              "picked": "echo",
+              "correct": true,
+              "turns": 1,
+              "promptTokens": 14702,
+              "completionTokens": 25
+            },
+            {
+              "id": "ev-env",
+              "expect": "get-env",
+              "picked": "get-env",
+              "correct": true,
+              "turns": 1,
+              "promptTokens": 14702,
+              "completionTokens": 14
+            },
+            {
+              "id": "ev-gzip",
+              "expect": "gzip-file-as-resource",
+              "picked": "list_allowed_directories",
+              "correct": false,
+              "turns": 1,
+              "promptTokens": 14698,
+              "completionTokens": 16
+            },
+            {
+              "id": "ev-image",
+              "expect": "get-tiny-image",
+              "picked": "get-tiny-image",
+              "correct": true,
+              "turns": 1,
+              "promptTokens": 14697,
+              "completionTokens": 16
+            },
+            {
+              "id": "ev-logging",
+              "expect": "toggle-simulated-logging",
+              "picked": "toggle-simulated-logging",
+              "correct": true,
+              "turns": 1,
+              "promptTokens": 14697,
+              "completionTokens": 17
+            },
+            {
+              "id": "st-1",
+              "expect": "sequentialthinking",
+              "picked": "sequentialthinking",
+              "correct": true,
+              "turns": 1,
+              "promptTokens": 14706,
+              "completionTokens": 204
+            },
+            {
+              "id": "st-2",
+              "expect": "sequentialthinking",
+              "picked": "sequentialthinking",
+              "correct": true,
+              "turns": 1,
+              "promptTokens": 14705,
+              "completionTokens": 136
+            },
+            {
+              "id": "none-capital",
+              "expect": null,
+              "picked": null,
+              "correct": true,
+              "turns": 1,
+              "promptTokens": 14696,
+              "completionTokens": 9
+            },
+            {
+              "id": "none-tcp",
+              "expect": null,
+              "picked": null,
+              "correct": true,
+              "turns": 1,
+              "promptTokens": 14701,
+              "completionTokens": 61
+            },
+            {
+              "id": "none-haiku",
+              "expect": null,
+              "picked": null,
+              "correct": true,
+              "turns": 1,
+              "promptTokens": 14696,
+              "completionTokens": 25
+            },
+            {
+              "id": "none-acronym",
+              "expect": null,
+              "picked": null,
+              "correct": true,
+              "turns": 1,
+              "promptTokens": 14697,
+              "completionTokens": 28
+            },
+            {
+              "id": "none-prime",
+              "expect": null,
+              "picked": "sequentialthinking",
+              "correct": false,
+              "turns": 1,
+              "promptTokens": 14702,
+              "completionTokens": 204
+            },
+            {
+              "id": "none-translate",
+              "expect": null,
+              "picked": null,
+              "correct": true,
+              "turns": 1,
+              "promptTokens": 14697,
+              "completionTokens": 15
+            }
+          ]
+        },
+        "toolSearch": {
+          "residentTokens": 75,
+          "overall": 92.9,
+          "toolTasks": 90.9,
+          "noToolTasks": 100,
+          "falseToolCalls": 0,
+          "exhausted": 0,
+          "avgTurns": 1.79,
+          "avgPromptTokens": 1384,
+          "rows": [
+            {
+              "id": "pw-navigate",
+              "expect": "browser_navigate",
+              "picked": "browser_navigate",
+              "correct": true,
+              "turns": 2,
+              "promptTokens": 1416,
+              "completionTokens": 60,
+              "trace": [
+                {
+                  "query": "open URL in web browser",
+                  "found": [
+                    "browser_navigate",
+                    "browser_click",
+                    "browser_close",
+                    "browser_tabs",
+                    "browser_press_key"
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "pw-screenshot",
+              "expect": "browser_take_screenshot",
+              "picked": "browser_take_screenshot",
+              "correct": true,
+              "turns": 2,
+              "promptTokens": 1843,
+              "completionTokens": 62,
+              "trace": [
+                {
+                  "query": "take a screenshot of the current browser page",
+                  "found": [
+                    "browser_take_screenshot",
+                    "browser_snapshot",
+                    "browser_close",
+                    "browser_tabs",
+                    "browser_find"
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "pw-resize",
+              "expect": "browser_resize",
+              "picked": "browser_resize",
+              "correct": true,
+              "turns": 2,
+              "promptTokens": 1442,
+              "completionTokens": 73,
+              "trace": [
+                {
+                  "query": "resize browser window dimensions",
+                  "found": [
+                    "browser_resize",
+                    "browser_tabs",
+                    "browser_type",
+                    "browser_close",
+                    "browser_hover"
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "pw-back",
+              "expect": "browser_navigate_back",
+              "picked": "browser_navigate_back",
+              "correct": true,
+              "turns": 2,
+              "promptTokens": 1531,
+              "completionTokens": 49,
+              "trace": [
+                {
+                  "query": "browser navigation go back previous page history",
+                  "found": [
+                    "browser_navigate_back",
+                    "browser_navigate",
+                    "browser_close",
+                    "browser_take_screenshot",
+                    "browser_tabs"
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "pw-console",
+              "expect": "browser_console_messages",
+              "picked": "browser_console_messages",
+              "correct": true,
+              "turns": 2,
+              "promptTokens": 1766,
+              "completionTokens": 58,
+              "trace": [
+                {
+                  "query": "browser console messages current page",
+                  "found": [
+                    "browser_console_messages",
+                    "slack_post_message",
+                    "browser_snapshot",
+                    "browser_take_screenshot",
+                    "slack_get_channel_history"
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "pw-tabs",
+              "expect": "browser_tabs",
+              "picked": "browser_tabs",
+              "correct": true,
+              "turns": 2,
+              "promptTokens": 1518,
+              "completionTokens": 56,
+              "trace": [
+                {
+                  "query": "list open browser tabs",
+                  "found": [
+                    "browser_tabs",
+                    "browser_close",
+                    "browser_navigate",
+                    "browser_click",
+                    "browser_network_requests"
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "pw-wait",
+              "expect": "browser_wait_for",
+              "picked": "browser_wait_for",
+              "correct": true,
+              "turns": 2,
+              "promptTokens": 1654,
+              "completionTokens": 65,
+              "trace": [
+                {
+                  "query": "wait for text to appear on web page (browser automation)",
+                  "found": [
+                    "browser_wait_for",
+                    "browser_click",
+                    "browser_hover",
+                    "browser_tabs",
+                    "browser_type"
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "pw-close",
+              "expect": "browser_close",
+              "picked": "browser_close",
+              "correct": true,
+              "turns": 2,
+              "promptTokens": 1442,
+              "completionTokens": 44,
+              "trace": [
+                {
+                  "query": "close browser page tab",
+                  "found": [
+                    "browser_close",
+                    "browser_tabs",
+                    "browser_click",
+                    "browser_resize",
+                    "browser_hover"
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "mem-create",
+              "expect": "create_entities",
+              "picked": "create_entities",
+              "correct": true,
+              "turns": 2,
+              "promptTokens": 1516,
+              "completionTokens": 74,
+              "trace": [
+                {
+                  "query": "create entity in knowledge graph",
+                  "found": [
+                    "create_entities",
+                    "add_observations",
+                    "delete_entities",
+                    "create_relations",
+                    "search_nodes"
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "mem-read",
+              "expect": "read_graph",
+              "picked": "read_graph",
+              "correct": true,
+              "turns": 2,
+              "promptTokens": 1467,
+              "completionTokens": 45,
+              "trace": [
+                {
+                  "query": "read knowledge graph entities and relations",
+                  "found": [
+                    "delete_entities",
+                    "read_graph",
+                    "create_relations",
+                    "create_entities",
+                    "delete_relations"
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "mem-search",
+              "expect": "search_nodes",
+              "picked": "search_nodes",
+              "correct": true,
+              "turns": 2,
+              "promptTokens": 1312,
+              "completionTokens": 57,
+              "trace": [
+                {
+                  "query": "search knowledge graph nodes by term",
+                  "found": [
+                    "search_nodes",
+                    "open_nodes",
+                    "read_graph",
+                    "create_entities",
+                    "delete_entities"
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "mem-delete",
+              "expect": "delete_entities",
+              "picked": "delete_entities",
+              "correct": true,
+              "turns": 2,
+              "promptTokens": 1451,
+              "completionTokens": 61,
+              "trace": [
+                {
+                  "query": "delete entity from knowledge graph",
+                  "found": [
+                    "delete_entities",
+                    "delete_observations",
+                    "delete_relations",
+                    "create_entities",
+                    "read_graph"
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "mem-observe",
+              "expect": "add_observations",
+              "picked": "add_observations",
+              "correct": true,
+              "turns": 2,
+              "promptTokens": 1439,
+              "completionTokens": 75,
+              "trace": [
+                {
+                  "query": "add observation to entity knowledge graph",
+                  "found": [
+                    "add_observations",
+                    "create_entities",
+                    "delete_observations",
+                    "delete_entities",
+                    "read_graph"
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "mem-relate",
+              "expect": "create_relations",
+              "picked": "create_relations",
+              "correct": true,
+              "turns": 2,
+              "promptTokens": 1526,
+              "completionTokens": 81,
+              "trace": [
+                {
+                  "query": "knowledge graph create relation edge between entities",
+                  "found": [
+                    "create_entities",
+                    "create_relations",
+                    "delete_entities",
+                    "add_observations",
+                    "search_nodes"
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "ev-sum",
+              "expect": "get-sum",
+              "picked": "get-sum",
+              "correct": true,
+              "turns": 2,
+              "promptTokens": 1492,
+              "completionTokens": 68,
+              "trace": [
+                {
+                  "query": "arithmetic add two numbers",
+                  "found": [
+                    "get-sum",
+                    "add_issue_comment",
+                    "add_observations",
+                    "slack_add_reaction",
+                    "create_relations"
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "ev-echo",
+              "expect": "echo",
+              "picked": "echo",
+              "correct": true,
+              "turns": 2,
+              "promptTokens": 1388,
+              "completionTokens": 54,
+              "trace": [
+                {
+                  "query": "echo a string back",
+                  "found": [
+                    "echo",
+                    "browser_navigate_back",
+                    "read_media_file",
+                    "browser_console_messages",
+                    "slack_post_message"
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "ev-env",
+              "expect": "get-env",
+              "picked": "get-env",
+              "correct": true,
+              "turns": 2,
+              "promptTokens": 1555,
+              "completionTokens": 44,
+              "trace": [
+                {
+                  "query": "read environment variables env vars",
+                  "found": [
+                    "get-env",
+                    "read_media_file",
+                    "read_text_file",
+                    "read_graph",
+                    "browser_evaluate"
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "ev-gzip",
+              "expect": "gzip-file-as-resource",
+              "picked": "search_files",
+              "correct": false,
+              "turns": 2,
+              "promptTokens": 1926,
+              "completionTokens": 69,
+              "trace": [
+                {
+                  "query": "compress file with gzip",
+                  "found": [
+                    "gzip-file-as-resource",
+                    "search_files",
+                    "read_media_file",
+                    "get_file_info",
+                    "read_text_file"
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "ev-image",
+              "expect": "get-tiny-image",
+              "picked": "get-tiny-image",
+              "correct": true,
+              "turns": 2,
+              "promptTokens": 1433,
+              "completionTokens": 52,
+              "trace": [
+                {
+                  "query": "get or fetch an image file (MCP logo)",
+                  "found": [
+                    "get-tiny-image",
+                    "read_media_file",
+                    "get-resource-reference",
+                    "get_file_contents",
+                    "get_file_info"
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "ev-logging",
+              "expect": "toggle-simulated-logging",
+              "picked": "toggle-simulated-logging",
+              "correct": true,
+              "turns": 2,
+              "promptTokens": 1406,
+              "completionTokens": 48,
+              "trace": [
+                {
+                  "query": "toggle simulated random level logging setting",
+                  "found": [
+                    "toggle-simulated-logging",
+                    "toggle-subscriber-updates",
+                    "simulate-research-query",
+                    "slack_list_channels",
+                    "add_observations"
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "st-1",
+              "expect": "sequentialthinking",
+              "picked": "sequentialthinking",
+              "correct": true,
+              "turns": 2,
+              "promptTokens": 3023,
+              "completionTokens": 148,
+              "trace": [
+                {
+                  "query": "numbered thoughts revision branching thinking framework",
+                  "found": [
+                    "sequentialthinking",
+                    "create_entities",
+                    "create_relations",
+                    "create_branch",
+                    "add_observations"
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "st-2",
+              "expect": "sequentialthinking",
+              "picked": null,
+              "correct": false,
+              "turns": 2,
+              "promptTokens": 3080,
+              "completionTokens": 287,
+              "trace": [
+                {
+                  "query": "structured reasoning steps that can be revised or updated later, scratchpad / plan management",
+                  "found": [
+                    "sequentialthinking",
+                    "simulate-research-query",
+                    "update_pull_request_branch",
+                    "create_entities",
+                    "create_relations"
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "none-capital",
+              "expect": null,
+              "picked": null,
+              "correct": true,
+              "turns": 1,
+              "promptTokens": 354,
+              "completionTokens": 9,
+              "trace": []
+            },
+            {
+              "id": "none-tcp",
+              "expect": null,
+              "picked": null,
+              "correct": true,
+              "turns": 1,
+              "promptTokens": 359,
+              "completionTokens": 90,
+              "trace": []
+            },
+            {
+              "id": "none-haiku",
+              "expect": null,
+              "picked": null,
+              "correct": true,
+              "turns": 1,
+              "promptTokens": 354,
+              "completionTokens": 23,
+              "trace": []
+            },
+            {
+              "id": "none-acronym",
+              "expect": null,
+              "picked": null,
+              "correct": true,
+              "turns": 1,
+              "promptTokens": 355,
+              "completionTokens": 28,
+              "trace": []
+            },
+            {
+              "id": "none-prime",
+              "expect": null,
+              "picked": null,
+              "correct": true,
+              "turns": 1,
+              "promptTokens": 360,
+              "completionTokens": 3,
+              "trace": []
+            },
+            {
+              "id": "none-translate",
+              "expect": null,
+              "picked": null,
+              "correct": true,
+              "turns": 1,
+              "promptTokens": 355,
+              "completionTokens": 15,
+              "trace": []
+            }
+          ]
+        },
+        "hub": {
+          "residentTokens": 709,
+          "overall": 92.9,
+          "toolTasks": 90.9,
+          "noToolTasks": 100,
+          "falseToolCalls": 0,
+          "exhausted": 0,
+          "avgTurns": 1.89,
+          "avgPromptTokens": 2125,
+          "rows": [
+            {
+              "id": "pw-navigate",
+              "expect": "browser_navigate",
+              "picked": "browser_navigate",
+              "server": "playwright",
+              "correct": true,
+              "turns": 2,
+              "promptTokens": 2193,
+              "completionTokens": 124,
+              "trace": [
+                {
+                  "action": "tools",
+                  "name": "playwright"
+                },
+                {
+                  "action": "call",
+                  "name": "playwright",
+                  "tool": "browser_navigate"
+                }
+              ]
+            },
+            {
+              "id": "pw-screenshot",
+              "expect": "browser_take_screenshot",
+              "picked": "browser_take_screenshot",
+              "server": "playwright",
+              "correct": true,
+              "turns": 2,
+              "promptTokens": 2221,
+              "completionTokens": 118,
+              "trace": [
+                {
+                  "action": "tools",
+                  "name": "playwright"
+                },
+                {
+                  "action": "call",
+                  "name": "playwright",
+                  "tool": "browser_take_screenshot"
+                }
+              ]
+            },
+            {
+              "id": "pw-resize",
+              "expect": "browser_resize",
+              "picked": "browser_resize",
+              "server": "playwright",
+              "correct": true,
+              "turns": 2,
+              "promptTokens": 2187,
+              "completionTokens": 131,
+              "trace": [
+                {
+                  "action": "tools",
+                  "name": "playwright"
+                },
+                {
+                  "action": "call",
+                  "name": "playwright",
+                  "tool": "browser_resize"
+                }
+              ]
+            },
+            {
+              "id": "pw-back",
+              "expect": "browser_navigate_back",
+              "picked": "go_back",
+              "server": "playwright",
+              "correct": false,
+              "turns": 1,
+              "promptTokens": 1035,
+              "completionTokens": 65,
+              "trace": [
+                {
+                  "action": "call",
+                  "name": "playwright",
+                  "tool": "go_back"
+                }
+              ]
+            },
+            {
+              "id": "pw-console",
+              "expect": "browser_console_messages",
+              "picked": "browser_console_messages",
+              "server": "playwright",
+              "correct": true,
+              "turns": 2,
+              "promptTokens": 2178,
+              "completionTokens": 116,
+              "trace": [
+                {
+                  "action": "tools",
+                  "name": "playwright"
+                },
+                {
+                  "action": "call",
+                  "name": "playwright",
+                  "tool": "browser_console_messages"
+                }
+              ]
+            },
+            {
+              "id": "pw-tabs",
+              "expect": "browser_tabs",
+              "picked": "browser_tabs",
+              "server": "playwright",
+              "correct": true,
+              "turns": 2,
+              "promptTokens": 2183,
+              "completionTokens": 120,
+              "trace": [
+                {
+                  "action": "tools",
+                  "name": "playwright"
+                },
+                {
+                  "action": "call",
+                  "name": "playwright",
+                  "tool": "browser_tabs"
+                }
+              ]
+            },
+            {
+              "id": "pw-wait",
+              "expect": "browser_wait_for",
+              "picked": "browser_wait_for",
+              "server": "playwright",
+              "correct": true,
+              "turns": 2,
+              "promptTokens": 2193,
+              "completionTokens": 124,
+              "trace": [
+                {
+                  "action": "tools",
+                  "name": "playwright"
+                },
+                {
+                  "action": "call",
+                  "name": "playwright",
+                  "tool": "browser_wait_for"
+                }
+              ]
+            },
+            {
+              "id": "pw-close",
+              "expect": "browser_close",
+              "picked": "browser_close",
+              "server": "playwright",
+              "correct": true,
+              "turns": 2,
+              "promptTokens": 2184,
+              "completionTokens": 115,
+              "trace": [
+                {
+                  "action": "tools",
+                  "name": "playwright"
+                },
+                {
+                  "action": "call",
+                  "name": "playwright",
+                  "tool": "browser_close"
+                }
+              ]
+            },
+            {
+              "id": "mem-create",
+              "expect": "create_entities",
+              "picked": "create_entities",
+              "server": "memory",
+              "correct": true,
+              "turns": 3,
+              "promptTokens": 3609,
+              "completionTokens": 164,
+              "trace": [
+                {
+                  "action": "tools",
+                  "name": "memory"
+                },
+                {
+                  "action": "tools",
+                  "name": "memory"
+                },
+                {
+                  "action": "call",
+                  "name": "memory",
+                  "tool": "create_entities"
+                }
+              ]
+            },
+            {
+              "id": "mem-read",
+              "expect": "read_graph",
+              "picked": "read_graph",
+              "server": "memory",
+              "correct": true,
+              "turns": 2,
+              "promptTokens": 2305,
+              "completionTokens": 102,
+              "trace": [
+                {
+                  "action": "tools",
+                  "name": "memory"
+                },
+                {
+                  "action": "call",
+                  "name": "memory",
+                  "tool": "read_graph"
+                }
+              ]
+            },
+            {
+              "id": "mem-search",
+              "expect": "search_nodes",
+              "picked": "search_nodes",
+              "server": "memory",
+              "correct": true,
+              "turns": 2,
+              "promptTokens": 2181,
+              "completionTokens": 119,
+              "trace": [
+                {
+                  "action": "tools",
+                  "name": "memory"
+                },
+                {
+                  "action": "call",
+                  "name": "memory",
+                  "tool": "search_nodes"
+                }
+              ]
+            },
+            {
+              "id": "mem-delete",
+              "expect": "delete_entities",
+              "picked": "delete_entities",
+              "server": "memory",
+              "correct": true,
+              "turns": 3,
+              "promptTokens": 3594,
+              "completionTokens": 171,
+              "trace": [
+                {
+                  "action": "tools",
+                  "name": "memory"
+                },
+                {
+                  "action": "tools",
+                  "name": "memory"
+                },
+                {
+                  "action": "call",
+                  "name": "memory",
+                  "tool": "delete_entities"
+                }
+              ]
+            },
+            {
+              "id": "mem-observe",
+              "expect": "add_observations",
+              "picked": "add_observations",
+              "server": "memory",
+              "correct": true,
+              "turns": 2,
+              "promptTokens": 2207,
+              "completionTokens": 128,
+              "trace": [
+                {
+                  "action": "tools",
+                  "name": "memory"
+                },
+                {
+                  "action": "call",
+                  "name": "memory",
+                  "tool": "add_observations"
+                }
+              ]
+            },
+            {
+              "id": "mem-relate",
+              "expect": "create_relations",
+              "picked": "create_relations",
+              "server": "memory",
+              "correct": true,
+              "turns": 2,
+              "promptTokens": 2243,
+              "completionTokens": 137,
+              "trace": [
+                {
+                  "action": "tools",
+                  "name": "memory"
+                },
+                {
+                  "action": "call",
+                  "name": "memory",
+                  "tool": "create_relations"
+                }
+              ]
+            },
+            {
+              "id": "ev-sum",
+              "expect": "get-sum",
+              "picked": "get-sum",
+              "server": "everything",
+              "correct": true,
+              "turns": 4,
+              "promptTokens": 5318,
+              "completionTokens": 205,
+              "trace": [
+                {
+                  "action": "search"
+                },
+                {
+                  "action": "tools",
+                  "name": "everything"
+                },
+                {
+                  "action": "tools",
+                  "name": "everything"
+                },
+                {
+                  "action": "call",
+                  "name": "everything",
+                  "tool": "get-sum"
+                }
+              ]
+            },
+            {
+              "id": "ev-echo",
+              "expect": "echo",
+              "picked": "echo",
+              "server": "everything",
+              "correct": true,
+              "turns": 1,
+              "promptTokens": 1037,
+              "completionTokens": 68,
+              "trace": [
+                {
+                  "action": "call",
+                  "name": "everything",
+                  "tool": "echo"
+                }
+              ]
+            },
+            {
+              "id": "ev-env",
+              "expect": "get-env",
+              "picked": "get-env",
+              "server": "everything",
+              "correct": true,
+              "turns": 2,
+              "promptTokens": 2186,
+              "completionTokens": 113,
+              "trace": [
+                {
+                  "action": "tools",
+                  "name": "everything"
+                },
+                {
+                  "action": "call",
+                  "name": "everything",
+                  "tool": "get-env"
+                }
+              ]
+            },
+            {
+              "id": "ev-gzip",
+              "expect": "gzip-file-as-resource",
+              "picked": "gzip-file-as-resource",
+              "server": "everything",
+              "correct": true,
+              "turns": 2,
+              "promptTokens": 2215,
+              "completionTokens": 121,
+              "trace": [
+                {
+                  "action": "tools",
+                  "name": "everything"
+                },
+                {
+                  "action": "call",
+                  "name": "everything",
+                  "tool": "gzip-file-as-resource"
+                }
+              ]
+            },
+            {
+              "id": "ev-image",
+              "expect": "get-tiny-image",
+              "picked": "get-tiny-image",
+              "server": "everything",
+              "correct": true,
+              "turns": 2,
+              "promptTokens": 2174,
+              "completionTokens": 115,
+              "trace": [
+                {
+                  "action": "tools",
+                  "name": "everything"
+                },
+                {
+                  "action": "call",
+                  "name": "everything",
+                  "tool": "get-tiny-image"
+                }
+              ]
+            },
+            {
+              "id": "ev-logging",
+              "expect": "toggle-simulated-logging",
+              "picked": "toggle-simulated-logging",
+              "server": "everything",
+              "correct": true,
+              "turns": 2,
+              "promptTokens": 2181,
+              "completionTokens": 121,
+              "trace": [
+                {
+                  "action": "tools",
+                  "name": "everything"
+                },
+                {
+                  "action": "call",
+                  "name": "everything",
+                  "tool": "toggle-simulated-logging"
+                }
+              ]
+            },
+            {
+              "id": "st-1",
+              "expect": "sequentialthinking",
+              "picked": "sequentialthinking",
+              "server": "sequential-thinking",
+              "correct": true,
+              "turns": 2,
+              "promptTokens": 2252,
+              "completionTokens": 160,
+              "trace": [
+                {
+                  "action": "tools",
+                  "name": "sequential-thinking"
+                },
+                {
+                  "action": "call",
+                  "name": "sequential-thinking",
+                  "tool": "sequentialthinking"
+                }
+              ]
+            },
+            {
+              "id": "st-2",
+              "expect": "sequentialthinking",
+              "picked": null,
+              "correct": false,
+              "turns": 3,
+              "promptTokens": 3432,
+              "completionTokens": 187,
+              "trace": [
+                {
+                  "action": "enable",
+                  "name": "sequential-thinking"
+                },
+                {
+                  "action": "tools",
+                  "name": "sequential-thinking"
+                }
+              ]
+            },
+            {
+              "id": "none-capital",
+              "expect": null,
+              "picked": null,
+              "correct": true,
+              "turns": 1,
+              "promptTokens": 1031,
+              "completionTokens": 8,
+              "trace": []
+            },
+            {
+              "id": "none-tcp",
+              "expect": null,
+              "picked": null,
+              "correct": true,
+              "turns": 1,
+              "promptTokens": 1036,
+              "completionTokens": 75,
+              "trace": []
+            },
+            {
+              "id": "none-haiku",
+              "expect": null,
+              "picked": null,
+              "correct": true,
+              "turns": 1,
+              "promptTokens": 1031,
+              "completionTokens": 25,
+              "trace": []
+            },
+            {
+              "id": "none-acronym",
+              "expect": null,
+              "picked": null,
+              "correct": true,
+              "turns": 1,
+              "promptTokens": 1032,
+              "completionTokens": 28,
+              "trace": []
+            },
+            {
+              "id": "none-prime",
+              "expect": null,
+              "picked": null,
+              "correct": true,
+              "turns": 1,
+              "promptTokens": 1037,
+              "completionTokens": 3,
+              "trace": []
+            },
+            {
+              "id": "none-translate",
+              "expect": null,
+              "picked": null,
+              "correct": true,
+              "turns": 1,
+              "promptTokens": 1032,
+              "completionTokens": 15,
+              "trace": []
+            }
+          ]
+        }
+      }
+    }
+  }
+}

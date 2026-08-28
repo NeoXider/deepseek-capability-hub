@@ -5,6 +5,45 @@ All notable changes to DeepSeek Capability Hub are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.0] - 2026-08-28
+
+### Added
+
+- **A head-to-head benchmark against Tool Search** (`pnpm bench:head-to-head`). Every
+  previous measurement compared this broker to a static configuration, which cannot
+  support a claim of being better than the other lazy approaches — none of them were in
+  the room. Now they are: a `tool_search` condition built the way Anthropic's Tool Search
+  Tool and Claude Code's MCP Tool Search work, with semantic retrieval over the full
+  library, at two catalog sizes (47 and 98 tools) where size is the only variable.
+
+  **The result does not favour this project, and is published as measured.** Accuracy is a
+  three-way tie — 96.4% at 47 tools, 92.9% at 98 — and Tool Search is the more compact
+  design: 75 resident tokens against this broker's 709, flat as the catalog grows, and
+  1,384 average prompt tokens against 2,125. What both lazy approaches beat is the static
+  list: a fifth of the prompt tokens, and 100% against 83.3% on the tasks where calling no
+  tool is correct.
+
+  Two findings came out of the failures. At scale, "compress report.txt with gzip" pulled
+  classic and Tool Search into filesystem distractors while the broker got it right; and
+  the broker called `go_back` on the first turn without listing anything, guessing a tool
+  name because the inlined capability list told it a browser existed. That is the first
+  measured cost of inlining the list.
+
+- `bench/capture-distractors.mjs` and a committed distractor snapshot, so the large scale
+  is reproducible offline. Puppeteer is captured but excluded from the distractor set: it
+  duplicates Playwright and would be a second correct answer rather than a distraction.
+
+### Fixed
+
+- Retrieval in the Tool Search condition is semantic rather than lexical. The first
+  version ranked `add_observations` above `get-sum` for "add two numbers", which would
+  have handicapped the competing approach and made any win here an artifact of a
+  deliberately weak baseline. Recall@5 of the semantic index is 12/12 on a probe set.
+- The benchmark harness retries on HTTP status rather than on message text — a 500 from
+  LM Studio arrives as an HTML error page, so matching the body missed it and killed a run
+  an hour in — and checkpoints each condition as it completes, so a late failure no longer
+  discards every earlier one.
+
 ## [0.5.0] - 2026-08-28
 
 Compactness and reliability, both driven by looking at where the cost and the failures

@@ -1,0 +1,274 @@
+{
+  "version": 1,
+  "_note": "catalog-described.json plus five distractor servers, for the large-scale head-to-head. None of the 28 benchmark tasks is answerable by any tool on a distractor. Puppeteer is deliberately absent: it duplicates Playwright and would be a second correct answer rather than a distractor.",
+  "entries": [
+    {
+      "kind": "mcp",
+      "name": "playwright",
+      "description": "Drive a real browser: navigate to URLs, go back, click, type, fill forms, press keys, resize the window, list and switch tabs, wait for text, take screenshots, read the accessibility tree and inspect console messages and network traffic.",
+      "tags": [
+        "browser",
+        "automation",
+        "web",
+        "testing",
+        "screenshot",
+        "navigate",
+        "click",
+        "console",
+        "network",
+        "tabs"
+      ],
+      "trusted": true,
+      "source": "devDependency:@playwright/mcp@0.0.79",
+      "permissions": [
+        "Starts a browser process",
+        "Reads and interacts with any page you navigate to"
+      ],
+      "transport": {
+        "type": "stdio",
+        "command": "node",
+        "args": [
+          "${catalogDir}/../node_modules/@playwright/mcp/cli.js"
+        ]
+      }
+    },
+    {
+      "kind": "mcp",
+      "name": "sequential-thinking",
+      "description": "Break a hard problem into numbered thoughts that can be revised, branched and backtracked as the reasoning proceeds. For multi-step planning and structured chains of reasoning, not for simple factual questions.",
+      "tags": [
+        "reasoning",
+        "planning",
+        "analysis",
+        "step-by-step",
+        "revise",
+        "branch"
+      ],
+      "trusted": true,
+      "source": "npm:@modelcontextprotocol/server-sequential-thinking@2026.7.4",
+      "permissions": [
+        "No filesystem or network access"
+      ],
+      "transport": {
+        "type": "stdio",
+        "command": "npx",
+        "args": [
+          "-y",
+          "@modelcontextprotocol/server-sequential-thinking@2026.7.4"
+        ]
+      }
+    },
+    {
+      "kind": "mcp",
+      "name": "memory",
+      "description": "A local knowledge graph that persists across sessions: create, read, search, open and delete entities; add and delete observations on them; create and delete relations between them.",
+      "tags": [
+        "memory",
+        "knowledge-graph",
+        "storage",
+        "entities",
+        "relations",
+        "observations",
+        "remember",
+        "recall"
+      ],
+      "trusted": true,
+      "source": "npm:@modelcontextprotocol/server-memory@2026.7.4",
+      "permissions": [
+        "Writes a local knowledge-graph file"
+      ],
+      "transport": {
+        "type": "stdio",
+        "command": "npx",
+        "args": [
+          "-y",
+          "@modelcontextprotocol/server-memory@2026.7.4"
+        ]
+      }
+    },
+    {
+      "kind": "mcp",
+      "name": "everything",
+      "description": "Assorted utilities: echo a string back, add two numbers, return the server's environment variables, gzip-compress a file, return a small image, toggle simulated logging and subscription updates, run a long operation with progress, and return annotated, structured or resource-linked content.",
+      "tags": [
+        "echo",
+        "sum",
+        "add",
+        "arithmetic",
+        "environment",
+        "env",
+        "gzip",
+        "compress",
+        "image",
+        "logging",
+        "utilities",
+        "reference"
+      ],
+      "trusted": true,
+      "source": "npm:@modelcontextprotocol/server-everything@2026.8.18",
+      "permissions": [
+        "Local demo server, no external side effects"
+      ],
+      "transport": {
+        "type": "stdio",
+        "command": "npx",
+        "args": [
+          "-y",
+          "@modelcontextprotocol/server-everything@2026.8.18"
+        ]
+      }
+    },
+    {
+      "kind": "mcp",
+      "name": "filesystem",
+      "description": "Read, write, move and delete files and directories on disk: list a directory, read a file, write or append to one, search for files by name, and inspect file metadata.",
+      "tags": [
+        "files",
+        "filesystem",
+        "disk",
+        "read",
+        "write",
+        "directory",
+        "path"
+      ],
+      "trusted": true,
+      "source": "npm:@modelcontextprotocol/server-filesystem",
+      "permissions": [
+        "Reads and writes files under the allowed directory"
+      ],
+      "transport": {
+        "type": "stdio",
+        "command": "npx",
+        "args": [
+          "-y",
+          "@modelcontextprotocol/server-filesystem@2026.7.10",
+          "${catalogDir}"
+        ]
+      },
+      "configurable": []
+    },
+    {
+      "kind": "mcp",
+      "name": "github",
+      "description": "Work with GitHub repositories: create and update files, open and comment on issues and pull requests, search code and repositories, create branches, and read commit history.",
+      "tags": [
+        "github",
+        "git",
+        "repository",
+        "issues",
+        "pull-request",
+        "code-search",
+        "commits"
+      ],
+      "trusted": true,
+      "source": "npm:@modelcontextprotocol/server-github",
+      "permissions": [
+        "Network access to the GitHub API",
+        "Acts as the configured GitHub account"
+      ],
+      "transport": {
+        "type": "stdio",
+        "command": "npx",
+        "args": [
+          "-y",
+          "@modelcontextprotocol/server-github@2025.4.8"
+        ],
+        "env": {
+          "GITHUB_PERSONAL_ACCESS_TOKEN": "bench-placeholder"
+        }
+      },
+      "configurable": []
+    },
+    {
+      "kind": "mcp",
+      "name": "slack",
+      "description": "Read and post in a Slack workspace: list channels and users, post a message, reply in a thread, add a reaction, and read channel or thread history.",
+      "tags": [
+        "slack",
+        "chat",
+        "messaging",
+        "channels",
+        "threads",
+        "team"
+      ],
+      "trusted": true,
+      "source": "npm:@modelcontextprotocol/server-slack",
+      "permissions": [
+        "Network access to the Slack API",
+        "Posts as the configured bot"
+      ],
+      "transport": {
+        "type": "stdio",
+        "command": "npx",
+        "args": [
+          "-y",
+          "@modelcontextprotocol/server-slack@2025.4.25"
+        ],
+        "env": {
+          "SLACK_BOT_TOKEN": "xoxb-bench-placeholder",
+          "SLACK_TEAM_ID": "T0000000000"
+        }
+      },
+      "configurable": []
+    },
+    {
+      "kind": "mcp",
+      "name": "brave-search",
+      "description": "Search the public web and local business listings through the Brave Search API and return ranked results with titles, URLs and snippets.",
+      "tags": [
+        "search",
+        "web",
+        "internet",
+        "brave",
+        "results",
+        "lookup"
+      ],
+      "trusted": true,
+      "source": "npm:@modelcontextprotocol/server-brave-search",
+      "permissions": [
+        "Network access to the Brave Search API"
+      ],
+      "transport": {
+        "type": "stdio",
+        "command": "npx",
+        "args": [
+          "-y",
+          "@modelcontextprotocol/server-brave-search@0.6.2"
+        ],
+        "env": {
+          "BRAVE_API_KEY": "bench-placeholder"
+        }
+      },
+      "configurable": []
+    },
+    {
+      "kind": "mcp",
+      "name": "postgres",
+      "description": "Run read-only SQL queries against a PostgreSQL database and inspect its tables and schemas.",
+      "tags": [
+        "postgres",
+        "sql",
+        "database",
+        "query",
+        "schema",
+        "tables"
+      ],
+      "trusted": true,
+      "source": "npm:@modelcontextprotocol/server-postgres",
+      "permissions": [
+        "Network access to the configured database",
+        "Read-only SQL execution"
+      ],
+      "transport": {
+        "type": "stdio",
+        "command": "npx",
+        "args": [
+          "-y",
+          "@modelcontextprotocol/server-postgres@0.6.2",
+          "postgresql://localhost/postgres"
+        ]
+      },
+      "configurable": []
+    }
+  ]
+}

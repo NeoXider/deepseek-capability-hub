@@ -240,6 +240,90 @@ kink in the scaling table above.
 
 
 
+## Head to head against Tool Search
+
+Everything above compares this broker to a static configuration. That is the easy
+comparison, and on its own it cannot support a claim of being better than the other lazy
+approaches — none of them were in the room. So they were put in it.
+
+```
+pnpm bench:head-to-head
+```
+
+Three conditions, the same 28 tasks, the same ground truth, the same model:
+
+- **classic** — every tool definition resident, one shot.
+- **toolSearch** — one resident `tool_search` tool. The model searches the library by
+  intent, the matching definitions are *loaded*, and it calls them natively on the next
+  turn. This is the shape of Anthropic's Tool Search Tool and Claude Code's MCP Tool
+  Search. Retrieval is semantic, using a real embedding model — an earlier lexical version
+  scored `add_observations` above `get-sum` for "add two numbers", and shipping that would
+  have handicapped the competitor and made any win here an artifact. Recall@5 of the
+  semantic index is 12/12 on a probe set.
+- **hub** — this project, as shipped.
+
+And two catalog sizes, where size is the *only* difference: **47 tools** across the four
+servers that can answer the tasks, then the same four plus five distractor servers for
+**98 tools**. No task is answerable by a distractor. Puppeteer was captured and then
+deliberately excluded, because it duplicates Playwright and would have been a second
+correct answer rather than a distraction.
+
+### 47 tools
+
+| Condition | Resident | Overall | Tool tasks | No-tool | False calls | Avg turns | Avg prompt |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| classic | 6,200 | **96.4%** | 100% | 83.3% | 1 | 1 | 7,269 |
+| toolSearch | **75** | **96.4%** | 95.5% | 100% | 0 | 1.79 | **1,373** |
+| hub | 533 | **96.4%** | 95.5% | 100% | 0 | 1.96 | 1,873 |
+
+### 98 tools
+
+| Condition | Resident | Overall | Tool tasks | No-tool | False calls | Avg turns | Avg prompt |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| classic | 12,422 | **92.9%** | 95.5% | 83.3% | 1 | 1 | 14,701 |
+| toolSearch | **75** | **92.9%** | 90.9% | 100% | 0 | 1.79 | **1,384** |
+| hub | 709 | **92.9%** | 90.9% | 100% | 0 | 1.89 | 2,125 |
+
+### What this says, including the parts that are not flattering
+
+**Nobody wins on accuracy.** A three-way tie at both scales. Whatever this benchmark is
+sensitive to, the choice between a broker, a search tool and a static list is not it.
+
+**Tool Search is the more compact design.** 75 resident tokens against this project's 533,
+and it does not grow with the catalog, because its resident surface is a single query
+string. The broker's surface carries an action enum, a payload field and an inlined
+capability list, and it grew to 709 tokens at 98 tools. On average prompt tokens per task
+it wins too: 1,373 against 1,873. That is not a small margin and it should not be buried.
+
+**Both lazy approaches beat a static list where it matters least and most.** They cost
+roughly a fifth of classic's prompt tokens, and they scored 100% on the six tasks where
+the right answer is to use no tool at all, against classic's 83.3% at both scales. Classic's
+single false call — reaching for `sequentialthinking` to decide whether 97 is prime —
+survived every run.
+
+**Scaling hurt everyone equally.** 96.4% to 92.9% across the board. The hypothesis that
+lazy loading protects accuracy as the catalog grows is *not* supported here; it protects
+context, and this sample was too small and too easy for a selection gap to open. The
+published gains that show otherwise come from far larger libraries than 98 tools.
+
+**Two failures at scale are worth naming.** For "compress report.txt with gzip", classic
+picked `list_allowed_directories` and toolSearch picked `search_files` — both filesystem
+distractors, both wrong, and the hub got it right. In the other direction, the hub called
+`go_back` on the first turn without listing anything: the inlined capability list told it a
+browser existed and it guessed a tool name instead of checking. That is a cost of inlining
+the list, and it is the first evidence of one.
+
+### Where this comparison is unfair, in our favour
+
+The toolSearch condition is idealised. Its index is built ahead of time over every tool
+definition, which in reality means every server has been enumerated and is therefore
+running — the thing this project defers. The embedding model that powers the retrieval is
+a second resident model, and none of its cost is charged to the toolSearch column. The hub
+column, by contrast, pays for everything it uses.
+
+Correcting that would narrow the efficiency gap. It would not close a 7x difference in
+resident tokens, and it does not change the accuracy tie.
+
 ## Prior art, and where this sits
 
 Lazy tool loading is not a new idea and this project did not originate it. By the time

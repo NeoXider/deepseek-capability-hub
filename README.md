@@ -12,7 +12,7 @@
   <img alt="MCP" src="https://img.shields.io/badge/MCP-1.30-8b79ff" />
   <img alt="Context saved" src="https://img.shields.io/badge/context-93.2%25%20smaller-49e7c6" />
   <img alt="Accuracy" src="https://img.shields.io/badge/accuracy-96.4%25%20vs%2096.4%25-49e7c6" />
-  <a href="CHANGELOG.md"><img alt="Changelog" src="https://img.shields.io/badge/changelog-0.5.0-8b79ff" /></a>
+  <a href="CHANGELOG.md"><img alt="Changelog" src="https://img.shields.io/badge/changelog-0.6.0-8b79ff" /></a>
   <a href="LICENSE"><img alt="MIT License" src="https://img.shields.io/badge/license-MIT-blue.svg" /></a>
 </p>
 
@@ -135,12 +135,46 @@ points between runs. Across three runs the classic condition reproduced at exact
 every time and the shipped hub scored 96.4–100%; the two ablation rows always landed below
 both, never above.
 
-The full write-up, including where a broker stops being the right trade, prior art, and
-the limits of this sample, is in [docs/context-economy.md](docs/context-economy.md).
+## Head to head against Tool Search
 
-Raw per-tool measurements are committed under [`bench/snapshots/`](bench/snapshots)
-and the full report in [`bench/results.json`](bench/results.json), so the table can be
-re-derived without network access.
+Everything above compares this broker to a static configuration, which cannot support a
+claim of being better than the *other* lazy approaches. So they were measured too — same
+28 tasks, same model, and a `tool_search` condition built the way Anthropic's Tool Search
+Tool and Claude Code's MCP Tool Search work, with real semantic retrieval.
+
+```powershell
+pnpm bench:head-to-head
+```
+
+| 98 tools | Resident | Overall | No-tool | False calls | Avg prompt |
+|---|---:|---:|---:|---:|---:|
+| classic | 12,422 | 92.9% | 83.3% | 1 | 14,701 |
+| **toolSearch** | **75** | 92.9% | 100% | 0 | **1,384** |
+| hub | 709 | 92.9% | 100% | 0 | 2,125 |
+
+**Read this honestly: it is a tie on accuracy, and Tool Search is the more compact
+design.** 75 resident tokens against 709, and it does not grow with the catalog, because
+its resident surface is one query string. This project's surface carries an action enum, a
+payload field and an inlined capability list.
+
+What both lazy approaches do beat is a static list: about a fifth of the prompt tokens,
+and 100% on the six tasks where the correct answer is to call nothing, against classic's
+83.3%.
+
+Where this broker still earns its place is the axis none of these numbers cover — it keeps
+capabilities **stopped**, not merely hidden, and it carries permissions, configuration and
+human approval that a search tool has no opinion about. The comparison is also unfair in
+our favour in one way that is spelled out in the write-up: the Tool Search index assumes
+every server has already been enumerated, and its embedding model is not charged for.
+
+Full tables for both scales, the failure analysis and the prior-art section are in
+[docs/context-economy.md](docs/context-economy.md).
+
+Raw per-tool measurements are committed under [`bench/snapshots/`](bench/snapshots), the
+token report in [`bench/results.json`](bench/results.json), the accuracy report in
+[`bench/accuracy.json`](bench/accuracy.json) and the comparison in
+[`bench/head-to-head.json`](bench/head-to-head.json), so every table can be re-derived
+without network access.
 
 ## Proof that it is actually dynamic
 
