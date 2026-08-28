@@ -10,6 +10,7 @@ Thumbs.db
 
 # Benchmark runtime state (snapshots and results are committed on purpose)
 bench/state/
+bench/state-described/
 .playwright-mcp/
 
 # Throwaway experiment scripts (superseded by bench/measure.mjs)
@@ -17,3 +18,7 @@ bench/state/
 
 # Scratch scripts from audit runs
 audit-scratch/
+
+# Harness smoke receipts: timestamped, model-specific, one per run. The committed
+# evidence is the reproducible kind under bench/.
+artifacts/

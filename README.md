@@ -4,14 +4,15 @@
 
 <h1 align="center">DeepSeek Capability Hub</h1>
 
-<p align="center"><strong>One stable MCP tool instead of every schema you own — measured 94.4% smaller resident context.</strong></p>
+<p align="center"><strong>One stable MCP tool instead of every schema you own — 92.5% smaller resident context, at the same tool-selection accuracy. Both measured.</strong></p>
 
 <p align="center">
   <a href="https://github.com/NeoXider/neoxider-mcp-hub/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/NeoXider/neoxider-mcp-hub/actions/workflows/ci.yml/badge.svg" /></a>
   <img alt="Node.js 22+" src="https://img.shields.io/badge/Node.js-22%2B-49e7c6" />
   <img alt="MCP" src="https://img.shields.io/badge/MCP-1.30-8b79ff" />
-  <img alt="Context saved" src="https://img.shields.io/badge/context-94.4%25%20smaller-49e7c6" />
-  <a href="CHANGELOG.md"><img alt="Changelog" src="https://img.shields.io/badge/changelog-0.3.1-8b79ff" /></a>
+  <img alt="Context saved" src="https://img.shields.io/badge/context-92.5%25%20smaller-49e7c6" />
+  <img alt="Accuracy" src="https://img.shields.io/badge/accuracy-96.4%25%20vs%2096.4%25-49e7c6" />
+  <a href="CHANGELOG.md"><img alt="Changelog" src="https://img.shields.io/badge/changelog-0.4.0-8b79ff" /></a>
   <a href="LICENSE"><img alt="MIT License" src="https://img.shields.io/badge/license-MIT-blue.svg" /></a>
 </p>
 
@@ -38,49 +39,99 @@ pnpm bench
 | `@modelcontextprotocol/server-sequential-thinking` | Structured reasoning | 1 | 851 |
 | `@playwright/mcp` | Browser automation | 24 | 3,383 |
 | **Total — classic MCP** | four servers, always resident | **47** | **6,200** |
-| **Total — Capability Hub** | one broker tool | **1** | **350** |
+| **Total — Capability Hub** | one broker tool | **1** | **466** |
 
-**The permanent cost drops 94.4%, or 17.7x.** That is the part of the prompt you pay
+**The permanent cost drops 92.5%, or 13.3x.** That is the part of the prompt you pay
 for on every single turn, whether or not the task touches a tool.
+
+### The saving grows with your catalog
+
+The hub publishes one schema no matter how many servers you configure, so the classic
+side grows linearly while the hub side grows only by a line of catalog prose per entry —
+and stops growing once the list degrades to names only. Each hub figure below is measured
+by starting the real server against a catalog of that size, not projected:
+
+| Servers configured | Classic tokens | Hub resident | Saved |
+|---:|---:|---:|---:|
+| 4 | 6,200 | 474 | 92.4% |
+| 10 | 15,500 | 628 | 95.9% |
+| 20 | 31,000 | 870 | 97.2% |
+| 30 | 46,500 | 512 | 98.9% |
+| 60 | 93,000 | 639 | **99.3%** |
+
+The drop at 30 is the degradation firing: full descriptions no longer fit the budget, the
+list falls back to names, and the resident cost roughly halves.
 
 ### The honest other half
 
 The hub is not free: what the classic setup pays once up front, the hub pays at
-runtime when the agent actually opens a capability. Measured against the heaviest
-server in the catalog (Playwright, 24 tools):
+runtime when the agent actually opens a capability. There is no single "per task"
+number — an earlier version of this README published one, and it was the most
+expensive possible path presented as typical. Three scenarios:
 
-| Step | Tokens |
-|---|---:|
-| `search` — find candidates in the catalog | 72 |
-| `inspect` — permissions, transport, config status | 120 |
-| `tools` — names and descriptions, schemas withheld | 558 |
-| **One discovery round trip** | **750** |
-| Hub schema, always resident | 350 |
-| **Total for a task that opens one capability** | **1,100** |
+| Scenario | Path | Hub tokens | vs 6,200 |
+|---|---|---:|---:|
+| **idle** — task needs no capability | resident schema only | 466 | **92.5%** saved |
+| **direct** — task opens one capability | `search` + `tools` with a query | 598 | **90.4%** saved |
+| **cautious** — also reviews permissions, reads the full list | `search` + `inspect` + `enable` + `tools` | 1,239 | 80.0% saved |
 
-So a realistic single-capability task costs **1,100 tokens against 6,200 — 82.3% less**.
-The break-even is about **8 discovery round trips in one session**: below that the hub
-wins, above it a static configuration is cheaper. The hub is therefore the right trade
-when you have many servers and each task touches few of them, and the wrong one when
-every task uses every tool you have.
+The direct row still charges a `search`, which the inlined catalog list often makes
+unnecessary — a conservative choice, since the bias should run against our own number.
 
-Narrowing helps further — `tools` accepts a query, so an agent that already knows what
-it wants pays **42 tokens instead of 558**:
+The direct path is cheap for two reasons that were already in the code while the
+benchmark was ignoring them: **`tools` starts the server itself**, so `enable` is not
+on the critical path, and **`tools` accepts a query**, costing 60 tokens instead of 558
+when the agent already knows what it wants:
 
 ```json
 {"action":"tools","name":"playwright","query":"click"}
 ```
 
-Two design decisions came directly out of these measurements:
+Break-even is about **47 direct discoveries** in one session, or **8** if the agent takes
+the cautious path every time. Below that the hub wins; above it a static configuration is
+cheaper. The hub is therefore the right trade when you have many servers and each task
+touches few of them, and the wrong one when every task uses every tool you have.
+
+Three design decisions came directly out of these measurements:
 
 - `enable` used to return the full tool list, and the documented next step is `tools` —
   so the workflow paid for the same list twice, 1,567 tokens instead of 780. `enable`
   now returns a count and a pointer to the next action.
 - Model-facing JSON is serialized compactly. Indentation is not information, and
   pretty-printing measured 31% more tokens on the same payload.
+- The capability list ships inside the tool description rather than behind a `search`
+  call — see the accuracy table below for what that bought.
 
-The full write-up, including where a broker stops being the right trade, is in
-[docs/context-economy.md](docs/context-economy.md).
+## Measured tool-selection accuracy
+
+Saving context is worthless if the model then picks the wrong tool. So that is measured
+too, against **Qwen3.8-27B** running locally at temperature 0 — 28 tasks with known
+answers, of which **6 need no tool at all** and calling one is scored as a failure.
+
+```powershell
+pnpm bench:accuracy
+```
+
+| Condition | Resident | Overall | No-tool tasks | False calls | Avg turns | Avg prompt |
+|---|---:|---:|---:|---:|---:|---:|
+| **classic** — 47 schemas resident | 6,200 | **96.4%** | 83.3% | **1** | 1 | 7,269 |
+| hub, vague catalog | 466 | 85.7% | 83.3% | 1 | 2.93 | 2,922 |
+| hub, list not inlined | 372 | 92.9% | 100% | 0 | 3.61 | 3,403 |
+| **hub, as shipped** | 577 | **96.4%** | 100% | **0** | 2.18 | **2,262** |
+
+**Same accuracy on a tenth of the resident context — and fewer total tokens.** 2,262
+prompt tokens per task against 7,269, summed across every turn of the multi-turn
+protocol. The penalty a broker is supposed to pay for extra round trips did not appear.
+
+The classic setup's single failure is worth naming: asked *"Is 97 a prime number?"*, the
+model with 47 tools resident reached for `sequentialthinking`. Every hub condition with a
+usable catalog scored 100% on the no-tool tasks.
+
+The vague-catalog row is the same code and the same servers — only the descriptions
+differ. **Write your catalog so it can be found**; it is worth ~11 points.
+
+The full write-up, including where a broker stops being the right trade, prior art, and
+the limits of this sample, is in [docs/context-economy.md](docs/context-economy.md).
 
 Raw per-tool measurements are committed under [`bench/snapshots/`](bench/snapshots)
 and the full report in [`bench/results.json`](bench/results.json), so the table can be

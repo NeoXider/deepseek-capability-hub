@@ -1,0 +1,2252 @@
+{
+  "model": "qwen3.8-27b-unleashed",
+  "tasks": 28,
+  "toolTasks": 22,
+  "conditions": {
+    "classic": {
+      "overall": 96.4,
+      "toolTasks": 100,
+      "noToolTasks": 83.3,
+      "falseToolCalls": 1,
+      "exhausted": 0,
+      "perServer": {
+        "playwright": {
+          "total": 8,
+          "correct": 8,
+          "percent": 100
+        },
+        "memory": {
+          "total": 6,
+          "correct": 6,
+          "percent": 100
+        },
+        "everything": {
+          "total": 6,
+          "correct": 6,
+          "percent": 100
+        },
+        "sequential-thinking": {
+          "total": 2,
+          "correct": 2,
+          "percent": 100
+        }
+      },
+      "avgTurns": 1,
+      "avgPromptTokens": 7269,
+      "avgCompletionTokens": 49,
+      "rows": [
+        {
+          "id": "pw-navigate",
+          "expect": "browser_navigate",
+          "picked": "browser_navigate",
+          "correct": true,
+          "turns": 1,
+          "promptTokens": 7266,
+          "completionTokens": 30
+        },
+        {
+          "id": "pw-screenshot",
+          "expect": "browser_take_screenshot",
+          "picked": "browser_take_screenshot",
+          "correct": true,
+          "turns": 1,
+          "promptTokens": 7268,
+          "completionTokens": 29
+        },
+        {
+          "id": "pw-resize",
+          "expect": "browser_resize",
+          "picked": "browser_resize",
+          "correct": true,
+          "turns": 1,
+          "promptTokens": 7273,
+          "completionTokens": 44
+        },
+        {
+          "id": "pw-back",
+          "expect": "browser_navigate_back",
+          "picked": "browser_navigate_back",
+          "correct": true,
+          "turns": 1,
+          "promptTokens": 7268,
+          "completionTokens": 17
+        },
+        {
+          "id": "pw-console",
+          "expect": "browser_console_messages",
+          "picked": "browser_console_messages",
+          "correct": true,
+          "turns": 1,
+          "promptTokens": 7268,
+          "completionTokens": 28
+        },
+        {
+          "id": "pw-tabs",
+          "expect": "browser_tabs",
+          "picked": "browser_tabs",
+          "correct": true,
+          "turns": 1,
+          "promptTokens": 7267,
+          "completionTokens": 27
+        },
+        {
+          "id": "pw-wait",
+          "expect": "browser_wait_for",
+          "picked": "browser_wait_for",
+          "correct": true,
+          "turns": 1,
+          "promptTokens": 7270,
+          "completionTokens": 28
+        },
+        {
+          "id": "pw-close",
+          "expect": "browser_close",
+          "picked": "browser_close",
+          "correct": true,
+          "turns": 1,
+          "promptTokens": 7262,
+          "completionTokens": 15
+        },
+        {
+          "id": "mem-create",
+          "expect": "create_entities",
+          "picked": "create_entities",
+          "correct": true,
+          "turns": 1,
+          "promptTokens": 7275,
+          "completionTokens": 44
+        },
+        {
+          "id": "mem-read",
+          "expect": "read_graph",
+          "picked": "read_graph",
+          "correct": true,
+          "turns": 1,
+          "promptTokens": 7264,
+          "completionTokens": 14
+        },
+        {
+          "id": "mem-search",
+          "expect": "search_nodes",
+          "picked": "search_nodes",
+          "correct": true,
+          "turns": 1,
+          "promptTokens": 7268,
+          "completionTokens": 26
+        },
+        {
+          "id": "mem-delete",
+          "expect": "delete_entities",
+          "picked": "delete_entities",
+          "correct": true,
+          "turns": 1,
+          "promptTokens": 7270,
+          "completionTokens": 31
+        },
+        {
+          "id": "mem-observe",
+          "expect": "add_observations",
+          "picked": "add_observations",
+          "correct": true,
+          "turns": 1,
+          "promptTokens": 7272,
+          "completionTokens": 44
+        },
+        {
+          "id": "mem-relate",
+          "expect": "create_relations",
+          "picked": "create_relations",
+          "correct": true,
+          "turns": 1,
+          "promptTokens": 7279,
+          "completionTokens": 49
+        },
+        {
+          "id": "ev-sum",
+          "expect": "get-sum",
+          "picked": "get-sum",
+          "correct": true,
+          "turns": 1,
+          "promptTokens": 7273,
+          "completionTokens": 38
+        },
+        {
+          "id": "ev-echo",
+          "expect": "echo",
+          "picked": "echo",
+          "correct": true,
+          "turns": 1,
+          "promptTokens": 7270,
+          "completionTokens": 25
+        },
+        {
+          "id": "ev-env",
+          "expect": "get-env",
+          "picked": "get-env",
+          "correct": true,
+          "turns": 1,
+          "promptTokens": 7270,
+          "completionTokens": 14
+        },
+        {
+          "id": "ev-gzip",
+          "expect": "gzip-file-as-resource",
+          "picked": "gzip-file-as-resource",
+          "correct": true,
+          "turns": 1,
+          "promptTokens": 7266,
+          "completionTokens": 42
+        },
+        {
+          "id": "ev-image",
+          "expect": "get-tiny-image",
+          "picked": "get-tiny-image",
+          "correct": true,
+          "turns": 1,
+          "promptTokens": 7265,
+          "completionTokens": 16
+        },
+        {
+          "id": "ev-logging",
+          "expect": "toggle-simulated-logging",
+          "picked": "toggle-simulated-logging",
+          "correct": true,
+          "turns": 1,
+          "promptTokens": 7265,
+          "completionTokens": 17
+        },
+        {
+          "id": "st-1",
+          "expect": "sequentialthinking",
+          "picked": "sequentialthinking",
+          "correct": true,
+          "turns": 1,
+          "promptTokens": 7274,
+          "completionTokens": 247
+        },
+        {
+          "id": "st-2",
+          "expect": "sequentialthinking",
+          "picked": "sequentialthinking",
+          "correct": true,
+          "turns": 1,
+          "promptTokens": 7273,
+          "completionTokens": 133
+        },
+        {
+          "id": "none-capital",
+          "expect": null,
+          "picked": null,
+          "correct": true,
+          "turns": 1,
+          "promptTokens": 7264,
+          "completionTokens": 9
+        },
+        {
+          "id": "none-tcp",
+          "expect": null,
+          "picked": null,
+          "correct": true,
+          "turns": 1,
+          "promptTokens": 7269,
+          "completionTokens": 64
+        },
+        {
+          "id": "none-haiku",
+          "expect": null,
+          "picked": null,
+          "correct": true,
+          "turns": 1,
+          "promptTokens": 7264,
+          "completionTokens": 25
+        },
+        {
+          "id": "none-acronym",
+          "expect": null,
+          "picked": null,
+          "correct": true,
+          "turns": 1,
+          "promptTokens": 7265,
+          "completionTokens": 128
+        },
+        {
+          "id": "none-prime",
+          "expect": null,
+          "picked": "sequentialthinking",
+          "correct": false,
+          "turns": 1,
+          "promptTokens": 7270,
+          "completionTokens": 161
+        },
+        {
+          "id": "none-translate",
+          "expect": null,
+          "picked": null,
+          "correct": true,
+          "turns": 1,
+          "promptTokens": 7265,
+          "completionTokens": 15
+        }
+      ],
+      "residentTokens": 6200
+    },
+    "hubVagueCatalog": {
+      "overall": 85.7,
+      "toolTasks": 86.4,
+      "noToolTasks": 83.3,
+      "falseToolCalls": 1,
+      "exhausted": 1,
+      "perServer": {
+        "playwright": {
+          "total": 8,
+          "correct": 8,
+          "percent": 100
+        },
+        "memory": {
+          "total": 6,
+          "correct": 6,
+          "percent": 100
+        },
+        "everything": {
+          "total": 6,
+          "correct": 4,
+          "percent": 66.7
+        },
+        "sequential-thinking": {
+          "total": 2,
+          "correct": 1,
+          "percent": 50
+        }
+      },
+      "avgTurns": 2.93,
+      "avgPromptTokens": 2922,
+      "avgCompletionTokens": 168,
+      "rows": [
+        {
+          "id": "pw-navigate",
+          "expect": "browser_navigate",
+          "picked": "browser_navigate",
+          "server": "playwright",
+          "correct": true,
+          "turns": 2,
+          "promptTokens": 1747,
+          "completionTokens": 123,
+          "trace": [
+            {
+              "action": "tools",
+              "name": "playwright"
+            },
+            {
+              "action": "call",
+              "name": "playwright",
+              "tool": "browser_navigate"
+            }
+          ]
+        },
+        {
+          "id": "pw-screenshot",
+          "expect": "browser_take_screenshot",
+          "picked": "browser_take_screenshot",
+          "server": "playwright",
+          "correct": true,
+          "turns": 2,
+          "promptTokens": 1775,
+          "completionTokens": 118,
+          "trace": [
+            {
+              "action": "tools",
+              "name": "playwright"
+            },
+            {
+              "action": "call",
+              "name": "playwright",
+              "tool": "browser_take_screenshot"
+            }
+          ]
+        },
+        {
+          "id": "pw-resize",
+          "expect": "browser_resize",
+          "picked": "browser_resize",
+          "server": "playwright",
+          "correct": true,
+          "turns": 4,
+          "promptTokens": 4363,
+          "completionTokens": 219,
+          "trace": [
+            {
+              "action": "tools",
+              "name": "playwright"
+            },
+            {
+              "action": "tools",
+              "name": "playwright"
+            },
+            {
+              "action": "tools",
+              "name": "playwright"
+            },
+            {
+              "action": "call",
+              "name": "playwright",
+              "tool": "browser_resize"
+            }
+          ]
+        },
+        {
+          "id": "pw-back",
+          "expect": "browser_navigate_back",
+          "picked": "browser_navigate_back",
+          "server": "playwright",
+          "correct": true,
+          "turns": 2,
+          "promptTokens": 1739,
+          "completionTokens": 118,
+          "trace": [
+            {
+              "action": "tools",
+              "name": "playwright"
+            },
+            {
+              "action": "call",
+              "name": "playwright",
+              "tool": "browser_navigate_back"
+            }
+          ]
+        },
+        {
+          "id": "pw-console",
+          "expect": "browser_console_messages",
+          "picked": "browser_console_messages",
+          "server": "playwright",
+          "correct": true,
+          "turns": 2,
+          "promptTokens": 1732,
+          "completionTokens": 116,
+          "trace": [
+            {
+              "action": "tools",
+              "name": "playwright"
+            },
+            {
+              "action": "call",
+              "name": "playwright",
+              "tool": "browser_console_messages"
+            }
+          ]
+        },
+        {
+          "id": "pw-tabs",
+          "expect": "browser_tabs",
+          "picked": "browser_tabs",
+          "server": "playwright",
+          "correct": true,
+          "turns": 2,
+          "promptTokens": 1737,
+          "completionTokens": 119,
+          "trace": [
+            {
+              "action": "tools",
+              "name": "playwright"
+            },
+            {
+              "action": "call",
+              "name": "playwright",
+              "tool": "browser_tabs"
+            }
+          ]
+        },
+        {
+          "id": "pw-wait",
+          "expect": "browser_wait_for",
+          "picked": "browser_wait_for",
+          "server": "playwright",
+          "correct": true,
+          "turns": 2,
+          "promptTokens": 1747,
+          "completionTokens": 124,
+          "trace": [
+            {
+              "action": "tools",
+              "name": "playwright"
+            },
+            {
+              "action": "call",
+              "name": "playwright",
+              "tool": "browser_wait_for"
+            }
+          ]
+        },
+        {
+          "id": "pw-close",
+          "expect": "browser_close",
+          "picked": "browser_close",
+          "server": "playwright",
+          "correct": true,
+          "turns": 2,
+          "promptTokens": 1738,
+          "completionTokens": 115,
+          "trace": [
+            {
+              "action": "tools",
+              "name": "playwright"
+            },
+            {
+              "action": "call",
+              "name": "playwright",
+              "tool": "browser_close"
+            }
+          ]
+        },
+        {
+          "id": "mem-create",
+          "expect": "create_entities",
+          "picked": "create_entities",
+          "server": "memory",
+          "correct": true,
+          "turns": 2,
+          "promptTokens": 1881,
+          "completionTokens": 114,
+          "trace": [
+            {
+              "action": "tools",
+              "name": "memory"
+            },
+            {
+              "action": "call",
+              "name": "memory",
+              "tool": "create_entities"
+            }
+          ]
+        },
+        {
+          "id": "mem-read",
+          "expect": "read_graph",
+          "picked": "read_graph",
+          "server": "memory",
+          "correct": true,
+          "turns": 2,
+          "promptTokens": 1859,
+          "completionTokens": 102,
+          "trace": [
+            {
+              "action": "tools",
+              "name": "memory"
+            },
+            {
+              "action": "call",
+              "name": "memory",
+              "tool": "read_graph"
+            }
+          ]
+        },
+        {
+          "id": "mem-search",
+          "expect": "search_nodes",
+          "picked": "search_nodes",
+          "server": "memory",
+          "correct": true,
+          "turns": 2,
+          "promptTokens": 1867,
+          "completionTokens": 107,
+          "trace": [
+            {
+              "action": "tools",
+              "name": "memory"
+            },
+            {
+              "action": "call",
+              "name": "memory",
+              "tool": "search_nodes"
+            }
+          ]
+        },
+        {
+          "id": "mem-delete",
+          "expect": "delete_entities",
+          "picked": "delete_entities",
+          "server": "memory",
+          "correct": true,
+          "turns": 2,
+          "promptTokens": 1772,
+          "completionTokens": 119,
+          "trace": [
+            {
+              "action": "tools",
+              "name": "memory"
+            },
+            {
+              "action": "call",
+              "name": "memory",
+              "tool": "delete_entities"
+            }
+          ]
+        },
+        {
+          "id": "mem-observe",
+          "expect": "add_observations",
+          "picked": "add_observations",
+          "server": "memory",
+          "correct": true,
+          "turns": 2,
+          "promptTokens": 1875,
+          "completionTokens": 117,
+          "trace": [
+            {
+              "action": "tools",
+              "name": "memory"
+            },
+            {
+              "action": "call",
+              "name": "memory",
+              "tool": "add_observations"
+            }
+          ]
+        },
+        {
+          "id": "mem-relate",
+          "expect": "create_relations",
+          "picked": "create_relations",
+          "server": "memory",
+          "correct": true,
+          "turns": 2,
+          "promptTokens": 1889,
+          "completionTokens": 120,
+          "trace": [
+            {
+              "action": "tools",
+              "name": "memory"
+            },
+            {
+              "action": "call",
+              "name": "memory",
+              "tool": "create_relations"
+            }
+          ]
+        },
+        {
+          "id": "ev-sum",
+          "expect": "get-sum",
+          "picked": "get-sum",
+          "server": "everything",
+          "correct": true,
+          "turns": 8,
+          "promptTokens": 9175,
+          "completionTokens": 344,
+          "trace": [
+            {
+              "action": "search"
+            },
+            {
+              "action": "search"
+            },
+            {
+              "action": "search"
+            },
+            {
+              "action": "status"
+            },
+            {
+              "action": "inspect",
+              "name": "everything"
+            },
+            {
+              "action": "tools",
+              "name": "everything"
+            },
+            {
+              "action": "tools",
+              "name": "everything"
+            },
+            {
+              "action": "call",
+              "name": "everything",
+              "tool": "get-sum"
+            }
+          ]
+        },
+        {
+          "id": "ev-echo",
+          "expect": "echo",
+          "picked": "echo",
+          "server": "everything",
+          "correct": true,
+          "turns": 5,
+          "promptTokens": 4875,
+          "completionTokens": 231,
+          "trace": [
+            {
+              "action": "search"
+            },
+            {
+              "action": "search"
+            },
+            {
+              "action": "search"
+            },
+            {
+              "action": "tools",
+              "name": "everything"
+            },
+            {
+              "action": "call",
+              "name": "everything",
+              "tool": "echo"
+            }
+          ]
+        },
+        {
+          "id": "ev-env",
+          "expect": "get-env",
+          "picked": null,
+          "correct": false,
+          "turns": 6,
+          "promptTokens": 6971,
+          "completionTokens": 580,
+          "trace": [
+            {
+              "action": "status"
+            },
+            {
+              "action": "inspect",
+              "name": "playwright"
+            },
+            {
+              "action": "inspect",
+              "name": "memory"
+            },
+            {
+              "action": "inspect",
+              "name": "everything"
+            },
+            {
+              "action": "inspect",
+              "name": "sequential-thinking"
+            }
+          ]
+        },
+        {
+          "id": "ev-gzip",
+          "expect": "gzip-file-as-resource",
+          "picked": "gzip-file-as-resource",
+          "server": "everything",
+          "correct": true,
+          "turns": 8,
+          "promptTokens": 8869,
+          "completionTokens": 373,
+          "trace": [
+            {
+              "action": "search"
+            },
+            {
+              "action": "search"
+            },
+            {
+              "action": "search"
+            },
+            {
+              "action": "search"
+            },
+            {
+              "action": "search"
+            },
+            {
+              "action": "search"
+            },
+            {
+              "action": "tools",
+              "name": "everything"
+            },
+            {
+              "action": "call",
+              "name": "everything",
+              "tool": "gzip-file-as-resource"
+            }
+          ]
+        },
+        {
+          "id": "ev-image",
+          "expect": "get-tiny-image",
+          "picked": "get-tiny-image",
+          "server": "everything",
+          "correct": true,
+          "turns": 6,
+          "promptTokens": 6326,
+          "completionTokens": 261,
+          "trace": [
+            {
+              "action": "search"
+            },
+            {
+              "action": "search"
+            },
+            {
+              "action": "search"
+            },
+            {
+              "action": "search"
+            },
+            {
+              "action": "tools",
+              "name": "everything"
+            },
+            {
+              "action": "call",
+              "name": "everything",
+              "tool": "get-tiny-image"
+            }
+          ]
+        },
+        {
+          "id": "ev-logging",
+          "expect": "toggle-simulated-logging",
+          "picked": null,
+          "correct": false,
+          "turns": 8,
+          "promptTokens": 8444,
+          "completionTokens": 328,
+          "trace": [
+            {
+              "action": "search"
+            },
+            {
+              "action": "search"
+            },
+            {
+              "action": "search"
+            },
+            {
+              "action": "search"
+            },
+            {
+              "action": "search"
+            },
+            {
+              "action": "search"
+            },
+            {
+              "action": "search"
+            },
+            {
+              "action": "search"
+            }
+          ],
+          "exhausted": true
+        },
+        {
+          "id": "st-1",
+          "expect": "sequentialthinking",
+          "picked": "sequentialthinking",
+          "server": "sequential-thinking",
+          "correct": true,
+          "turns": 2,
+          "promptTokens": 1806,
+          "completionTokens": 160,
+          "trace": [
+            {
+              "action": "tools",
+              "name": "sequential-thinking"
+            },
+            {
+              "action": "call",
+              "name": "sequential-thinking",
+              "tool": "sequentialthinking"
+            }
+          ]
+        },
+        {
+          "id": "st-2",
+          "expect": "sequentialthinking",
+          "picked": null,
+          "correct": false,
+          "turns": 3,
+          "promptTokens": 2763,
+          "completionTokens": 186,
+          "trace": [
+            {
+              "action": "enable",
+              "name": "sequential-thinking"
+            },
+            {
+              "action": "tools",
+              "name": "sequential-thinking"
+            }
+          ]
+        },
+        {
+          "id": "none-capital",
+          "expect": null,
+          "picked": null,
+          "correct": true,
+          "turns": 1,
+          "promptTokens": 808,
+          "completionTokens": 8,
+          "trace": []
+        },
+        {
+          "id": "none-tcp",
+          "expect": null,
+          "picked": null,
+          "correct": true,
+          "turns": 1,
+          "promptTokens": 813,
+          "completionTokens": 81,
+          "trace": []
+        },
+        {
+          "id": "none-haiku",
+          "expect": null,
+          "picked": "sequentialthinking",
+          "server": "sequential-thinking",
+          "correct": false,
+          "turns": 1,
+          "promptTokens": 808,
+          "completionTokens": 366,
+          "trace": [
+            {
+              "action": "call",
+              "name": "sequential-thinking",
+              "tool": "sequentialthinking"
+            }
+          ]
+        },
+        {
+          "id": "none-acronym",
+          "expect": null,
+          "picked": null,
+          "correct": true,
+          "turns": 1,
+          "promptTokens": 809,
+          "completionTokens": 28,
+          "trace": []
+        },
+        {
+          "id": "none-prime",
+          "expect": null,
+          "picked": null,
+          "correct": true,
+          "turns": 1,
+          "promptTokens": 814,
+          "completionTokens": 3,
+          "trace": []
+        },
+        {
+          "id": "none-translate",
+          "expect": null,
+          "picked": null,
+          "correct": true,
+          "turns": 1,
+          "promptTokens": 809,
+          "completionTokens": 15,
+          "trace": []
+        }
+      ],
+      "catalog": "catalog.json",
+      "strippedList": false,
+      "residentTokens": 466
+    },
+    "hubNoList": {
+      "overall": 92.9,
+      "toolTasks": 90.9,
+      "noToolTasks": 100,
+      "falseToolCalls": 0,
+      "exhausted": 0,
+      "perServer": {
+        "playwright": {
+          "total": 8,
+          "correct": 8,
+          "percent": 100
+        },
+        "memory": {
+          "total": 6,
+          "correct": 6,
+          "percent": 100
+        },
+        "everything": {
+          "total": 6,
+          "correct": 6,
+          "percent": 100
+        },
+        "sequential-thinking": {
+          "total": 2,
+          "correct": 0,
+          "percent": 0
+        }
+      },
+      "avgTurns": 3.61,
+      "avgPromptTokens": 3403,
+      "avgCompletionTokens": 190,
+      "rows": [
+        {
+          "id": "pw-navigate",
+          "expect": "browser_navigate",
+          "picked": "browser_navigate",
+          "server": "playwright",
+          "correct": true,
+          "turns": 4,
+          "promptTokens": 4010,
+          "completionTokens": 190,
+          "trace": [
+            {
+              "action": "search"
+            },
+            {
+              "action": "search"
+            },
+            {
+              "action": "tools",
+              "name": "playwright"
+            },
+            {
+              "action": "call",
+              "name": "playwright",
+              "tool": "browser_navigate"
+            }
+          ]
+        },
+        {
+          "id": "pw-screenshot",
+          "expect": "browser_take_screenshot",
+          "picked": "browser_take_screenshot",
+          "server": "playwright",
+          "correct": true,
+          "turns": 4,
+          "promptTokens": 3563,
+          "completionTokens": 199,
+          "trace": [
+            {
+              "action": "search"
+            },
+            {
+              "action": "search"
+            },
+            {
+              "action": "tools",
+              "name": "playwright"
+            },
+            {
+              "action": "call",
+              "name": "playwright",
+              "tool": "browser_take_screenshot"
+            }
+          ]
+        },
+        {
+          "id": "pw-resize",
+          "expect": "browser_resize",
+          "picked": "browser_resize",
+          "server": "playwright",
+          "correct": true,
+          "turns": 4,
+          "promptTokens": 3534,
+          "completionTokens": 207,
+          "trace": [
+            {
+              "action": "search"
+            },
+            {
+              "action": "search"
+            },
+            {
+              "action": "tools",
+              "name": "playwright"
+            },
+            {
+              "action": "call",
+              "name": "playwright",
+              "tool": "browser_resize"
+            }
+          ]
+        },
+        {
+          "id": "pw-back",
+          "expect": "browser_navigate_back",
+          "picked": "browser_navigate_back",
+          "server": "playwright",
+          "correct": true,
+          "turns": 4,
+          "promptTokens": 3521,
+          "completionTokens": 196,
+          "trace": [
+            {
+              "action": "search"
+            },
+            {
+              "action": "search"
+            },
+            {
+              "action": "tools",
+              "name": "playwright"
+            },
+            {
+              "action": "call",
+              "name": "playwright",
+              "tool": "browser_navigate_back"
+            }
+          ]
+        },
+        {
+          "id": "pw-console",
+          "expect": "browser_console_messages",
+          "picked": "browser_console_messages",
+          "server": "playwright",
+          "correct": true,
+          "turns": 3,
+          "promptTokens": 2588,
+          "completionTokens": 176,
+          "trace": [
+            {
+              "action": "search"
+            },
+            {
+              "action": "tools",
+              "name": "playwright"
+            },
+            {
+              "action": "call",
+              "name": "playwright",
+              "tool": "browser_console_messages"
+            }
+          ]
+        },
+        {
+          "id": "pw-tabs",
+          "expect": "browser_tabs",
+          "picked": "browser_tabs",
+          "server": "playwright",
+          "correct": true,
+          "turns": 3,
+          "promptTokens": 2590,
+          "completionTokens": 158,
+          "trace": [
+            {
+              "action": "search"
+            },
+            {
+              "action": "tools",
+              "name": "playwright"
+            },
+            {
+              "action": "call",
+              "name": "playwright",
+              "tool": "browser_tabs"
+            }
+          ]
+        },
+        {
+          "id": "pw-wait",
+          "expect": "browser_wait_for",
+          "picked": "browser_wait_for",
+          "server": "playwright",
+          "correct": true,
+          "turns": 6,
+          "promptTokens": 6261,
+          "completionTokens": 284,
+          "trace": [
+            {
+              "action": "search"
+            },
+            {
+              "action": "search"
+            },
+            {
+              "action": "search"
+            },
+            {
+              "action": "tools",
+              "name": "playwright"
+            },
+            {
+              "action": "tools",
+              "name": "playwright"
+            },
+            {
+              "action": "call",
+              "name": "playwright",
+              "tool": "browser_wait_for"
+            }
+          ]
+        },
+        {
+          "id": "pw-close",
+          "expect": "browser_close",
+          "picked": "browser_close",
+          "server": "playwright",
+          "correct": true,
+          "turns": 5,
+          "promptTokens": 5135,
+          "completionTokens": 235,
+          "trace": [
+            {
+              "action": "search"
+            },
+            {
+              "action": "search"
+            },
+            {
+              "action": "tools",
+              "name": "playwright"
+            },
+            {
+              "action": "tools",
+              "name": "playwright"
+            },
+            {
+              "action": "call",
+              "name": "playwright",
+              "tool": "browser_close"
+            }
+          ]
+        },
+        {
+          "id": "mem-create",
+          "expect": "create_entities",
+          "picked": "create_entities",
+          "server": "memory",
+          "correct": true,
+          "turns": 5,
+          "promptTokens": 5049,
+          "completionTokens": 260,
+          "trace": [
+            {
+              "action": "search"
+            },
+            {
+              "action": "search"
+            },
+            {
+              "action": "tools",
+              "name": "memory"
+            },
+            {
+              "action": "tools",
+              "name": "memory"
+            },
+            {
+              "action": "call",
+              "name": "memory",
+              "tool": "create_entities"
+            }
+          ]
+        },
+        {
+          "id": "mem-read",
+          "expect": "read_graph",
+          "picked": "read_graph",
+          "server": "memory",
+          "correct": true,
+          "turns": 3,
+          "promptTokens": 2667,
+          "completionTokens": 157,
+          "trace": [
+            {
+              "action": "search"
+            },
+            {
+              "action": "tools",
+              "name": "memory"
+            },
+            {
+              "action": "call",
+              "name": "memory",
+              "tool": "read_graph"
+            }
+          ]
+        },
+        {
+          "id": "mem-search",
+          "expect": "search_nodes",
+          "picked": "search_nodes",
+          "server": "memory",
+          "correct": true,
+          "turns": 4,
+          "promptTokens": 3608,
+          "completionTokens": 187,
+          "trace": [
+            {
+              "action": "search"
+            },
+            {
+              "action": "search"
+            },
+            {
+              "action": "tools",
+              "name": "memory"
+            },
+            {
+              "action": "call",
+              "name": "memory",
+              "tool": "search_nodes"
+            }
+          ]
+        },
+        {
+          "id": "mem-delete",
+          "expect": "delete_entities",
+          "picked": "delete_entities",
+          "server": "memory",
+          "correct": true,
+          "turns": 4,
+          "promptTokens": 3616,
+          "completionTokens": 186,
+          "trace": [
+            {
+              "action": "search"
+            },
+            {
+              "action": "search"
+            },
+            {
+              "action": "tools",
+              "name": "memory"
+            },
+            {
+              "action": "call",
+              "name": "memory",
+              "tool": "delete_entities"
+            }
+          ]
+        },
+        {
+          "id": "mem-observe",
+          "expect": "add_observations",
+          "picked": "add_observations",
+          "server": "memory",
+          "correct": true,
+          "turns": 5,
+          "promptTokens": 4621,
+          "completionTokens": 234,
+          "trace": [
+            {
+              "action": "search"
+            },
+            {
+              "action": "search"
+            },
+            {
+              "action": "search"
+            },
+            {
+              "action": "tools",
+              "name": "memory"
+            },
+            {
+              "action": "call",
+              "name": "memory",
+              "tool": "add_observations"
+            }
+          ]
+        },
+        {
+          "id": "mem-relate",
+          "expect": "create_relations",
+          "picked": "create_relations",
+          "server": "memory",
+          "correct": true,
+          "turns": 4,
+          "promptTokens": 4068,
+          "completionTokens": 225,
+          "trace": [
+            {
+              "action": "search"
+            },
+            {
+              "action": "tools",
+              "name": "memory"
+            },
+            {
+              "action": "tools",
+              "name": "memory"
+            },
+            {
+              "action": "call",
+              "name": "memory",
+              "tool": "create_relations"
+            }
+          ]
+        },
+        {
+          "id": "ev-sum",
+          "expect": "get-sum",
+          "picked": "get-sum",
+          "server": "everything",
+          "correct": true,
+          "turns": 4,
+          "promptTokens": 3993,
+          "completionTokens": 201,
+          "trace": [
+            {
+              "action": "search"
+            },
+            {
+              "action": "tools",
+              "name": "everything"
+            },
+            {
+              "action": "tools",
+              "name": "everything"
+            },
+            {
+              "action": "call",
+              "name": "everything",
+              "tool": "get-sum"
+            }
+          ]
+        },
+        {
+          "id": "ev-echo",
+          "expect": "echo",
+          "picked": "echo",
+          "server": "everything",
+          "correct": true,
+          "turns": 3,
+          "promptTokens": 2596,
+          "completionTokens": 154,
+          "trace": [
+            {
+              "action": "search"
+            },
+            {
+              "action": "tools",
+              "name": "everything"
+            },
+            {
+              "action": "call",
+              "name": "everything",
+              "tool": "echo"
+            }
+          ]
+        },
+        {
+          "id": "ev-env",
+          "expect": "get-env",
+          "picked": "get-env",
+          "server": "everything",
+          "correct": true,
+          "turns": 6,
+          "promptTokens": 6707,
+          "completionTokens": 369,
+          "trace": [
+            {
+              "action": "status"
+            },
+            {
+              "action": "inspect",
+              "name": "playwright"
+            },
+            {
+              "action": "inspect",
+              "name": "memory"
+            },
+            {
+              "action": "inspect",
+              "name": "everything"
+            },
+            {
+              "action": "tools",
+              "name": "everything"
+            },
+            {
+              "action": "call",
+              "name": "everything",
+              "tool": "get-env"
+            }
+          ]
+        },
+        {
+          "id": "ev-gzip",
+          "expect": "gzip-file-as-resource",
+          "picked": "gzip-file-as-resource",
+          "server": "everything",
+          "correct": true,
+          "turns": 5,
+          "promptTokens": 4973,
+          "completionTokens": 292,
+          "trace": [
+            {
+              "action": "search"
+            },
+            {
+              "action": "search"
+            },
+            {
+              "action": "tools",
+              "name": "everything"
+            },
+            {
+              "action": "tools",
+              "name": "everything"
+            },
+            {
+              "action": "call",
+              "name": "everything",
+              "tool": "gzip-file-as-resource"
+            }
+          ]
+        },
+        {
+          "id": "ev-image",
+          "expect": "get-tiny-image",
+          "picked": "get-tiny-image",
+          "server": "everything",
+          "correct": true,
+          "turns": 8,
+          "promptTokens": 7907,
+          "completionTokens": 351,
+          "trace": [
+            {
+              "action": "search"
+            },
+            {
+              "action": "search"
+            },
+            {
+              "action": "search"
+            },
+            {
+              "action": "search"
+            },
+            {
+              "action": "search"
+            },
+            {
+              "action": "search"
+            },
+            {
+              "action": "tools",
+              "name": "everything"
+            },
+            {
+              "action": "call",
+              "name": "everything",
+              "tool": "get-tiny-image"
+            }
+          ]
+        },
+        {
+          "id": "ev-logging",
+          "expect": "toggle-simulated-logging",
+          "picked": "toggle-simulated-logging",
+          "server": "everything",
+          "correct": true,
+          "turns": 4,
+          "promptTokens": 3540,
+          "completionTokens": 201,
+          "trace": [
+            {
+              "action": "search"
+            },
+            {
+              "action": "search"
+            },
+            {
+              "action": "tools",
+              "name": "everything"
+            },
+            {
+              "action": "call",
+              "name": "everything",
+              "tool": "toggle-simulated-logging"
+            }
+          ]
+        },
+        {
+          "id": "st-1",
+          "expect": "sequentialthinking",
+          "picked": null,
+          "correct": false,
+          "turns": 2,
+          "promptTokens": 1521,
+          "completionTokens": 356,
+          "trace": [
+            {
+              "action": "search"
+            }
+          ]
+        },
+        {
+          "id": "st-2",
+          "expect": "sequentialthinking",
+          "picked": null,
+          "correct": false,
+          "turns": 5,
+          "promptTokens": 4913,
+          "completionTokens": 354,
+          "trace": [
+            {
+              "action": "search"
+            },
+            {
+              "action": "search"
+            },
+            {
+              "action": "inspect",
+              "name": "sequential-thinking"
+            },
+            {
+              "action": "tools",
+              "name": "sequential-thinking"
+            }
+          ]
+        },
+        {
+          "id": "none-capital",
+          "expect": null,
+          "picked": null,
+          "correct": true,
+          "turns": 1,
+          "promptTokens": 714,
+          "completionTokens": 9,
+          "trace": []
+        },
+        {
+          "id": "none-tcp",
+          "expect": null,
+          "picked": null,
+          "correct": true,
+          "turns": 1,
+          "promptTokens": 719,
+          "completionTokens": 74,
+          "trace": []
+        },
+        {
+          "id": "none-haiku",
+          "expect": null,
+          "picked": null,
+          "correct": true,
+          "turns": 1,
+          "promptTokens": 714,
+          "completionTokens": 25,
+          "trace": []
+        },
+        {
+          "id": "none-acronym",
+          "expect": null,
+          "picked": null,
+          "correct": true,
+          "turns": 1,
+          "promptTokens": 715,
+          "completionTokens": 28,
+          "trace": []
+        },
+        {
+          "id": "none-prime",
+          "expect": null,
+          "picked": null,
+          "correct": true,
+          "turns": 1,
+          "promptTokens": 720,
+          "completionTokens": 2,
+          "trace": []
+        },
+        {
+          "id": "none-translate",
+          "expect": null,
+          "picked": null,
+          "correct": true,
+          "turns": 1,
+          "promptTokens": 715,
+          "completionTokens": 15,
+          "trace": []
+        }
+      ],
+      "catalog": "catalog-described.json",
+      "strippedList": true,
+      "residentTokens": 372
+    },
+    "hub": {
+      "overall": 96.4,
+      "toolTasks": 95.5,
+      "noToolTasks": 100,
+      "falseToolCalls": 0,
+      "exhausted": 0,
+      "perServer": {
+        "playwright": {
+          "total": 8,
+          "correct": 8,
+          "percent": 100
+        },
+        "memory": {
+          "total": 6,
+          "correct": 6,
+          "percent": 100
+        },
+        "everything": {
+          "total": 6,
+          "correct": 6,
+          "percent": 100
+        },
+        "sequential-thinking": {
+          "total": 2,
+          "correct": 1,
+          "percent": 50
+        }
+      },
+      "avgTurns": 2.18,
+      "avgPromptTokens": 2262,
+      "avgCompletionTokens": 119,
+      "rows": [
+        {
+          "id": "pw-navigate",
+          "expect": "browser_navigate",
+          "picked": "browser_navigate",
+          "server": "playwright",
+          "correct": true,
+          "turns": 2,
+          "promptTokens": 1969,
+          "completionTokens": 123,
+          "trace": [
+            {
+              "action": "tools",
+              "name": "playwright"
+            },
+            {
+              "action": "call",
+              "name": "playwright",
+              "tool": "browser_navigate"
+            }
+          ]
+        },
+        {
+          "id": "pw-screenshot",
+          "expect": "browser_take_screenshot",
+          "picked": "browser_take_screenshot",
+          "server": "playwright",
+          "correct": true,
+          "turns": 2,
+          "promptTokens": 1997,
+          "completionTokens": 118,
+          "trace": [
+            {
+              "action": "tools",
+              "name": "playwright"
+            },
+            {
+              "action": "call",
+              "name": "playwright",
+              "tool": "browser_take_screenshot"
+            }
+          ]
+        },
+        {
+          "id": "pw-resize",
+          "expect": "browser_resize",
+          "picked": "browser_resize",
+          "server": "playwright",
+          "correct": true,
+          "turns": 2,
+          "promptTokens": 1963,
+          "completionTokens": 128,
+          "trace": [
+            {
+              "action": "tools",
+              "name": "playwright"
+            },
+            {
+              "action": "call",
+              "name": "playwright",
+              "tool": "browser_resize"
+            }
+          ]
+        },
+        {
+          "id": "pw-back",
+          "expect": "browser_navigate_back",
+          "picked": "browser_navigate_back",
+          "server": "playwright",
+          "correct": true,
+          "turns": 2,
+          "promptTokens": 1961,
+          "completionTokens": 118,
+          "trace": [
+            {
+              "action": "tools",
+              "name": "playwright"
+            },
+            {
+              "action": "call",
+              "name": "playwright",
+              "tool": "browser_navigate_back"
+            }
+          ]
+        },
+        {
+          "id": "pw-console",
+          "expect": "browser_console_messages",
+          "picked": "browser_console_messages",
+          "server": "playwright",
+          "correct": true,
+          "turns": 2,
+          "promptTokens": 1954,
+          "completionTokens": 116,
+          "trace": [
+            {
+              "action": "tools",
+              "name": "playwright"
+            },
+            {
+              "action": "call",
+              "name": "playwright",
+              "tool": "browser_console_messages"
+            }
+          ]
+        },
+        {
+          "id": "pw-tabs",
+          "expect": "browser_tabs",
+          "picked": "browser_tabs",
+          "server": "playwright",
+          "correct": true,
+          "turns": 2,
+          "promptTokens": 1959,
+          "completionTokens": 119,
+          "trace": [
+            {
+              "action": "tools",
+              "name": "playwright"
+            },
+            {
+              "action": "call",
+              "name": "playwright",
+              "tool": "browser_tabs"
+            }
+          ]
+        },
+        {
+          "id": "pw-wait",
+          "expect": "browser_wait_for",
+          "picked": "browser_wait_for",
+          "server": "playwright",
+          "correct": true,
+          "turns": 2,
+          "promptTokens": 1969,
+          "completionTokens": 124,
+          "trace": [
+            {
+              "action": "tools",
+              "name": "playwright"
+            },
+            {
+              "action": "call",
+              "name": "playwright",
+              "tool": "browser_wait_for"
+            }
+          ]
+        },
+        {
+          "id": "pw-close",
+          "expect": "browser_close",
+          "picked": "browser_close",
+          "server": "playwright",
+          "correct": true,
+          "turns": 2,
+          "promptTokens": 1960,
+          "completionTokens": 115,
+          "trace": [
+            {
+              "action": "tools",
+              "name": "playwright"
+            },
+            {
+              "action": "call",
+              "name": "playwright",
+              "tool": "browser_close"
+            }
+          ]
+        },
+        {
+          "id": "mem-create",
+          "expect": "create_entities",
+          "picked": "create_entities",
+          "server": "memory",
+          "correct": true,
+          "turns": 5,
+          "promptTokens": 5680,
+          "completionTokens": 263,
+          "trace": [
+            {
+              "action": "tools",
+              "name": "memory"
+            },
+            {
+              "action": "tools",
+              "name": "memory"
+            },
+            {
+              "action": "tools",
+              "name": "memory"
+            },
+            {
+              "action": "tools",
+              "name": "memory"
+            },
+            {
+              "action": "call",
+              "name": "memory",
+              "tool": "create_entities"
+            }
+          ]
+        },
+        {
+          "id": "mem-read",
+          "expect": "read_graph",
+          "picked": "read_graph",
+          "server": "memory",
+          "correct": true,
+          "turns": 2,
+          "promptTokens": 2081,
+          "completionTokens": 102,
+          "trace": [
+            {
+              "action": "tools",
+              "name": "memory"
+            },
+            {
+              "action": "call",
+              "name": "memory",
+              "tool": "read_graph"
+            }
+          ]
+        },
+        {
+          "id": "mem-search",
+          "expect": "search_nodes",
+          "picked": "search_nodes",
+          "server": "memory",
+          "correct": true,
+          "turns": 2,
+          "promptTokens": 1957,
+          "completionTokens": 118,
+          "trace": [
+            {
+              "action": "tools",
+              "name": "memory"
+            },
+            {
+              "action": "call",
+              "name": "memory",
+              "tool": "search_nodes"
+            }
+          ]
+        },
+        {
+          "id": "mem-delete",
+          "expect": "delete_entities",
+          "picked": "delete_entities",
+          "server": "memory",
+          "correct": true,
+          "turns": 2,
+          "promptTokens": 1994,
+          "completionTokens": 119,
+          "trace": [
+            {
+              "action": "tools",
+              "name": "memory"
+            },
+            {
+              "action": "call",
+              "name": "memory",
+              "tool": "delete_entities"
+            }
+          ]
+        },
+        {
+          "id": "mem-observe",
+          "expect": "add_observations",
+          "picked": "add_observations",
+          "server": "memory",
+          "correct": true,
+          "turns": 5,
+          "promptTokens": 5789,
+          "completionTokens": 268,
+          "trace": [
+            {
+              "action": "tools",
+              "name": "memory"
+            },
+            {
+              "action": "tools",
+              "name": "memory"
+            },
+            {
+              "action": "inspect",
+              "name": "memory"
+            },
+            {
+              "action": "tools",
+              "name": "memory"
+            },
+            {
+              "action": "call",
+              "name": "memory",
+              "tool": "add_observations"
+            }
+          ]
+        },
+        {
+          "id": "mem-relate",
+          "expect": "create_relations",
+          "picked": "create_relations",
+          "server": "memory",
+          "correct": true,
+          "turns": 3,
+          "promptTokens": 3341,
+          "completionTokens": 195,
+          "trace": [
+            {
+              "action": "tools",
+              "name": "memory"
+            },
+            {
+              "action": "tools",
+              "name": "memory"
+            },
+            {
+              "action": "call",
+              "name": "memory",
+              "tool": "create_relations"
+            }
+          ]
+        },
+        {
+          "id": "ev-sum",
+          "expect": "get-sum",
+          "picked": "get-sum",
+          "server": "everything",
+          "correct": true,
+          "turns": 4,
+          "promptTokens": 4813,
+          "completionTokens": 201,
+          "trace": [
+            {
+              "action": "search"
+            },
+            {
+              "action": "tools",
+              "name": "everything"
+            },
+            {
+              "action": "tools",
+              "name": "everything"
+            },
+            {
+              "action": "call",
+              "name": "everything",
+              "tool": "get-sum"
+            }
+          ]
+        },
+        {
+          "id": "ev-echo",
+          "expect": "echo",
+          "picked": "echo",
+          "server": "everything",
+          "correct": true,
+          "turns": 1,
+          "promptTokens": 925,
+          "completionTokens": 67,
+          "trace": [
+            {
+              "action": "call",
+              "name": "everything",
+              "tool": "echo"
+            }
+          ]
+        },
+        {
+          "id": "ev-env",
+          "expect": "get-env",
+          "picked": "get-env",
+          "server": "everything",
+          "correct": true,
+          "turns": 2,
+          "promptTokens": 1962,
+          "completionTokens": 113,
+          "trace": [
+            {
+              "action": "tools",
+              "name": "everything"
+            },
+            {
+              "action": "call",
+              "name": "everything",
+              "tool": "get-env"
+            }
+          ]
+        },
+        {
+          "id": "ev-gzip",
+          "expect": "gzip-file-as-resource",
+          "picked": "gzip-file-as-resource",
+          "server": "everything",
+          "correct": true,
+          "turns": 3,
+          "promptTokens": 3246,
+          "completionTokens": 160,
+          "trace": [
+            {
+              "action": "search"
+            },
+            {
+              "action": "tools",
+              "name": "everything"
+            },
+            {
+              "action": "call",
+              "name": "everything",
+              "tool": "gzip-file-as-resource"
+            }
+          ]
+        },
+        {
+          "id": "ev-image",
+          "expect": "get-tiny-image",
+          "picked": "get-tiny-image",
+          "server": "everything",
+          "correct": true,
+          "turns": 3,
+          "promptTokens": 3200,
+          "completionTokens": 153,
+          "trace": [
+            {
+              "action": "search"
+            },
+            {
+              "action": "tools",
+              "name": "everything"
+            },
+            {
+              "action": "call",
+              "name": "everything",
+              "tool": "get-tiny-image"
+            }
+          ]
+        },
+        {
+          "id": "ev-logging",
+          "expect": "toggle-simulated-logging",
+          "picked": "toggle-simulated-logging",
+          "server": "everything",
+          "correct": true,
+          "turns": 2,
+          "promptTokens": 1957,
+          "completionTokens": 121,
+          "trace": [
+            {
+              "action": "tools",
+              "name": "everything"
+            },
+            {
+              "action": "call",
+              "name": "everything",
+              "tool": "toggle-simulated-logging"
+            }
+          ]
+        },
+        {
+          "id": "st-1",
+          "expect": "sequentialthinking",
+          "picked": "sequentialthinking",
+          "server": "sequential-thinking",
+          "correct": true,
+          "turns": 2,
+          "promptTokens": 2028,
+          "completionTokens": 160,
+          "trace": [
+            {
+              "action": "tools",
+              "name": "sequential-thinking"
+            },
+            {
+              "action": "call",
+              "name": "sequential-thinking",
+              "tool": "sequentialthinking"
+            }
+          ]
+        },
+        {
+          "id": "st-2",
+          "expect": "sequentialthinking",
+          "picked": null,
+          "correct": false,
+          "turns": 3,
+          "promptTokens": 3096,
+          "completionTokens": 172,
+          "trace": [
+            {
+              "action": "enable",
+              "name": "sequential-thinking"
+            },
+            {
+              "action": "tools",
+              "name": "sequential-thinking"
+            }
+          ]
+        },
+        {
+          "id": "none-capital",
+          "expect": null,
+          "picked": null,
+          "correct": true,
+          "turns": 1,
+          "promptTokens": 919,
+          "completionTokens": 8,
+          "trace": []
+        },
+        {
+          "id": "none-tcp",
+          "expect": null,
+          "picked": null,
+          "correct": true,
+          "turns": 1,
+          "promptTokens": 924,
+          "completionTokens": 82,
+          "trace": []
+        },
+        {
+          "id": "none-haiku",
+          "expect": null,
+          "picked": null,
+          "correct": true,
+          "turns": 1,
+          "promptTokens": 919,
+          "completionTokens": 25,
+          "trace": []
+        },
+        {
+          "id": "none-acronym",
+          "expect": null,
+          "picked": null,
+          "correct": true,
+          "turns": 1,
+          "promptTokens": 920,
+          "completionTokens": 28,
+          "trace": []
+        },
+        {
+          "id": "none-prime",
+          "expect": null,
+          "picked": null,
+          "correct": true,
+          "turns": 1,
+          "promptTokens": 925,
+          "completionTokens": 2,
+          "trace": []
+        },
+        {
+          "id": "none-translate",
+          "expect": null,
+          "picked": null,
+          "correct": true,
+          "turns": 1,
+          "promptTokens": 920,
+          "completionTokens": 15,
+          "trace": []
+        }
+      ],
+      "catalog": "catalog-described.json",
+      "strippedList": false,
+      "residentTokens": 577
+    }
+  }
+}

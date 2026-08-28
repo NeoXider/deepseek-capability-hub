@@ -234,23 +234,96 @@
   "classic": {
     "servers": 4,
     "tools": 47,
-    "staticTokens": 6200
+    "staticTokens": 6200,
+    "meanTokensPerServer": 1550
   },
   "hub": {
-    "staticTokens": 350,
+    "staticTokens": 466,
     "discovery": {
       "search": 72,
       "inspect": 121,
       "enable": 22,
       "tools": 558,
+      "narrowed": 60,
       "total": 773
     },
-    "perTaskTokens": 1123
+    "scenarios": {
+      "idle": {
+        "tokens": 466,
+        "path": "resident schema only",
+        "percentSaved": 92.5,
+        "ratio": 13.3
+      },
+      "direct": {
+        "tokens": 598,
+        "path": "search + tools(query), auto-enabled",
+        "percentSaved": 90.4,
+        "ratio": 10.4
+      },
+      "cautious": {
+        "tokens": 1239,
+        "path": "search + inspect + enable + full tools",
+        "percentSaved": 80,
+        "ratio": 5
+      }
+    }
   },
+  "scaling": [
+    {
+      "servers": 4,
+      "classicTokens": 6200,
+      "hubResidentTokens": 474,
+      "percentSaved": 92.4
+    },
+    {
+      "servers": 7,
+      "classicTokens": 10850,
+      "hubResidentTokens": 551,
+      "percentSaved": 94.9
+    },
+    {
+      "servers": 10,
+      "classicTokens": 15500,
+      "hubResidentTokens": 628,
+      "percentSaved": 95.9
+    },
+    {
+      "servers": 15,
+      "classicTokens": 23250,
+      "hubResidentTokens": 749,
+      "percentSaved": 96.8
+    },
+    {
+      "servers": 20,
+      "classicTokens": 31000,
+      "hubResidentTokens": 870,
+      "percentSaved": 97.2
+    },
+    {
+      "servers": 30,
+      "classicTokens": 46500,
+      "hubResidentTokens": 512,
+      "percentSaved": 98.9
+    },
+    {
+      "servers": 43,
+      "classicTokens": 66650,
+      "hubResidentTokens": 567,
+      "percentSaved": 99.1
+    },
+    {
+      "servers": 60,
+      "classicTokens": 93000,
+      "hubResidentTokens": 639,
+      "percentSaved": 99.3
+    }
+  ],
   "savings": {
-    "staticRatio": 17.7,
-    "staticPercent": 94.4,
-    "perTaskPercent": 81.9,
-    "breakEvenTasks": 8
+    "staticRatio": 13.3,
+    "staticPercent": 92.5,
+    "directPercent": 90.4,
+    "cautiousPercent": 80,
+    "breakEvenDirect": 47,
+    "breakEvenCautious": 8
   }
 }

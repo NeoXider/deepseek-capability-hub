@@ -1,0 +1,62 @@
+{
+  "version": 1,
+  "_note": "Same four servers as catalog.json, with descriptions and tags rewritten to name what each server can actually DO. Used by accuracy.mjs as an ablation: the only variable that changes between the two runs is the catalog copy. Nothing about the servers, the tools or the protocol differs.",
+  "entries": [
+    {
+      "kind": "mcp",
+      "name": "playwright",
+      "description": "Drive a real browser: navigate to URLs, go back, click, type, fill forms, press keys, resize the window, list and switch tabs, wait for text, take screenshots, read the accessibility tree and inspect console messages and network traffic.",
+      "tags": ["browser", "automation", "web", "testing", "screenshot", "navigate", "click", "console", "network", "tabs"],
+      "trusted": true,
+      "source": "devDependency:@playwright/mcp@0.0.79",
+      "permissions": ["Starts a browser process", "Reads and interacts with any page you navigate to"],
+      "transport": {
+        "type": "stdio",
+        "command": "node",
+        "args": ["${catalogDir}/../node_modules/@playwright/mcp/cli.js"]
+      }
+    },
+    {
+      "kind": "mcp",
+      "name": "sequential-thinking",
+      "description": "Break a hard problem into numbered thoughts that can be revised, branched and backtracked as the reasoning proceeds. For multi-step planning and structured chains of reasoning, not for simple factual questions.",
+      "tags": ["reasoning", "planning", "analysis", "step-by-step", "revise", "branch"],
+      "trusted": true,
+      "source": "npm:@modelcontextprotocol/server-sequential-thinking@2026.7.4",
+      "permissions": ["No filesystem or network access"],
+      "transport": {
+        "type": "stdio",
+        "command": "npx",
+        "args": ["-y", "@modelcontextprotocol/server-sequential-thinking@2026.7.4"]
+      }
+    },
+    {
+      "kind": "mcp",
+      "name": "memory",
+      "description": "A local knowledge graph that persists across sessions: create, read, search, open and delete entities; add and delete observations on them; create and delete relations between them.",
+      "tags": ["memory", "knowledge-graph", "storage", "entities", "relations", "observations", "remember", "recall"],
+      "trusted": true,
+      "source": "npm:@modelcontextprotocol/server-memory@2026.7.4",
+      "permissions": ["Writes a local knowledge-graph file"],
+      "transport": {
+        "type": "stdio",
+        "command": "npx",
+        "args": ["-y", "@modelcontextprotocol/server-memory@2026.7.4"]
+      }
+    },
+    {
+      "kind": "mcp",
+      "name": "everything",
+      "description": "Assorted utilities: echo a string back, add two numbers, return the server's environment variables, gzip-compress a file, return a small image, toggle simulated logging and subscription updates, run a long operation with progress, and return annotated, structured or resource-linked content.",
+      "tags": ["echo", "sum", "add", "arithmetic", "environment", "env", "gzip", "compress", "image", "logging", "utilities", "reference"],
+      "trusted": true,
+      "source": "npm:@modelcontextprotocol/server-everything@2026.8.18",
+      "permissions": ["Local demo server, no external side effects"],
+      "transport": {
+        "type": "stdio",
+        "command": "npx",
+        "args": ["-y", "@modelcontextprotocol/server-everything@2026.8.18"]
+      }
+    }
+  ]
+}

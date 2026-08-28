@@ -5,6 +5,55 @@ All notable changes to DeepSeek Capability Hub are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.0] - 2026-08-28
+
+Two measurements changed the product, and one of them corrected a claim this project had
+been publishing about itself.
+
+### Added
+
+- **Tool-selection accuracy is now measured, not assumed** (`pnpm bench:accuracy`). 28
+  tasks against a real local model, of which 6 need no tool and calling one is scored as a
+  failure. The result: **96.4% for the hub against 96.4% for 47 resident schemas**, on a
+  tenth of the resident context and *fewer* total prompt tokens (2,262 vs 7,269 per task,
+  summed across every turn of the multi-turn protocol). The classic setup's only failure
+  was a false tool call — asked whether 97 is prime, it reached for `sequentialthinking`.
+  Every hub condition with a usable catalog scored 100% on the no-tool tasks.
+- **The capability list now ships inside the resident tool description**, degrading to
+  names only and then to a bare count as the catalog grows past a character budget. This
+  is the ablation that justified it: with the list stripped, the model had to spend a
+  `search` to learn what existed, and on tasks that did not *read* like a search query it
+  never searched at all. Inlining costs ~200 resident tokens and returned 92.9% → 96.4%
+  accuracy with average turns 3.61 → 2.18.
+- `bench/capture-schemas.mjs` and a committed `bench/snapshots/full-tools.json`, so the
+  accuracy run is reproducible offline; `bench/catalog-described.json` as the catalog-prose
+  ablation.
+- A test asserting the resident description carries the catalog *and* degrades, since that
+  description is now load-bearing rather than cosmetic.
+
+### Changed
+
+- **The published "82% per task" figure was wrong.** It charged every task `search` +
+  `inspect` + `enable` + the unnarrowed tool list — the most expensive path the protocol
+  allows — and presented it as typical. But `tools` starts a stopped capability by itself,
+  so `enable` is not on the critical path, and `tools` accepts a query. The benchmark was
+  measuring the documentation instead of the code. Reported as three scenarios now:
+  **92.5% idle, 90.4% direct, 80.0% cautious**, and break-even moved from ~8 discovery
+  round trips per session to **~47** on the direct path.
+- The scaling table is measured rather than projected. The hub's resident cost is no longer
+  a constant now that the catalog is inlined, and assuming one would have overstated every
+  row.
+- `docs/context-economy.md` gained a prior-art section. Lazy tool loading is not new, it
+  ships natively in Claude Code, and on multi-tool tasks code execution beats a broker.
+  Publishing a savings number without saying that reads as not knowing the field.
+
+### Fixed
+
+- Catalog descriptions in the benchmark fixtures now say what each server can *do*. The
+  ablation showed this is the broker's dominant failure mode: identical code, identical
+  servers, identical protocol, ~11 accuracy points of difference. A capability whose
+  description does not name what it does is one the model never finds.
+
 ## [0.3.1] - 2026-08-27
 
 ### Fixed
